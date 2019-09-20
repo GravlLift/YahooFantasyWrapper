@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Xml.Serialization;
 
-namespace YahooFantasyWrapper.Models
+namespace YahooFantasyWrapper.Models.Response
 {
     [XmlRoot(ElementName = "name", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
     public class Name
@@ -18,6 +16,10 @@ namespace YahooFantasyWrapper.Models
         public string AsciiFirstName { get; set; }
         [XmlElement(ElementName = "ascii_last", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
         public string AsciiLastName { get; set; }
+
+        public override string ToString() => Full;
+
+        public static implicit operator string(Name name) { return name.ToString(); }
     }
 
     [XmlRoot(ElementName = "bye_weeks", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
@@ -25,6 +27,7 @@ namespace YahooFantasyWrapper.Models
     {
         [XmlElement(ElementName = "week", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
         public List<string> Week { get; set; }
+        public override string ToString() => Week == null ? null : $"{string.Join(",", Week)}";
     }
 
     [XmlRoot(ElementName = "headshot", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
@@ -41,6 +44,7 @@ namespace YahooFantasyWrapper.Models
     {
         [XmlElement(ElementName = "position", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
         public List<string> Position { get; set; }
+        public override string ToString() => Position == null ? null : $"{string.Join(",", Position)}";
     }
 
     [XmlRoot(ElementName = "player", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
@@ -90,7 +94,22 @@ namespace YahooFantasyWrapper.Models
         public SelectedPosition SelectedPosition { get; set; }
         [XmlElement(ElementName = "player_stats", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
         public PlayerStats PlayerStats { get; set; }
+        [XmlElement(ElementName = "ownership", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
+        public PlayerOwnership Ownership { get; set; }
 
+    }
+
+    [XmlRoot(ElementName = "ownership", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
+    public class PlayerOwnership
+    {
+        [XmlElement(ElementName = "ownership_type")]
+        public PlayerOwnershipType OwnershipType { get; set; }
+        [XmlElement(ElementName = "owner_team_key")]
+        public string OwnerTeamKey { get; set; }
+        [XmlElement(ElementName = "owner_team_name")]
+        public string OwnerTeamName { get; set; }
+        [XmlElement(ElementName = "teams")]
+        public TeamList Teams { get; set; }
     }
 
     [XmlRoot(ElementName = "player_stats", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
@@ -114,4 +133,42 @@ namespace YahooFantasyWrapper.Models
     }
 
 
+    public enum PlayerOwnershipType
+    {
+        [XmlEnum(Name = "team")]
+        Team,
+        [XmlEnum(Name = "waivers")]
+        Waivers,
+        [XmlEnum(Name = "freeagents")]
+        FreeAgent
+    }
+    //public class PlayerOwnershipType : StringEnum
+    //{
+    //    public PlayerOwnershipStatus()
+    //    private PlayerOwnershipType(string value) : base(value) { }
+
+    //    public static string Team => new PlayerOwnershipType("team");
+    //    public static string Waivers => new PlayerOwnershipType("waivers");
+
+    //}
+
+    public class PlayerOwnershipStatus : StringEnum
+    {
+        private PlayerOwnershipStatus(string value) : base(value) { }
+
+        public static string Available => new PlayerOwnershipStatus("A");
+        public static string FreeAgent => new PlayerOwnershipStatus("FA");
+        public static string Waivers => new PlayerOwnershipStatus("W");
+        public static string Taken => new PlayerOwnershipStatus("T");
+        public static string Keepers => new PlayerOwnershipStatus("K");
+    }
+
+    public class PlayerSortType : StringEnum
+    {
+        private PlayerSortType(string value) : base(value) { }
+
+        public static string Season => new PlayerSortType("season");
+        public static string Week => new PlayerSortType("week");
+        public static string LastMonth => new PlayerSortType("lastmonth");
+    }
 }

@@ -19,100 +19,35 @@ namespace YahooFantasyWrapper.Client
 {
     public class YahooFantasyClient : IYahooFantasyClient
     {
-        public GameResourceManager GameResourceManager
+        private readonly HttpClient client;
+
+        public YahooFantasyClient(HttpClient client)
         {
-            get
-            {
-                return new GameResourceManager();
-            }
+            this.client = client;
         }
 
-        public GameCollectionsManager GameCollectionsManager
-        {
-            get
-            {
-                return new GameCollectionsManager();
-            }
-        }
+        public GameResourceManager GameResourceManager => new GameResourceManager(client);
 
-        public UserResourceManager UserResourceManager
-        {
-            get
-            {
-                return new UserResourceManager();
-            }
-        }
+        public GameCollectionsManager GameCollectionsManager => new GameCollectionsManager(client);
 
-        public LeagueResourceManager LeagueResourceManager
-        {
-            get
-            {
-                return new LeagueResourceManager();
-            }
-        }
+        public UserResourceManager UserResourceManager => new UserResourceManager(client);
 
-        public LeaguesCollectionManager LeaguesCollectionManager
-        {
-            get
-            {
-                return new LeaguesCollectionManager();
-            }
-        }
+        public LeagueResourceManager LeagueResourceManager => new LeagueResourceManager(client);
 
-        public PlayerResourceManager PlayerResourceManager
-        {
-            get
-            {
-                return new PlayerResourceManager();
-            }
-        }
+        public LeaguesCollectionManager LeaguesCollectionManager => new LeaguesCollectionManager(client);
 
-        public PlayersCollectionManager PlayersCollectionManager
-        {
-            get
-            {
-                return new PlayersCollectionManager();
-            }
-        }
+        public PlayerResourceManager PlayerResourceManager => new PlayerResourceManager(client);
 
-        public RosterResourceManager RosterResourceManager
-        {
-            get
-            {
-                return new RosterResourceManager();
-            }
-        }
+        public PlayersCollectionManager PlayersCollectionManager => new PlayersCollectionManager(client);
 
-        public TeamResourceManager TeamResourceManager
-        {
-            get
-            {
-                return new TeamResourceManager();
-            }
-        }
+        public RosterResourceManager RosterResourceManager => new RosterResourceManager(client);
 
-        public TeamsCollectionManager TeamsCollectionManager
-        {
-            get
-            {
-                return new TeamsCollectionManager();
-            }
-        }
+        public TeamResourceManager TeamResourceManager => new TeamResourceManager(client);
 
-        public TransactionResourceManager TransactionResourceManager
-        {
-            get
-            {
-                return new TransactionResourceManager();
-            }
-        }
+        public TeamsCollectionManager TeamsCollectionManager => new TeamsCollectionManager(client);
 
-        public TransactionsCollectionManager TransactionsCollectionManager
-        {
-            get
-            {
-                return new TransactionsCollectionManager();
-            }
-        }
+        public TransactionResourceManager TransactionResourceManager => new TransactionResourceManager(client);
+
+        public TransactionsCollectionManager TransactionsCollectionManager => new TransactionsCollectionManager(client);
     }
 }

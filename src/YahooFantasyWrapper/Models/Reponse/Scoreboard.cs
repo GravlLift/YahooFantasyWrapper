@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Xml.Serialization;
 
-namespace YahooFantasyWrapper.Models
+namespace YahooFantasyWrapper.Models.Response
 {
     [XmlRoot(ElementName = "stat_winner")]
     public class StatWinner

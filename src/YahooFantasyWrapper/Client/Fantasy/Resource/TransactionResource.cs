@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using System.Transactions;
+using YahooFantasyWrapper.Models;
+using YahooFantasyWrapper.Models.Response;
 
 namespace YahooFantasyWrapper.Client
 {
@@ -18,18 +20,22 @@ namespace YahooFantasyWrapper.Client
     /// Transactions collection by a particular type(waiver or pending_trade) and by a particular ````. 
     /// Pending transactions will not show up if you simply ask for all of the transactions in the league, because they can only be seen by certain teams.
     /// </summary>
-    public class TransactionResourceManager
+    public class TransactionResourceManager : Fantasy.Manager
     {
+        public TransactionResourceManager(HttpClient client) : base(client)
+        {
+        }
+
         /// <summary>
         /// Get Transaction Resource with Meta Subresource
         /// https://fantasysports.yahooapis.com/fantasy/v2/transaction/{transactionKey}/metadata
         /// </summary>
         /// <param name="transactionKey">Transaction Key to Query</param>
-        /// <param name="AccessToken">Access Token from Auth Api</param>
+        /// <param name="auth">Access Token from Auth Api</param>
         /// <returns>Transaction Resource</returns>
-        public async Task<Transaction> GetMeta(string transactionKey, string AccessToken)
+        public async Task<Transaction> GetMeta(string transactionKey, AuthModel auth)
         {
-            return await Utils.GetResource<Transaction>(ApiEndpoints.TransactionEndpoint(transactionKey, EndpointSubResources.MetaData), AccessToken, "transaction");
+            return await Utils.GetResource<Transaction>(client, ApiEndpoints.TransactionEndpoint(transactionKey, EndpointSubResources.MetaData), auth, "transaction");
         }
 
         /// <summary>
@@ -37,11 +43,11 @@ namespace YahooFantasyWrapper.Client
         /// https://fantasysports.yahooapis.com/fantasy/v2/transaction/{transactionKey}/players
         /// </summary>
         /// <param name="transactionKey">Transaction Key to Query</param>
-        /// <param name="AccessToken">Access Token from Auth Api</param>
+        /// <param name="auth">Access Token from Auth Api</param>
         /// <returns>Transaction Resource</returns>
-        public async Task<Transaction> GetPlayers(string transactionKey, string AccessToken)
+        public async Task<Transaction> GetPlayers(string transactionKey, AuthModel auth)
         {
-            return await Utils.GetResource<Transaction>(ApiEndpoints.TransactionEndpoint(transactionKey, EndpointSubResources.Players), AccessToken, "transaction");
+            return await Utils.GetResource<Transaction>(client, ApiEndpoints.TransactionEndpoint(transactionKey, EndpointSubResources.Players), auth, "transaction");
         }
     }
 }

@@ -7,34 +7,38 @@ using System.Net.Http.Headers;
 
 namespace YahooFantasyWrapper.Infrastructure
 {
-    internal static class RequestFactoryExtensions
+    internal static class RequestFactory
     {
-        public static HttpClient CreateClient(this IRequestFactory factory, EndPoint endpoint, AuthenticationHeaderValue auth)
+
+        internal static HttpRequestMessage CreateRequest(EndPoint endpoint)
         {
-            var client = factory.CreateClient(auth);
-            client.BaseAddress = new Uri(endpoint.BaseUri);
-            return client;
+            return CreateRequest(new Uri(endpoint.Uri), HttpMethod.Get);
         }
 
-        internal static HttpRequestMessage CreateRequest(this IRequestFactory factory, EndPoint endpoint)
+        internal static HttpRequestMessage CreateRequest(EndPoint endpoint, string tokenType, string token)
         {
-            return CreateRequest(factory, endpoint, HttpMethod.Get);
+            return CreateRequest(endpoint, HttpMethod.Get, tokenType, token);
         }
 
-        internal static HttpRequestMessage CreateRequest(this IRequestFactory factory, EndPoint endpoint, HttpMethod method)
+        internal static HttpRequestMessage CreateRequest(EndPoint endpoint, HttpMethod method)
         {
-            var request = factory.CreateRequest();
-            request.RequestUri = new Uri(endpoint.Uri);
-            request.Method = method;
+            return CreateRequest(new Uri(endpoint.Uri), method);
+        }
+
+        internal static HttpRequestMessage CreateRequest(EndPoint endpoint, HttpMethod method, string tokenType, string token)
+        {
+            var request = CreateRequest(new Uri(endpoint.Uri), method);
+            request.Headers.Authorization = new AuthenticationHeaderValue(tokenType, token);
             return request;
         }
 
-        internal static HttpRequestMessage CreateRequest(this IRequestFactory factory, Uri uri, HttpMethod method)
+        internal static HttpRequestMessage CreateRequest(Uri uri, HttpMethod method)
         {
-            var request = factory.CreateRequest();
-            request.RequestUri = uri;
-            request.Method = method;
-            return request;
+            return new HttpRequestMessage
+            {
+                RequestUri = uri,
+                Method = method
+            };
         }
     }
 }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace YahooFantasyWrapper.Models
+namespace YahooFantasyWrapper.Models.Response
 {
     public enum GameType
     {

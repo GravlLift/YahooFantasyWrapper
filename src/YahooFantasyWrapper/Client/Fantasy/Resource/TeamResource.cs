@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using System.Xml.Serialization;
 using YahooFantasyWrapper.Infrastructure;
 using YahooFantasyWrapper.Models;
+using YahooFantasyWrapper.Models.Response;
 
 namespace YahooFantasyWrapper.Client
 {
@@ -18,18 +20,22 @@ namespace YahooFantasyWrapper.Client
     /// although you can request a Team Resource as the base of your URI by using the global ````. 
     /// A particular user can only retrieve data about a team if that team is part of a private league of which the user is a member, or if it’s in a public league.
     /// </summary>
-    public class TeamResourceManager
+    public class TeamResourceManager : Fantasy.Manager
     {
+        public TeamResourceManager(HttpClient client) : base(client)
+        {
+        }
+
         /// <summary>
         /// Get Team Resource with Meta Subresource
         /// https://fantasysports.yahooapis.com/fantasy/v2/team/{teamKey}/metadata
         /// </summary>
         /// <param name="teamKey">Team Key to Query</param>
-        /// <param name="AccessToken">Access Token from Auth Api</param>
+        /// <param name="auth">Access Token from Auth Api</param>
         /// <returns>Team Resource</returns>
-        public async Task<Team> GetMeta(string teamKey, string AccessToken)
+        public async Task<Team> GetMeta(string teamKey, AuthModel auth)
         {
-            return await Utils.GetResource<Team>(ApiEndpoints.TeamEndPoint(teamKey, EndpointSubResources.MetaData), AccessToken, "game");
+            return await Utils.GetResource<Team>(client, ApiEndpoints.TeamEndPoint(teamKey, EndpointSubResources.MetaData), auth, "game");
         }
 
         /// <summary>
@@ -37,11 +43,11 @@ namespace YahooFantasyWrapper.Client
         /// https://fantasysports.yahooapis.com/fantasy/v2/team/{teamKey}/stats
         /// </summary>
         /// <param name="teamKey">Team Key to Query</param>
-        /// <param name="AccessToken">Access Token from Auth Api</param>
+        /// <param name="auth">Access Token from Auth Api</param>
         /// <returns>Team Resource</returns>
-        public async Task<Team> GetStats(string teamKey, string AccessToken)
+        public async Task<Team> GetStats(string teamKey, AuthModel auth)
         {
-           return await Utils.GetResource<Team>(ApiEndpoints.TeamEndPoint(teamKey, EndpointSubResources.Stats), AccessToken, "game");
+            return await Utils.GetResource<Team>(client, ApiEndpoints.TeamEndPoint(teamKey, EndpointSubResources.Stats), auth, "game");
         }
 
         /// <summary>
@@ -49,11 +55,11 @@ namespace YahooFantasyWrapper.Client
         /// https://fantasysports.yahooapis.com/fantasy/v2/team/{teamKey}/standings
         /// </summary>
         /// <param name="teamKey">Team Key to Query</param>
-        /// <param name="AccessToken">Access Token from Auth Api</param>
+        /// <param name="auth">Access Token from Auth Api</param>
         /// <returns>Team Resource</returns>
-        public async Task<Team> GetStandings(string teamKey, string AccessToken)
+        public async Task<Team> GetStandings(string teamKey, AuthModel auth)
         {
-            return await Utils.GetResource<Team>(ApiEndpoints.TeamEndPoint(teamKey, EndpointSubResources.Standings), AccessToken, "game");
+            return await Utils.GetResource<Team>(client, ApiEndpoints.TeamEndPoint(teamKey, EndpointSubResources.Standings), auth, "game");
         }
 
         /// <summary>
@@ -61,11 +67,11 @@ namespace YahooFantasyWrapper.Client
         /// https://fantasysports.yahooapis.com/fantasy/v2/team/{teamKey}/roster
         /// </summary>
         /// <param name="teamKey">Team Key to Query</param>
-        /// <param name="AccessToken">Access Token from Auth Api</param>
+        /// <param name="auth">Access Token from Auth Api</param>
         /// <returns>Team Resource</returns>
-        public async Task<Team> GetRoster(string teamKey, string AccessToken)
+        public async Task<Team> GetRoster(string teamKey, AuthModel auth)
         {
-            return await Utils.GetResource<Team>(ApiEndpoints.TeamEndPoint(teamKey, EndpointSubResources.Roster), AccessToken, "game");
+            return await Utils.GetResource<Team>(client, ApiEndpoints.TeamEndPoint(teamKey, EndpointSubResources.Roster), auth, "game");
         }
 
         /// <summary>
@@ -73,22 +79,22 @@ namespace YahooFantasyWrapper.Client
         /// https://fantasysports.yahooapis.com/fantasy/v2/team/{teamKey}/draft_results
         /// </summary>
         /// <param name="teamKey">Team Key to Query</param>
-        /// <param name="AccessToken">Access Token from Auth Api</param>
+        /// <param name="auth">Access Token from Auth Api</param>
         /// <returns>Team Resource</returns>
-        public async Task<Team> GetDraftResults(string teamKey, string AccessToken)
+        public async Task<Team> GetDraftResults(string teamKey, AuthModel auth)
         {
-            return await Utils.GetResource<Team>(ApiEndpoints.TeamEndPoint(teamKey, EndpointSubResources.DraftResults), AccessToken, "game");
+            return await Utils.GetResource<Team>(client, ApiEndpoints.TeamEndPoint(teamKey, EndpointSubResources.DraftResults), auth, "game");
         }
         /// <summary>
         /// Get Team Resource with Matchups Subresource
         /// https://fantasysports.yahooapis.com/fantasy/v2/team/{teamKey}/matchups
         /// </summary>
         /// <param name="teamKey">Team Key to Query</param>
-        /// <param name="AccessToken">Access Token from Auth Api</param>
+        /// <param name="auth">Access Token from Auth Api</param>
         /// <returns>Team Resource</returns>
-        public async Task<Team> GetMatchups(string teamKey, string AccessToken)
+        public async Task<Team> GetMatchups(string teamKey, AuthModel auth)
         {
-            return await Utils.GetResource<Team>(ApiEndpoints.TeamEndPoint(teamKey, EndpointSubResources.Matchups), AccessToken, "game");
+            return await Utils.GetResource<Team>(client, ApiEndpoints.TeamEndPoint(teamKey, EndpointSubResources.Matchups), auth, "game");
         }
     }
 }

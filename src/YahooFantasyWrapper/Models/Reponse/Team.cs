@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Xml.Serialization;
 
-namespace YahooFantasyWrapper.Models
+namespace YahooFantasyWrapper.Models.Response
 {
     [XmlRoot(ElementName = "team_logo")]
     public class TeamLogo

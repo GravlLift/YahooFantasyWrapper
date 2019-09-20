@@ -1,6 +1,6 @@
 ﻿using System.Xml.Serialization;
 
-namespace YahooFantasyWrapper.Models
+namespace YahooFantasyWrapper.Models.Response
 {
 
 

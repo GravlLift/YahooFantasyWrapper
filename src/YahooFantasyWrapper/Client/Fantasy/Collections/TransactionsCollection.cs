@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using System.Xml.Serialization;
 using YahooFantasyWrapper.Infrastructure;
 using YahooFantasyWrapper.Models;
+using YahooFantasyWrapper.Models.Request;
 
 namespace YahooFantasyWrapper.Client
 {
@@ -16,19 +18,23 @@ namespace YahooFantasyWrapper.Client
     /// The transactions collection is qualified in the URI by a particular league.
     /// Each element beneath the Transactions Collection will be a Transaction Resource
     /// </summary>
-    public class TransactionsCollectionManager
+    public class TransactionsCollectionManager : Fantasy.Manager
     {
+        public TransactionsCollectionManager(HttpClient client) : base(client)
+        {
+        }
+
         /// <summary>
         /// Gets Transactions Collection based on supplied Keys
         /// Attaches Requested SubResources
         /// </summary>
         /// <param name="transactionKeys">Transaction Keys to return Resources for </param>
         /// <param name="subresources">SubResources to include with Transaction Resource</param>
-        /// <param name="AccessToken">Token for request</param>
+        /// <param name="auth">Token for request</param>
         /// <returns>Transaction Collection (List of Transaction Resources)</returns>
-        public async Task<List<Transaction>> GetTransactions(string[] transactionKeys, EndpointSubResourcesCollection subresources, string AccessToken)
+        public async Task<List<Models.Response.Transaction>> GetTransactions(string[] transactionKeys, EndpointSubResourcesCollection subresources, AuthModel auth)
         {
-            return await Utils.GetCollection<Transaction>(ApiEndpoints.TransactionsEndPoint(transactionKeys, subresources), AccessToken, "transaction");
+            return await Utils.GetCollection<Models.Response.Transaction>(client, ApiEndpoints.TransactionsEndPoint(transactionKeys, subresources), auth, "transaction");
         }
 
         /// <summary>
@@ -37,11 +43,11 @@ namespace YahooFantasyWrapper.Client
         /// </summary>
         /// <param name="leagueKeys">League Keys to return Resources for </param>
         /// <param name="subresources">SubResources to include with Transaction Resource</param>
-        /// <param name="AccessToken">Token for request</param>
+        /// <param name="auth">Token for request</param>
         /// <returns>Transaction Collection (List of Transaction Resources)</returns>
-        public async Task<List<Transaction>> GetTransactionsLeagues(string[] leagueKeys, EndpointSubResourcesCollection subresources, string AccessToken)
+        public async Task<List<Models.Response.Transaction>> GetTransactionsLeagues(string leagueKey, EndpointSubResourcesCollection subresources, AuthModel auth)
         {
-            return await Utils.GetCollection<Transaction>(ApiEndpoints.TransactionsLeagueEndPoint(leagueKeys, subresources), AccessToken, "transaction");
+            return await Utils.GetCollection<Models.Response.Transaction>(client, ApiEndpoints.TransactionsLeagueEndPoint(leagueKey, subresources), auth, "transaction");
         }
         /// <summary>
         /// Adds Player
@@ -49,9 +55,9 @@ namespace YahooFantasyWrapper.Client
         /// </summary>
         /// <param name="gameKeys"></param>
         /// <param name="subresources"></param>
-        /// <param name="AccessToken"></param>
+        /// <param name="auth"></param>
         /// <returns></returns>
-        public async Task<List<Transaction>> AddPlayer(string[] gameKeys, EndpointSubResourcesCollection subresources, string AccessToken)
+        public async Task AddPlayer(string[] gameKeys, EndpointSubResourcesCollection subresources, AuthModel auth)
         {
             throw new NotImplementedException();
         }
@@ -59,25 +65,21 @@ namespace YahooFantasyWrapper.Client
         /// Drops Player
         /// TODO
         /// </summary>
-        /// <param name="AccessToken"></param>
+        /// <param name="auth"></param>
         /// <param name="gameKeys"></param>
         /// <param name="subresources"></param>
         /// <returns></returns>
-        public async Task<List<Transaction>> DropPlayer(string AccessToken, string[] gameKeys = null, EndpointSubResourcesCollection subresources = null)
+        public async Task DropPlayer(AuthModel auth, string[] gameKeys = null, EndpointSubResourcesCollection subresources = null)
         {
             throw new NotImplementedException();
         }
         /// <summary>
         /// Add/Drops Players
-        /// TODO
         /// </summary>
-        /// <param name="AccessToken"></param>
-        /// <param name="gameKeys"></param>
-        /// <param name="subresources"></param>
         /// <returns></returns>
-        public async Task<List<Transaction>> AddDropPlayer(string AccessToken, string[] gameKeys = null, EndpointSubResourcesCollection subresources = null)
+        public async Task AddDropPlayerAsync(AuthModel auth, string leagueKey, MultiPlayerTransaction transaction)
         {
-            throw new NotImplementedException();
+            await Utils.PostCollection(client, ApiEndpoints.TransactionsLeagueEndPoint(leagueKey), auth, transaction);
         }
     }
 }

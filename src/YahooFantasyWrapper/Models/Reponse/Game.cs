@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Xml.Serialization;
 
-namespace YahooFantasyWrapper.Models
+namespace YahooFantasyWrapper.Models.Response
 {
     [XmlRoot(ElementName = "game_week", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
     public class GameWeek
@@ -70,11 +70,11 @@ namespace YahooFantasyWrapper.Models
         [XmlElement(ElementName = "season", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
         public string Season { get; set; }
         [XmlElement(ElementName = "is_registration_over", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
-        public string IsRegistrationOver { get; set; }
+        public bool IsRegistrationOver { get; set; }
         [XmlElement(ElementName = "is_game_over", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
-        public string IsGameOver { get; set; }
+        public bool IsGameOver { get; set; }
         [XmlElement(ElementName = "is_offseason", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
-        public string IsOffseason { get; set; }
+        public bool IsOffseason { get; set; }
         [XmlElement(ElementName = "game_weeks", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
         public GameWeekList GameWeeks { get; set; }
         [XmlElement(ElementName = "leagues", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
@@ -118,36 +118,23 @@ namespace YahooFantasyWrapper.Models
         public string Count { get; set; }
     }
 
-    [XmlRoot(ElementName = "fantasy_content", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
-    public class FantasyContent
-    {
-        [XmlElement(ElementName = "users", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
-        public UserList Users { get; set; }
-        [XmlAttribute(AttributeName = "lang", Namespace = "http://www.w3.org/XML/1998/namespace")]
-        public string Lang { get; set; }
-        [XmlAttribute(AttributeName = "uri", Namespace = "http://www.yahooapis.com/v1/base.rng")]
-        public string Uri { get; set; }
-        [XmlAttribute(AttributeName = "time")]
-        public string Time { get; set; }
-        [XmlAttribute(AttributeName = "copyright")]
-        public string Copyright { get; set; }
-        [XmlAttribute(AttributeName = "refresh_rate")]
-        public string RefreshRate { get; set; }
-        [XmlAttribute(AttributeName = "yahoo", Namespace = "http://www.w3.org/2000/xmlns/")]
-        public string Yahoo { get; set; }
-        [XmlAttribute(AttributeName = "xmlns")]
-        public string Xmlns { get; set; }
-    }
-
     public enum GameCode
     {
+        [XmlEnum(Name = "nfl")]
         nfl = 0,
+        [XmlEnum(Name = "pnfl")]
         pnfl = 1,
+        [XmlEnum(Name = "mlb")]
         mlb = 2,
+        [XmlEnum(Name = "pmlb")]
         pmlb = 3,
+        [XmlEnum(Name = "nba")]
         nba = 4,
+        [XmlEnum(Name = "nhl")]
         nhl = 5,
+        [XmlEnum(Name = "yahoops")]
         yahoops = 6,
+        [XmlEnum(Name = "nflp")]
         nflp = 7
     }
 }

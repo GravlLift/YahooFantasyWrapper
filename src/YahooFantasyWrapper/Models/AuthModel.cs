@@ -7,8 +7,11 @@ namespace YahooFantasyWrapper.Models
     /// <summary>
     /// Class to Store Authentication Data for Yahoo
     /// </summary>
-   public class AuthModel
+    public class AuthModel
     {
+        /// <summary>
+        /// Access token returned by provider. Can be used for further calls of provider API.
+        /// </summary>
         public string AccessToken { get; set; }
 
         /// <summary>
@@ -24,6 +27,11 @@ namespace YahooFantasyWrapper.Models
         /// <summary>
         /// Seconds till the token expires returned by provider. Can be used for further calls of provider API.
         /// </summary>
-        public DateTime ExpiresAt { get; set; }
+        public DateTimeOffset? ExpiresAt { get; set; }
+
+        /// <summary>
+        /// Determines if a token is present and not expired
+        /// </summary>
+        public bool IsValid { get => ExpiresAt != null && DateTimeOffset.UtcNow < ExpiresAt && !string.IsNullOrEmpty(AccessToken); }
     }
 }

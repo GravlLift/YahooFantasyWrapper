@@ -1,9 +1,8 @@
 ﻿using System.Linq;
-using YahooFantasyWrapper.Models;
-//using System.Net;
 using System;
-using System.Collections.Generic;
 using System.Text;
+using YahooFantasyWrapper.Infrastructure;
+using YahooFantasyWrapper.Models.Response;
 
 namespace YahooFantasyWrapper.Client
 {
@@ -330,10 +329,10 @@ namespace YahooFantasyWrapper.Client
             };
         }
 
-        internal static EndPoint TransactionsEndPoint(string[] transactionKeys, EndpointSubResourcesCollection subresources = null)
+        internal static EndPoint TransactionsEndPoint(string[] transactionKeys = null, EndpointSubResourcesCollection subresources = null)
         {
             string transactions = "";
-            if (transactionKeys.Length > 0)
+            if (transactionKeys != null && transactionKeys.Length > 0)
             {
                 transactions = $";transaction_keys={ string.Join(",", transactionKeys)}";
             }
@@ -345,18 +344,12 @@ namespace YahooFantasyWrapper.Client
             };
         }
 
-        internal static EndPoint TransactionsLeagueEndPoint(string[] leagueKeys, EndpointSubResourcesCollection subresources = null)
+        internal static EndPoint TransactionsLeagueEndPoint(string leagueKey, EndpointSubResourcesCollection subresources = null)
         {
-            string leagues = "";
-            if (leagueKeys.Length > 0)
-            {
-                leagues = $";league_keys={ string.Join(",", leagueKeys)}";
-            }
-
             return new EndPoint
             {
                 BaseUri = BaseApiUrl,
-                Resource = $"/leagues{leagues}{BuildSubResourcesList(subresources)}"
+                Resource = $"/league/{leagueKey}/transactions{BuildSubResourcesList(subresources)}"
             };
         }
 
@@ -375,37 +368,88 @@ namespace YahooFantasyWrapper.Client
 
         private static string BuildGameFiltersList(GameCollectionFilters filters)
         {
-            string available = "";
+            if (filters == null)
+                return string.Empty;
+
+            StringBuilder sb = new StringBuilder();
             if (filters.IsAvailable != null)
             {
-                available = $";is_available={(Convert.ToInt32(filters.IsAvailable.Value))}";
+                sb.Append($";is_available={Convert.ToInt32(filters.IsAvailable.Value)}");
             }
 
-            string years = "";
             if (filters.Seasons != null && filters.Seasons.Length > 0)
             {
-                years = $";seasons={string.Join(",", filters.Seasons)}";
+                sb.Append($";seasons={string.Join(",", filters.Seasons)}");
             }
 
-            string gameCodeString = "";
             if (filters.GameCodes != null && filters.GameCodes.Length > 0)
             {
-                gameCodeString = $";game_codes={string.Join(",", filters.GameCodes.Select(a => Enum.GetName(typeof(GameCode), a)))}";
+                sb.Append($";game_codes={string.Join(",", filters.GameCodes.Select(a => Enum<GameCode>.GetName(a)))}");
             }
 
-            string gType = "";
             if (filters.GameTypes != null && filters.GameTypes.Length > 0)
             {
-                gType = $";game_types={ string.Join(",", filters.GameTypes.Select(a => a.ToFriendlyString()))}";
+                sb.Append($";game_types={ string.Join(",", filters.GameTypes.Select(a => a.ToFriendlyString()))}");
 
             }
-            return $"{available}{years}{gameCodeString}{gType}";
+            return sb.ToString();
         }
 
         private static string BuildPlayersFiltersList(PlayerCollectionFilters filters)
         {
+            if (filters == null)
+                return string.Empty;
 
-            return $"";
+
+
+            StringBuilder sb = new StringBuilder();
+
+            if (filters.Positions != null && filters.Positions.Length > 0)
+            {
+                sb.Append($";position={string.Join(",", filters.Positions)}");
+            }
+
+            if (filters.Statuses != null && filters.Statuses.Length > 0)
+            {
+                sb.Append($";status={string.Join(",", filters.Statuses.Select(s => s.ToString()))}");
+            }
+
+            if (filters.Search != null && filters.Search.Length > 0)
+            {
+                sb.Append($";search={ filters.Search}");
+            }
+
+            if (filters.Sort != null && filters.Sort.Length > 0)
+            {
+                sb.Append($";sort={ filters.Sort}");
+            }
+
+            if (filters.SortType != null)
+            {
+                sb.Append($";sort_type={ filters.SortType}");
+            }
+
+            if (filters.SortSeason != null)
+            {
+                sb.Append($";sort_season={ filters.SortSeason}");
+            }
+
+            if (filters.SortWeek != null)
+            {
+                sb.Append($";sort_week={ filters.SortWeek}");
+            }
+
+            if (filters.StartIndex != null)
+            {
+                sb.Append($";start={ filters.StartIndex}");
+            }
+
+            if (filters.Count != null)
+            {
+                sb.Append($";count={ filters.Count}");
+            }
+
+            return sb.ToString();
         }
 
         private static string BuildWeekList(int?[] weeks)

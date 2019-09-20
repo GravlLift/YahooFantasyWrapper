@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using YahooFantasyWrapper.Models;
+using YahooFantasyWrapper.Models.Response;
 
 namespace YahooFantasyWrapper.Client
 {
@@ -22,14 +22,13 @@ namespace YahooFantasyWrapper.Client
     public class PlayerCollectionFilters
     {
         public string[] Positions { get; set; }
-        public string[] Statuses { get; set; }
+        public PlayerOwnershipStatus[] Statuses { get; set; }
         public string Search { get; set; }
         public string Sort { get; set; }
-        public string SortType { get; set; }
-        public string SortSeason { get; set; }
-        public string SortWeek { get; set; }
-        public DateTime? StartDate { get; set; }
-        public string StartIndex { get; set; }
-        public string Count { get; set; }
+        public PlayerSortType SortType { get; set; }
+        public int? SortSeason { get; set; }
+        public int? SortWeek { get; set; }
+        public int? StartIndex { get; set; }
+        public int? Count { get; set; }
     }
 }

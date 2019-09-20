@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
+using System.Net.Http;
 using System.Threading.Tasks;
 using YahooFantasyWrapper.Models;
+using YahooFantasyWrapper.Models.Response;
 
 namespace YahooFantasyWrapper.Client
 {
@@ -11,19 +13,23 @@ namespace YahooFantasyWrapper.Client
     /// or by a particular user (and optionally, a game) to obtain information about the teams owned by the user.
     /// Each element beneath the Teams Collection will be a Team Resource
     /// </summary>
-    public class TeamsCollectionManager
+    public class TeamsCollectionManager : Fantasy.Manager
     {
+        public TeamsCollectionManager(HttpClient client) : base(client)
+        {
+        }
+
         /// <summary>
         /// Gets Teams Collection based on supplied Keys
         /// Attaches Requested SubResources
         /// </summary>
         /// <param name="teamKeys">Teams Keys to return Resources for </param>
         /// <param name="subresources">SubResources to include with Team Resource</param>
-        /// <param name="AccessToken">Token for request</param>
+        /// <param name="auth">Token for request</param>
         /// <returns>Team Collection (List of Team Resources)</returns>
-        public async Task<List<Team>> GetTeams(string[] teamKeys, EndpointSubResourcesCollection subresources, string AccessToken)
+        public async Task<List<Team>> GetTeams(string[] teamKeys, EndpointSubResourcesCollection subresources, AuthModel auth)
         {
-            return await Utils.GetCollection<Team>(ApiEndpoints.TeamsEndPoint(teamKeys, subresources), AccessToken, "team");
+            return await Utils.GetCollection<Team>(client, ApiEndpoints.TeamsEndPoint(teamKeys, subresources), auth, "team");
         }
 
         /// <summary>
@@ -32,11 +38,11 @@ namespace YahooFantasyWrapper.Client
         /// </summary>
         /// <param name="leagueKeys">League Keys to return Resources for </param>
         /// <param name="subresources">SubResources to include with Team Resource</param>
-        /// <param name="AccessToken">Token for request</param>
+        /// <param name="auth">Token for request</param>
         /// <returns>Team Collection (List of Team Resources)</returns>
-        public async Task<List<League>> GetLeagueTeams(string AccessToken, string[] leagueKeys = null, EndpointSubResourcesCollection subresources = null)
+        public async Task<List<League>> GetLeagueTeams(AuthModel auth, string[] leagueKeys = null, EndpointSubResourcesCollection subresources = null)
         {
-            return await Utils.GetCollection<League>(ApiEndpoints.TeamsLeagueEndPoint(leagueKeys, subresources), AccessToken, "league");
+            return await Utils.GetCollection<League>(client, ApiEndpoints.TeamsLeagueEndPoint(leagueKeys, subresources), auth, "league");
         }
 
         /// <summary>
@@ -45,11 +51,11 @@ namespace YahooFantasyWrapper.Client
         /// </summary>
         /// <param name="gameKeys">Game Keys to return Resources for </param>
         /// <param name="subresources">SubResources to include with Team Resource</param>
-        /// <param name="AccessToken">Token for request</param>
+        /// <param name="auth">Token for request</param>
         /// <returns>Team Collection (List of Team Resources)</returns>
-        public async Task<List<Game>> GetUserGamesTeams(string AccessToken, string[] gameKeys = null, EndpointSubResourcesCollection subresources = null)
+        public async Task<List<Game>> GetUserGamesTeams(AuthModel auth, string[] gameKeys = null, EndpointSubResourcesCollection subresources = null)
         {
-            return await Utils.GetCollection<Game>(ApiEndpoints.TeamsUserGamesEndPoint(gameKeys, subresources), AccessToken, "game");
+            return await Utils.GetCollection<Game>(client, ApiEndpoints.TeamsUserGamesEndPoint(gameKeys, subresources), auth, "game");
         }
     }
 }

@@ -25,7 +25,7 @@ namespace YahooFantasyWrapper.Client
         /// <summary>
         /// The acess token service endpoint
         /// </summary>
-        internal static EndPoint AccessTokenServiceEndpoint
+        internal static EndPoint authServiceEndpoint
         {
             get
             {

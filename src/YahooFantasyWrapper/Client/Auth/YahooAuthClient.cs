@@ -8,7 +8,6 @@ using YahooFantasyWrapper.Infrastructure;
 using System.Net.Http;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
-using System.Net.Http.Headers;
 using Microsoft.Extensions.Options;
 using System.Collections.Specialized;
 using System.Text;
@@ -25,48 +24,34 @@ namespace YahooFantasyWrapper.Client
         private const string RefreshTokenKey = "refresh_token";
         private const string ExpiresKey = "expires_in";
         private const string TokenTypeKey = "token_type";
-        private readonly IRequestFactory _factory;
-
-        private string _userProfileGUID;
+        private readonly HttpClient client;
+        private readonly IPersistAuthorizationService persistAuthorizationService;
+        private AuthModel auth;
 
         /// <summary>
         /// Guid to represent user from Yahoo Api
         /// </summary>
-        public string UserProfileGUID
-        {
-            get
-            {
-                return _userProfileGUID;
-            }
-            private set
-            {
-                _userProfileGUID = value;
-            }
-        }
-        /// <summary>
-        /// Authentication Model that stores auth data (Tokens, Grant Type)
-        /// </summary>
-        public AuthModel Auth { get; set; }
-
-        private string GrantType { get; set; }
+        public string UserProfileGUID { get; set; }
 
         /// <summary>
         /// Client configuration object.
         /// </summary>
-        public IOptions<YahooConfiguration> Configuration { get; private set; }
-
-        public UserInfo UserInfo { get; set; }
+        private readonly IOptions<YahooConfiguration> configuration;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="YahooAuthClient"/> class.
         /// </summary>
-        /// <param name="factory">The factory.</param>
+        /// <param name="client">Http client</param>
         /// <param name="configuration">The configuration.</param>
-        public YahooAuthClient(IRequestFactory factory, IOptions<YahooConfiguration> configuration)
+        /// <param name="persistAuthorizationService"></param>
+        public YahooAuthClient(
+            HttpClient client,
+            IOptions<YahooConfiguration> configuration,
+            IPersistAuthorizationService persistAuthorizationService)
         {
-            _factory = factory;
-            Configuration = configuration;
-            Auth = new AuthModel();
+            this.client = client;
+            this.configuration = configuration;
+            this.persistAuthorizationService = persistAuthorizationService;
         }
 
 
@@ -75,10 +60,10 @@ namespace YahooFantasyWrapper.Client
         /// https://developer.yahoo.com/oauth2/guide/flows_authcode/
         /// </summary>
         /// <param name="args"></param>
-        protected void AfterGetAccessToken(BeforeAfterRequestArgs args)
+        protected void AfterGetauth(BeforeAfterRequestArgs args)
         {
             var responseJObject = JObject.Parse(args.Response);
-            this.UserProfileGUID = responseJObject.SelectToken("xoauth_yahoo_guid")?.ToString();
+            UserProfileGUID = responseJObject.SelectToken("xoauth_yahoo_guid")?.ToString();
         }
 
         /// <summary>
@@ -87,9 +72,8 @@ namespace YahooFantasyWrapper.Client
         /// <param name="parameters">Callback request payload (parameters).</param>
         public async Task<UserInfo> GetUserInfo(NameValueCollection parameters)
         {
-            GrantType = "authorization_code";
             CheckErrorAndSetState(parameters);
-            await QueryAccessToken(parameters);
+            await QueryAuth("authorization_code", parameters);
             return await GetUserInfo();
         }
         /// <summary>
@@ -105,14 +89,15 @@ namespace YahooFantasyWrapper.Client
                 BaseUri = AuthApiEndPoints.UserInfoServiceEndpoint.BaseUri,
                 Resource = url
             };
-            var client = _factory.CreateClient(tempEndPoint, new AuthenticationHeaderValue("Bearer", Auth.AccessToken));
-            var request = _factory.CreateRequest(tempEndPoint);
 
-            var response = await client.GetAsync(request.RequestUri);
+            using (var request = RequestFactory.CreateRequest(tempEndPoint, auth.TokenType, auth.AccessToken))
+            {
+                var response = await client.GetAsync(request.RequestUri);
 
-            var result = await response.Content.ReadAsStringAsync();
-            var userInfo = JsonConvert.DeserializeObject<UserInfo>(result);
-            return userInfo;
+                var result = await response.Content.ReadAsStringAsync();
+                var userInfo = JsonConvert.DeserializeObject<UserInfo>(result);
+                return userInfo;
+            }
         }
 
         private void CheckErrorAndSetState(NameValueCollection parameters)
@@ -128,48 +113,61 @@ namespace YahooFantasyWrapper.Client
         /// <summary>
         /// Issues query for access token and parses response.
         /// </summary>
+        /// <param name="grantType">'refresh_token' or 'authorization_code'</param>
         /// <param name="parameters">Callback request payload (parameters).</param>
-        private async Task QueryAccessToken(NameValueCollection parameters)
+        private async Task QueryAuth(string grantType, NameValueCollection parameters)
         {
-            var client = _factory.CreateClient(AuthApiEndPoints.AccessTokenServiceEndpoint, null);
-            var request = _factory.CreateRequest(AuthApiEndPoints.AccessTokenServiceEndpoint, HttpMethod.Post);
-
-            var body = new List<KeyValuePair<string, string>>()
+            using (var request = RequestFactory.CreateRequest(
+                AuthApiEndPoints.authServiceEndpoint,
+                HttpMethod.Post))
             {
-                new KeyValuePair<string, string>("client_id", Configuration.Value.ClientId),
-                new KeyValuePair<string, string>("client_secret", Configuration.Value.ClientSecret),
-                new KeyValuePair<string, string>("grant_type", GrantType)
-            };
 
-            if (GrantType == "refresh_token")
-            {
-                body.Add(new KeyValuePair<string, string>("refresh_token", parameters.GetOrThrowUnexpectedResponse("refresh_token")));
+                var body = new Dictionary<string, string>
+                {
+                    {"client_id", configuration.Value.ClientId },
+                    {"client_secret", configuration.Value.ClientSecret },
+                    {"grant_type", grantType }
+                };
+
+                if (grantType == "refresh_token")
+                {
+                    body.Add("refresh_token", parameters.GetOrThrowUnexpectedResponse("refresh_token"));
+                }
+                else
+                {
+                    body.Add("code", parameters.GetOrThrowUnexpectedResponse("code"));
+                    body.Add("redirect_uri", configuration.Value.RedirectUri);
+                }
+
+                request.Content = new FormUrlEncodedContent(body);
+                var response = await client.SendAsync(request);
+
+                AfterGetauth(new BeforeAfterRequestArgs
+                {
+                    Response = await response.Content.ReadAsStringAsync(),
+                    Parameters = parameters
+                });
+
+                auth = auth ?? new AuthModel();
+
+                auth.AccessToken = ParseTokenResponse(await response.Content.ReadAsStringAsync(), AccessTokenKey);
+                if (string.IsNullOrEmpty(auth.AccessToken))
+                    throw new UnexpectedResponseException(AccessTokenKey);
+
+                auth.TokenType = ParseTokenResponse(await response.Content.ReadAsStringAsync(), TokenTypeKey);
+
+                if (int.TryParse(ParseTokenResponse(await response.Content.ReadAsStringAsync(), ExpiresKey), out int expiresIn)
+                    && DateTimeOffset.TryParse(response.Headers.GetValues("Date").FirstOrDefault(), out DateTimeOffset responseTimeStamp))
+                    auth.ExpiresAt = responseTimeStamp.AddSeconds(expiresIn);
+
+                if (grantType != "refresh_token")
+                {
+                    auth.RefreshToken = ParseTokenResponse(await response.Content.ReadAsStringAsync(), RefreshTokenKey);
+                }
+
+                if (persistAuthorizationService != null)
+                    await persistAuthorizationService.UpdateAuthModelAsync(auth);
             }
-            else
-            {
-                body.Add(new KeyValuePair<string, string>("code", parameters.GetOrThrowUnexpectedResponse("code")));
-                body.Add(new KeyValuePair<string, string>("redirect_uri", Configuration.Value.RedirectUri));
-            }
-
-            var response = client.PostAsync(request.RequestUri, new FormUrlEncodedContent(body)).Result;
-
-            AfterGetAccessToken(new BeforeAfterRequestArgs
-            {
-                Response = await response.Content.ReadAsStringAsync(),
-                Parameters = parameters
-            });
-
-            Auth.AccessToken = ParseTokenResponse(await response.Content.ReadAsStringAsync(), AccessTokenKey);
-            if (String.IsNullOrEmpty(Auth.AccessToken))
-                throw new UnexpectedResponseException(AccessTokenKey);
-
-            if (GrantType != "refresh_token")
-                Auth.RefreshToken = ParseTokenResponse(await response.Content.ReadAsStringAsync(), RefreshTokenKey);
-
-            Auth.TokenType = ParseTokenResponse(await response.Content.ReadAsStringAsync(), TokenTypeKey);
-
-            if (Int32.TryParse(ParseTokenResponse(await response.Content.ReadAsStringAsync(), ExpiresKey), out int expiresIn))
-                Auth.ExpiresAt = DateTime.Now.AddSeconds(expiresIn);
         }
 
         /// <summary>
@@ -180,7 +178,7 @@ namespace YahooFantasyWrapper.Client
         /// <returns></returns>
         private string ParseTokenResponse(string response, string key)
         {
-            if (String.IsNullOrEmpty(response) || String.IsNullOrEmpty(key))
+            if (string.IsNullOrEmpty(response) || string.IsNullOrEmpty(key))
                 return null;
 
             try
@@ -202,28 +200,38 @@ namespace YahooFantasyWrapper.Client
         /// <param name="refreshToken">refresh token used for generation of new access token </param>
         /// <param name="forceUpdate">flag to force generation of new access token</param>
         /// <returns>Access Token</returns>
-        public async Task<string> GetCurrentToken(string refreshToken = null, bool forceUpdate = false)
+        public async Task<AuthModel> GetCurrentToken(string refreshToken = null, bool forceUpdate = false)
         {
-            if (!forceUpdate && Auth.ExpiresAt != default(DateTime) && DateTime.Now < Auth.ExpiresAt && !String.IsNullOrEmpty(Auth.AccessToken))
+            if (auth != null && !forceUpdate && auth.IsValid)
             {
-                return Auth.AccessToken;
+                return auth;
             }
             else
             {
+                // Refresh from service, maybe another client has updated this key
+                if (persistAuthorizationService != null)
+                {
+                    var newAuth = await persistAuthorizationService.GetAuthModelAsync();
+                    auth = newAuth;
+                    if (auth != null && newAuth.IsValid)
+                    {
+                        return auth;
+                    }
+                }
+
                 NameValueCollection parameters = new NameValueCollection();
-                if (!String.IsNullOrEmpty(refreshToken))
+                if (!string.IsNullOrEmpty(refreshToken))
                 {
                     parameters.Add("refresh_token", refreshToken);
                 }
-                else if (!String.IsNullOrEmpty(Auth.RefreshToken))
+                else if (!string.IsNullOrEmpty(auth?.RefreshToken))
                 {
-                    parameters.Add("refresh_token", Auth.RefreshToken);
+                    parameters.Add("refresh_token", auth.RefreshToken);
                 }
                 if (parameters.Count > 0)
                 {
-                    GrantType = "refresh_token";
-                    await QueryAccessToken(parameters);
-                    return Auth.AccessToken;
+                    await QueryAuth("refresh_token", parameters);
+                    return auth;
                 }
             }
             throw new Exception("Token never fetched and refresh token not provided.");
@@ -236,18 +244,18 @@ namespace YahooFantasyWrapper.Client
         /// Any additional information that will be posted back by service.
         public string GetLoginLinkUri()
         {
-            var client = _factory.CreateClient(AuthApiEndPoints.AccessCodeServiceEndpoint, null);
-            var request = _factory.CreateRequest(AuthApiEndPoints.AccessCodeServiceEndpoint);
-
-            var body = new List<KeyValuePair<string, string>>
+            using (var request = RequestFactory.CreateRequest(AuthApiEndPoints.AccessCodeServiceEndpoint))
             {
-                new KeyValuePair<string, string>("response_type", "code"),
-                new KeyValuePair<string, string>("client_id", Configuration.Value.ClientId),
-                new KeyValuePair<string, string>("client_secret", Configuration.Value.ClientSecret),
-                new KeyValuePair<string, string>("redirect_uri", Configuration.Value.RedirectUri)
-            };          
+                var body = new Dictionary<string, string>
+                {
+                    {"response_type", "code" },
+                    {"client_id", configuration.Value.ClientId},
+                    {"client_secret", configuration.Value.ClientSecret },
+                    {"redirect_uri", configuration.Value.RedirectUri }
+                };
 
-            return AddQueryString(request.RequestUri.ToString(), body.ToDictionary(x => x.Key, x => x.Value));
+                return AddQueryString(request.RequestUri.ToString(), body);
+            }
         }
 
         /// <summary>
@@ -303,8 +311,7 @@ namespace YahooFantasyWrapper.Client
         /// </summary>
         public void ClearAuth()
         {
-            this.Auth = new AuthModel();
-            this.UserInfo = null;
+            auth = null;
         }
     }
 }

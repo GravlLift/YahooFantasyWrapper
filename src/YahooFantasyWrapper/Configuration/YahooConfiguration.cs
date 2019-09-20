@@ -25,5 +25,7 @@ namespace YahooFantasyWrapper.Configuration
         /// Redirect Uri Specified. This will be redirected back to from Yahoo Auth Flow
         /// </summary>
         public string RedirectUri { get; set; }
+
+        public string RefreshToken { get; set; }
     }
 }

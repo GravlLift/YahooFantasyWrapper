@@ -4,7 +4,7 @@ using System.Text;
 using System.Xml.Serialization;
 using YahooFantasyWrapper.Infrastructure;
 
-namespace YahooFantasyWrapper.Models
+namespace YahooFantasyWrapper.Models.Response
 {
     public enum SortOrder
     {

@@ -74,7 +74,7 @@ namespace YahooFantasyWrapper.Client
             };
         }
 
-        internal static EndPoint GamesUserEndPoint(string[] gameKeys = null, EndpointSubResourcesCollection subresources = null, GameCollectionFilters filters = null)
+        internal static EndPoint UserGamesEndPoint(string[] gameKeys = null, EndpointSubResourcesCollection subresources = null, GameCollectionFilters filters = null)
         {
             string games = "";
             if (gameKeys != null && gameKeys.Length > 0)
@@ -95,18 +95,6 @@ namespace YahooFantasyWrapper.Client
 
         #region User
 
-        internal static EndPoint UserGamesEndPoint
-        {
-            get
-            {
-                return new EndPoint
-                {
-                    BaseUri = BaseApiUrl,
-                    Resource = $"/users{LoginString}/games"
-                };
-            }
-        }
-
         internal static EndPoint UserGameLeaguesEndPoint(string[] gameKeys = null, EndpointSubResourcesCollection subresources = null)
         {
             string games = "";
@@ -119,6 +107,15 @@ namespace YahooFantasyWrapper.Client
             {
                 BaseUri = BaseApiUrl,
                 Resource = $"/users{LoginString}/games{games}/leagues{BuildSubResourcesList(subresources)}"
+            };
+        }
+
+        internal static EndPoint UserTeamsEndPoint(EndpointSubResourcesCollection subresources = null)
+        {
+            return new EndPoint
+            {
+                BaseUri = BaseApiUrl,
+                Resource = $"/users{LoginString}/teams{BuildSubResourcesList(subresources)}"
             };
         }
 
@@ -301,18 +298,19 @@ namespace YahooFantasyWrapper.Client
             };
         }
 
-        internal static EndPoint TeamsUserGamesEndPoint(string[] gameKeys, EndpointSubResourcesCollection subresources = null)
+        internal static EndPoint UserLeaguesEndPoint(string[] leagueKeys, EndpointSubResourcesCollection subresources = null)
         {
-            string games = "";
-            if (gameKeys.Length > 0)
+
+            if (leagueKeys.Length == 0)
             {
-                games = $";gameKeys={ string.Join(",", gameKeys)}";
+                throw new ArgumentOutOfRangeException(nameof(leagueKeys));
             }
+            string leagueFilter = $";league_keys={ string.Join(",", leagueKeys)}";
 
             return new EndPoint
             {
                 BaseUri = BaseApiUrl,
-                Resource = $"/users{LoginString}/games{games}{BuildSubResourcesList(subresources)}"
+                Resource = $"/users{LoginString}/leagues{leagueFilter}{BuildSubResourcesList(subresources)}"
             };
         }
 

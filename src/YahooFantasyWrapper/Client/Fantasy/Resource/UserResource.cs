@@ -33,7 +33,7 @@ namespace YahooFantasyWrapper.Client
         /// <returns>User Resource</returns>
         public async Task<User> GetUser(AuthModel auth)
         {
-            return await Utils.GetResource<User>(client, ApiEndpoints.UserGamesEndPoint, auth, "user");
+            return await Utils.GetResource<User>(client, ApiEndpoints.UserGamesEndPoint(), auth, "user");
         }
 
         /// <summary>

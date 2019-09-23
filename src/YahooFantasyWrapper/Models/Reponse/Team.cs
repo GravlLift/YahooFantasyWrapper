@@ -72,15 +72,18 @@ namespace YahooFantasyWrapper.Models.Response
         public ManagerList ManagerList { get; set; }
         [XmlElement(ElementName = "clinched_playoffs")]
         public bool ClinchedPlayoffs { get; set; }
+        [XmlArray(ElementName = "matchups")]
+        [XmlArrayItem(ElementName = "matchup")]
+        public List<Matchup> Matchups { get; set; }
     }
 
     [XmlRoot(ElementName = "team")]
     public class Team : TeamBase
     {
-        
+
         [XmlElement(ElementName = "roster")]
         public Roster Roster { get; set; }
-        
+
 
         [XmlElement(ElementName = "team_points")]
         public TeamPoints TeamPoints { get; set; }

@@ -68,8 +68,9 @@ namespace YahooFantasyWrapper.Models.Response
         public string DraftGrade { get; set; }
         [XmlElement(ElementName = "draft_recap_url")]
         public string DraftRecapUrl { get; set; }
-        [XmlElement(ElementName = "managers")]
-        public ManagerList ManagerList { get; set; }
+        [XmlArray(ElementName = "managers")]
+        [XmlArrayItem(ElementName = "manager")]
+        public List<Manager> Managers { get; set; }
         [XmlElement(ElementName = "clinched_playoffs")]
         public bool ClinchedPlayoffs { get; set; }
         [XmlArray(ElementName = "matchups")]
@@ -91,15 +92,6 @@ namespace YahooFantasyWrapper.Models.Response
         public TeamStandings TeamStandings { get; set; }
     }
 
-    [XmlRoot(ElementName = "teams")]
-    public class TeamList
-    {
-        [XmlElement(ElementName = "team")]
-        public List<Team> Teams { get; set; }
-        [XmlAttribute(AttributeName = "count")]
-        public string Count { get; set; }
-    }
-
 
     [XmlRoot(ElementName = "roster", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
     public class Roster
@@ -110,7 +102,8 @@ namespace YahooFantasyWrapper.Models.Response
         public string Week { get; set; }
         [XmlElement(ElementName = "is_editable", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
         public string IsEditable { get; set; }
-        [XmlElement(ElementName = "players", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
-        public PlayerList PlayerList { get; set; }
+        [XmlArray(ElementName = "players", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
+        [XmlArrayItem(ElementName = "player", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
+        public List<Player> Players { get; set; }
     }
 }

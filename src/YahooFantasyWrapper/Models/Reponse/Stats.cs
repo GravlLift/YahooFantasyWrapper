@@ -24,8 +24,9 @@ namespace YahooFantasyWrapper.Models.Response
         public string DisplayName { get; set; }
         [XmlElement(ElementName = "sort_order", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
         public SortOrder SortOrder { get; set; }
-        [XmlElement(ElementName = "position_types", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
-        public PositionTypes PositionTypes { get; set; }
+        [XmlArray(ElementName = "position_types", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
+        [XmlArrayItem(ElementName = "position_type", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
+        public List<PositionType> PositionTypes { get; set; }
         [XmlElement(ElementName = "position_type", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
         public string PositionType { get; set; }
 
@@ -40,24 +41,19 @@ namespace YahooFantasyWrapper.Models.Response
         public double? Value { get; private set; }
     }
 
-    [XmlRoot(ElementName = "stats", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
-    public class Stats
-    {
-        [XmlElement(ElementName = "stat", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
-        public List<Stat> Stat { get; set; }
-    }
-
     [XmlRoot(ElementName = "stat_categories", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
     public class StatCategories
     {
-        [XmlElement(ElementName = "stats", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
-        public Stats Stats { get; set; }
+        [XmlArray(ElementName = "stats", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
+        [XmlArrayItem(ElementName = "stat", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
+        public List<Stat> Stats { get; set; }
     }
 
     [XmlRoot(ElementName = "stat_modifiers", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
     public class StatModifiers
     {
-        [XmlElement(ElementName = "stats", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
-        public Stats Stats { get; set; }
+        [XmlArray(ElementName = "stats", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
+        [XmlArrayItem(ElementName = "stat", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
+        public List<Stat> Stats { get; set; }
     }
 }

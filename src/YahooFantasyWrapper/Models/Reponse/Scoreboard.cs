@@ -13,14 +13,6 @@ namespace YahooFantasyWrapper.Models.Response
         public string WinnerTeamKey { get; set; }
     }
 
-    [XmlRoot(ElementName = "stat_winners")]
-    public class StatWinnerList
-    {
-        [XmlElement(ElementName = "stat_winner")]
-        public List<StatWinner> StatWinner { get; set; }
-    }
-
- 
     [XmlRoot(ElementName = "team_stats")]
     public class TeamStats
     {
@@ -28,8 +20,9 @@ namespace YahooFantasyWrapper.Models.Response
         public string CoverageType { get; set; }
         [XmlElement(ElementName = "week")]
         public int Week { get; set; }
-        [XmlElement(ElementName = "stats")]
-        public Stats Stats { get; set; }
+        [XmlArray(ElementName = "stats")]
+        [XmlArrayItem(ElementName = "stat")]
+        public List<Stat> Stats { get; set; }
     }
 
     [XmlRoot(ElementName = "team_points")]
@@ -53,15 +46,6 @@ namespace YahooFantasyWrapper.Models.Response
         public TeamStats TeamStats { get; set; }
     }
 
-    [XmlRoot(ElementName = "teams")]
-    public class ScoreboardTeamList
-    {
-        [XmlElement(ElementName = "team")]
-        public List<ScoreboardTeam> Teams { get; set; }
-        [XmlAttribute(AttributeName = "count")]
-        public string Count { get; set; }
-    }
-
     [XmlRoot(ElementName = "matchup")]
     public class Matchup
     {
@@ -81,19 +65,12 @@ namespace YahooFantasyWrapper.Models.Response
         public bool IsTied { get; set; }
         [XmlElement(ElementName = "winner_team_key")]
         public string WinnerTeamKey { get; set; }
-        [XmlElement(ElementName = "stat_winners")]
-        public StatWinnerList StatWinners { get; set; }
-        [XmlElement(ElementName = "teams")]
-        public ScoreboardTeamList Teams { get; set; }
-    }
-
-    [XmlRoot(ElementName = "matchups")]
-    public class MatchupList
-    {
-        [XmlElement(ElementName = "matchup")]
-        public List<Matchup> Matchups { get; set; }
-        [XmlAttribute(AttributeName = "count")]
-        public int Count { get; set; }
+        [XmlArray(ElementName = "stat_winners")]
+        [XmlArrayItem(ElementName = "stat_winner")]
+        public List<StatWinner> StatWinners { get; set; }
+        [XmlArray(ElementName = "teams")]
+        [XmlArrayItem(ElementName = "team")]
+        public List<ScoreboardTeam> Teams { get; set; }
     }
 
     [XmlRoot(ElementName = "scoreboard")]
@@ -101,8 +78,9 @@ namespace YahooFantasyWrapper.Models.Response
     {
         [XmlElement(ElementName = "week")]
         public string Week { get; set; }
-        [XmlElement(ElementName = "matchups")]
-        public MatchupList Matchups { get; set; }
+        [XmlArray(ElementName = "matchups")]
+        [XmlArrayItem(ElementName = "matchup")]
+        public List<Matchup> Matchups { get; set; }
     }
 
 }

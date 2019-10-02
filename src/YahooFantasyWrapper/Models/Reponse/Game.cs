@@ -16,16 +16,6 @@ namespace YahooFantasyWrapper.Models.Response
         public string End { get; set; }
     }
 
-    [XmlRoot(ElementName = "game_weeks", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
-    public class GameWeekList
-    {
-        [XmlElement(ElementName = "game_week", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
-        public List<GameWeek> GameWeeks { get; set; }
-        [XmlAttribute(AttributeName = "count")]
-        public string Count { get; set; }
-    }
-
-
     [XmlRoot(ElementName = "manager", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
     public class Manager
     {
@@ -43,13 +33,6 @@ namespace YahooFantasyWrapper.Models.Response
         public string Email { get; set; }
         [XmlElement(ElementName = "image_url", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
         public string ImageUrl { get; set; }
-    }
-
-    [XmlRoot(ElementName = "managers", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
-    public class ManagerList
-    {
-        [XmlElement(ElementName = "manager", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
-        public List<Manager> Managers { get; set; }
     }
 
     [XmlRoot(ElementName = "game", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
@@ -75,29 +58,26 @@ namespace YahooFantasyWrapper.Models.Response
         public bool IsGameOver { get; set; }
         [XmlElement(ElementName = "is_offseason", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
         public bool IsOffseason { get; set; }
-        [XmlElement(ElementName = "game_weeks", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
-        public GameWeekList GameWeeks { get; set; }
-        [XmlElement(ElementName = "leagues", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
-        public LeagueList LeagueList { get; set; }
-        [XmlElement(ElementName = "players", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
-        public PlayerList PlayerList { get; set; }
+        [XmlArray(ElementName = "game_weeks", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
+        [XmlArrayItem(ElementName = "game_week", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
+        public List<GameWeek> GameWeeks { get; set; }
+        [XmlArray(ElementName = "leagues", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
+        [XmlArrayItem(ElementName = "league", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
+        public List<League> Leagues { get; set; }
+        [XmlArray(ElementName = "players", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
+        [XmlArrayItem(ElementName = "player", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
+        public List<Player> Players { get; set; }
         [XmlElement(ElementName = "stat_categories", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
         public StatCategories StatCategories { get; set; }
-        [XmlElement(ElementName = "position_types", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
-        public PositionTypes PositionTypes { get; set; }
-        [XmlElement(ElementName = "roster_positions", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
-        public RosterPositions RosterPositions { get; set; }
-        [XmlElement(ElementName = "teams", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
-        public TeamList TeamList { get; set; }
-    }
-
-    [XmlRoot(ElementName = "games", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
-    public class GameList
-    {
-        [XmlElement(ElementName = "game", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
-        public List<Game> Games { get; set; }
-        [XmlAttribute(AttributeName = "count")]
-        public string Count { get; set; }
+        [XmlArray(ElementName = "position_types", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
+        [XmlArrayItem(ElementName = "position_type", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
+        public List<PositionType> PositionTypes { get; set; }
+        [XmlArray(ElementName = "roster_positions", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
+        [XmlArrayItem(ElementName = "roster_position", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
+        public List<RosterPosition> RosterPositions { get; set; }
+        [XmlArray(ElementName = "teams", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
+        [XmlArrayItem(ElementName = "team", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
+        public List<Team> Teams { get; set; }
     }
 
     [XmlRoot(ElementName = "user", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
@@ -105,17 +85,9 @@ namespace YahooFantasyWrapper.Models.Response
     {
         [XmlElement(ElementName = "guid", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
         public string Guid { get; set; }
-        [XmlElement(ElementName = "games", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
-        public GameList GameList { get; set; }
-    }
-
-    [XmlRoot(ElementName = "users", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
-    public class UserList
-    {
-        [XmlElement(ElementName = "user", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
-        public List<User> Users { get; set; }
-        [XmlAttribute(AttributeName = "count")]
-        public string Count { get; set; }
+        [XmlArray(ElementName = "games", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
+        [XmlArrayItem(ElementName = "game", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
+        public List<Game> Games { get; set; }
     }
 
     public enum GameCode

@@ -19,7 +19,7 @@ namespace YahooFantasyWrapper.Client
     /// You can only receive credit for stats accumulated by players in your starting lineup.
     /// 
     /// You can use this API to edit your lineup by PUTting up new positions for the players on a roster. 
-    /// You can also add/drop players from your roster by `POSTing new transactions <#transactions-collection-POST>`__ to the league’s transactions collection.
+    /// You can also add/drop players from your roster by `POSTing new transactions to the league’s transactions collection.
     /// </summary>
     public class RosterResourceManager : Fantasy.Manager
     {

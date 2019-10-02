@@ -41,7 +41,7 @@ namespace YahooFantasyWrapper.Client
         /// Gets Transactions Collection based on supplied league Keys
         /// Attaches Requested SubResources
         /// </summary>
-        /// <param name="leagueKeys">League Keys to return Resources for </param>
+        /// <param name="leagueKey">League Keys to return Resources for </param>
         /// <param name="subresources">SubResources to include with Transaction Resource</param>
         /// <param name="auth">Token for request</param>
         /// <returns>Transaction Collection (List of Transaction Resources)</returns>
@@ -50,34 +50,10 @@ namespace YahooFantasyWrapper.Client
             return await Utils.GetCollection<Models.Response.Transaction>(client, ApiEndpoints.TransactionsLeagueEndPoint(leagueKey, subresources), auth, "transaction");
         }
         /// <summary>
-        /// Adds Player
-        /// TODO
-        /// </summary>
-        /// <param name="gameKeys"></param>
-        /// <param name="subresources"></param>
-        /// <param name="auth"></param>
-        /// <returns></returns>
-        public async Task AddPlayer(string[] gameKeys, EndpointSubResourcesCollection subresources, AuthModel auth)
-        {
-            throw new NotImplementedException();
-        }
-        /// <summary>
-        /// Drops Player
-        /// TODO
-        /// </summary>
-        /// <param name="auth"></param>
-        /// <param name="gameKeys"></param>
-        /// <param name="subresources"></param>
-        /// <returns></returns>
-        public async Task DropPlayer(AuthModel auth, string[] gameKeys = null, EndpointSubResourcesCollection subresources = null)
-        {
-            throw new NotImplementedException();
-        }
-        /// <summary>
         /// Add/Drops Players
         /// </summary>
         /// <returns></returns>
-        public async Task AddDropPlayerAsync(AuthModel auth, string leagueKey, MultiPlayerTransaction transaction)
+        public async Task AddOrDropPlayerAsync(AuthModel auth, string leagueKey, MultiPlayerTransaction transaction)
         {
             await Utils.PostCollection(client, ApiEndpoints.TransactionsLeagueEndPoint(leagueKey), auth, transaction);
         }

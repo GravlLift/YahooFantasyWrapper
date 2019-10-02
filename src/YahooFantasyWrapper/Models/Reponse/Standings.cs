@@ -1,4 +1,5 @@
-﻿using System.Xml.Serialization;
+﻿using System.Collections.Generic;
+using System.Xml.Serialization;
 
 namespace YahooFantasyWrapper.Models.Response
 {
@@ -58,7 +59,8 @@ namespace YahooFantasyWrapper.Models.Response
     [XmlRoot(ElementName = "standings")]
     public class Standings
     {
-        [XmlElement(ElementName = "teams")]
-        public TeamList TeamList { get; set; }
+        [XmlArray(ElementName = "teams")]
+        [XmlArrayItem(ElementName = "team")]
+        public List<Team> Teams { get; set; }
     }
 }

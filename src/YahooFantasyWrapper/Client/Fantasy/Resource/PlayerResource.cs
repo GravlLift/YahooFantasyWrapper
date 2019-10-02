@@ -53,7 +53,6 @@ namespace YahooFantasyWrapper.Client
         /// </summary>
         /// <param name="playerKeys"></param>
         /// <param name="leagueKeys"></param>
-        /// <param name="playerKey">Player Key to Query</param>
         /// <param name="auth">Access Token from Auth Api</param>
         /// <returns>Player Resource</returns>
         public async Task<Player> GetOwnership(string[] playerKeys, string leagueKeys, AuthModel auth)

@@ -6,15 +6,6 @@ using System.Xml.Serialization;
 namespace YahooFantasyWrapper.Models.Response
 {
 
-    [XmlRoot(ElementName = "position_types", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
-    public class PositionTypes
-    {
-        [XmlElement(ElementName = "position_type", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
-        public List<PositionType> PositionType { get; set; }
-    }
-
-
-
     [XmlRoot(ElementName = "position_type", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
     public class PositionType
     {
@@ -50,12 +41,5 @@ namespace YahooFantasyWrapper.Models.Response
         public string Date { get; set; }
         [XmlElement(ElementName = "position")]
         public string Position { get; set; }
-    }
-
-    [XmlRoot(ElementName = "roster_positions", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
-    public class RosterPositions
-    {
-        [XmlElement(ElementName = "roster_position", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
-        public List<RosterPosition> RosterPosition { get; set; }
     }
 }

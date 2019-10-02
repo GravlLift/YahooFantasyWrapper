@@ -21,7 +21,8 @@ namespace YahooFantasyWrapper.Models.Response
         public string Type { get; set; }
         [XmlElement(ElementName = "faab_bid")]
         public string FaabBid { get; set; }
-        [XmlElement(ElementName = "players")]
-        public PlayerList PlayerList { get; set; }
+        [XmlArray(ElementName = "players")]
+        [XmlArrayItem(ElementName = "player")]
+        public List<Player> Players { get; set; }
     }
 }

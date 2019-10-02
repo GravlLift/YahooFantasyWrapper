@@ -62,8 +62,9 @@ namespace YahooFantasyWrapper.Models.Response
         public string IsPubliclyViewable { get; set; }
         [XmlElement(ElementName = "can_trade_draft_picks", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
         public string CanTradeDraftPicks { get; set; }
-        [XmlElement(ElementName = "roster_positions", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
-        public RosterPositions RosterPositions { get; set; }
+        [XmlArray(ElementName = "roster_positions", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
+        [XmlArrayItem(ElementName = "roster_position", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
+        public List<RosterPosition> RosterPositions { get; set; }
         [XmlElement(ElementName = "stat_categories", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
         public StatCategories StatCategories { get; set; }
         [XmlElement(ElementName = "stat_modifiers", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]

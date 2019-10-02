@@ -1,77 +1,75 @@
-﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System;
+using System.Text.Json.Serialization;
 
 namespace YahooFantasyWrapper.Models
 {
     [Serializable]
     public class UserInfo
     {
-        [JsonProperty("profile")]
+        [JsonPropertyName("profile")]
         public Profile Profile { get; set; }
     }
     [Serializable]
     public class Profile
     {
-        [JsonProperty("nickname")]
+        [JsonPropertyName("nickname")]
         public string Nickname { get; set; }
 
-        [JsonProperty("guid")]
+        [JsonPropertyName("guid")]
         public string Guid { get; set; }
 
-        [JsonProperty("bdRestricted")]
+        [JsonPropertyName("bdRestricted")]
         public bool BdRestricted { get; set; }
 
-        [JsonProperty("ageCategory")]
+        [JsonPropertyName("ageCategory")]
         public string AgeCategory { get; set; }
 
-        [JsonProperty("cache")]
+        [JsonPropertyName("cache")]
         public bool Cache { get; set; }
 
-        [JsonProperty("isConnected")]
+        [JsonPropertyName("isConnected")]
         public bool IsConnected { get; set; }
 
-        [JsonProperty("image")]
+        [JsonPropertyName("image")]
         public Image Image { get; set; }
 
-        [JsonProperty("jurisdiction")]
+        [JsonPropertyName("jurisdiction")]
         public string Jurisdiction { get; set; }
 
-        [JsonProperty("profileStatus")]
+        [JsonPropertyName("profileStatus")]
         public string ProfileStatus { get; set; }
 
-        [JsonProperty("profileMode")]
+        [JsonPropertyName("profileMode")]
         public string ProfileMode { get; set; }
 
-        [JsonProperty("profileHidden")]
+        [JsonPropertyName("profileHidden")]
         public bool ProfileHidden { get; set; }
 
-        [JsonProperty("profilePermission")]
+        [JsonPropertyName("profilePermission")]
         public string ProfilePermission { get; set; }
 
-        [JsonProperty("searchable")]
+        [JsonPropertyName("searchable")]
         public bool Searchable { get; set; }
 
-        [JsonProperty("profileUrl")]
+        [JsonPropertyName("profileUrl")]
         public string ProfileUrl { get; set; }
 
-        [JsonProperty("uri")]
+        [JsonPropertyName("uri")]
         public string Uri { get; set; }
     }
     [Serializable]
     public class Image
     {
-        [JsonProperty("imageUrl")]
+        [JsonPropertyName("imageUrl")]
         public string ImageUrl { get; set; }
 
-        [JsonProperty("height")]
+        [JsonPropertyName("height")]
         public long Height { get; set; }
 
-        [JsonProperty("size")]
+        [JsonPropertyName("size")]
         public string Size { get; set; }
 
-        [JsonProperty("width")]
+        [JsonPropertyName("width")]
         public long Width { get; set; }
     }
 

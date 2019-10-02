@@ -7,7 +7,7 @@ using YahooFantasyWrapper.Models.Request;
 
 namespace YahooFantasyWrapper.Client.Fantasy
 {
-    internal class YahooFantasyXmlSerializer<TContent>
+    public class YahooFantasyXmlSerializer<TContent>
     {
         private readonly XmlSerializer xmlSerializer;
 

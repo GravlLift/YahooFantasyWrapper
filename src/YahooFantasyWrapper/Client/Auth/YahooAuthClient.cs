@@ -6,8 +6,7 @@ using YahooFantasyWrapper.Configuration;
 using YahooFantasyWrapper.Models;
 using YahooFantasyWrapper.Infrastructure;
 using System.Net.Http;
-using Newtonsoft.Json.Linq;
-using Newtonsoft.Json;
+using System.Text.Json;
 using Microsoft.Extensions.Options;
 using System.Collections.Specialized;
 using System.Text;
@@ -62,8 +61,8 @@ namespace YahooFantasyWrapper.Client
         /// <param name="args"></param>
         protected void AfterGetauth(BeforeAfterRequestArgs args)
         {
-            var responseJObject = JObject.Parse(args.Response);
-            UserProfileGUID = responseJObject.SelectToken("xoauth_yahoo_guid")?.ToString();
+            var responseJObject = JsonDocument.Parse(args.Response);
+            UserProfileGUID = responseJObject.RootElement.GetProperty("xoauth_yahoo_guid").GetString();
         }
 
         /// <summary>
@@ -95,7 +94,7 @@ namespace YahooFantasyWrapper.Client
                 var response = await client.GetAsync(request.RequestUri);
 
                 var result = await response.Content.ReadAsStringAsync();
-                var userInfo = JsonConvert.DeserializeObject<UserInfo>(result);
+                var userInfo = JsonSerializer.Deserialize<UserInfo>(result);
                 return userInfo;
             }
         }
@@ -184,10 +183,10 @@ namespace YahooFantasyWrapper.Client
             try
             {
                 // response can be sent in JSON format
-                var token = JObject.Parse(response).SelectToken(key);
-                return token?.ToString();
+                var token = JsonDocument.Parse(response).RootElement.GetProperty(key);
+                return token.ToString();
             }
-            catch (JsonReaderException)
+            catch (JsonException)
             {
                 // or it can be in "query string" format (param1=val1&param2=val2)
                 var collection = System.Web.HttpUtility.ParseQueryString(response);

@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Xml.Serialization;
 
 namespace YahooFantasyWrapper.Models.Response
@@ -126,17 +128,9 @@ namespace YahooFantasyWrapper.Models.Response
         [XmlEnum(Name = "waivers")]
         Waivers,
         [XmlEnum(Name = "freeagents")]
+        [Display(Name = "Free Agent")]
         FreeAgent
     }
-    //public class PlayerOwnershipType : StringEnum
-    //{
-    //    public PlayerOwnershipStatus()
-    //    private PlayerOwnershipType(string value) : base(value) { }
-
-    //    public static string Team => new PlayerOwnershipType("team");
-    //    public static string Waivers => new PlayerOwnershipType("waivers");
-
-    //}
 
     public class PlayerOwnershipStatus : StringEnum
     {

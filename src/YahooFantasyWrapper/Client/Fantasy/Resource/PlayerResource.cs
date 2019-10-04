@@ -44,7 +44,7 @@ namespace YahooFantasyWrapper.Client
         /// <returns>Player Resource</returns>
         public async Task<Player> GetStats(string playerKey, AuthModel auth)
         {
-            return await Utils.GetResource<Player>(client, ApiEndpoints.PlayerEndPoint(playerKey, EndpointSubResources.Stats), auth, "game");
+            return await Utils.GetResource<Player>(client, ApiEndpoints.PlayerEndPoint(playerKey, EndpointSubResources.Stats), auth, "player");
         }
 
         /// <summary>

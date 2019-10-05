@@ -37,8 +37,8 @@ namespace YahooFantasyWrapper.Models.Response
     public class EligiblePositions
     {
         [XmlElement(ElementName = "position", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
-        public List<string> Position { get; set; }
-        public override string ToString() => Position == null ? null : $"{string.Join(",", Position)}";
+        public List<string> Positions { get; set; }
+        public override string ToString() => Positions == null ? null : $"{string.Join(",", Positions)}";
     }
 
     [XmlRoot(ElementName = "player", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]

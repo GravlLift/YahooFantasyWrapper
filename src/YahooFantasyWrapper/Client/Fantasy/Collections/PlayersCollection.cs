@@ -58,5 +58,10 @@ namespace YahooFantasyWrapper.Client
         {
             return await Utils.GetCollection<Team>(client, ApiEndpoints.PlayersTeamEndPoint(teamKeys, subresources), auth, "team");
         }
+
+        public async Task<Game> GetGamePlayers(string gameKey, AuthModel auth, PlayerCollectionFilters filters = null, EndpointSubResourcesCollection subresources = null)
+        {
+            return await Utils.GetResource<Game>(client, ApiEndpoints.GamePlayersEndPoint(gameKey), auth, "game");
+        }
     }
 }

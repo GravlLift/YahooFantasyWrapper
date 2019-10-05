@@ -67,8 +67,9 @@ namespace YahooFantasyWrapper.Models.Response
         [XmlArray(ElementName = "players", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
         [XmlArrayItem(ElementName = "player", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
         public List<Player> Players { get; set; }
-        [XmlElement(ElementName = "stat_categories", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
-        public StatCategories StatCategories { get; set; }
+        [XmlArray(ElementName = "stat_categories", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
+        [XmlArrayItem(ElementName = "stat", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
+        public List<Stat> StatCategories { get; set; }
         [XmlArray(ElementName = "position_types", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
         [XmlArrayItem(ElementName = "position_type", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
         public List<PositionType> PositionTypes { get; set; }

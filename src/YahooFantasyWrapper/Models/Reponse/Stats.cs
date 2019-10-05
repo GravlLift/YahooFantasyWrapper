@@ -40,20 +40,4 @@ namespace YahooFantasyWrapper.Models.Response
         [XmlIgnore]
         public double? Value { get; private set; }
     }
-
-    [XmlRoot(ElementName = "stat_categories", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
-    public class StatCategories
-    {
-        [XmlArray(ElementName = "stats", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
-        [XmlArrayItem(ElementName = "stat", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
-        public List<Stat> Stats { get; set; }
-    }
-
-    [XmlRoot(ElementName = "stat_modifiers", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
-    public class StatModifiers
-    {
-        [XmlArray(ElementName = "stats", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
-        [XmlArrayItem(ElementName = "stat", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
-        public List<Stat> Stats { get; set; }
-    }
 }

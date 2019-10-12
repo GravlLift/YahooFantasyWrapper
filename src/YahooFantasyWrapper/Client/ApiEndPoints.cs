@@ -50,12 +50,19 @@ namespace YahooFantasyWrapper.Client
             };
         }
 
-        internal static EndPoint GamePlayersEndPoint(string gameKey, string[] playerKeys)
+        internal static EndPoint GamePlayersEndPoint(string gameKey, string[] playerKeys = null)
         {
+            string playerFilter = "";
+
+            if (playerKeys?.Length > 0)
+            {
+                playerFilter = $";player_keys={string.Join(",", playerKeys)}";
+            }
+
             return new EndPoint
             {
                 BaseUri = BaseApiUrl,
-                Resource = $"/game/{gameKey}/players;player_keys={string.Join(",", playerKeys)}"
+                Resource = $"/game/{gameKey}/players{playerFilter}"
             };
         }
 

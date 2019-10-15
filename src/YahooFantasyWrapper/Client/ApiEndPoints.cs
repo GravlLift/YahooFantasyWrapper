@@ -50,19 +50,23 @@ namespace YahooFantasyWrapper.Client
             };
         }
 
-        internal static EndPoint GamePlayersEndPoint(string gameKey, string[] playerKeys = null)
+        internal static EndPoint GamePlayersEndPoint(string gameKey, EndpointSubResourcesCollection subresources = null, PlayerCollectionFilters filters = null)
         {
             string playerFilter = "";
 
-            if (playerKeys?.Length > 0)
+            if (filters?.StartIndex != null)
             {
-                playerFilter = $";player_keys={string.Join(",", playerKeys)}";
+                playerFilter += $";start={filters.StartIndex.Value}";
+            }
+            if (filters?.Count != null)
+            {
+                playerFilter += $";count={filters.Count.Value}";
             }
 
             return new EndPoint
             {
                 BaseUri = BaseApiUrl,
-                Resource = $"/game/{gameKey}/players{playerFilter}"
+                Resource = $"/game/{gameKey}/players{playerFilter}{BuildSubResourcesList(subresources)}"
             };
         }
 
@@ -181,6 +185,22 @@ namespace YahooFantasyWrapper.Client
             {
                 BaseUri = BaseApiUrl,
                 Resource = $"/leagues{leagues}/teams{BuildSubResourcesList(subresources)}"
+            };
+
+        }
+
+        internal static EndPoint LeaguePlayersEndPoint(string[] leagueKeys, EndpointSubResourcesCollection subresources, PlayerCollectionFilters filters = null)
+        {
+            string leagues = "";
+            if (leagueKeys.Length > 0)
+            {
+                leagues = $";league_keys={ string.Join(",", leagueKeys)}";
+            }
+
+            return new EndPoint
+            {
+                BaseUri = BaseApiUrl,
+                Resource = $"/leagues{leagues}/players{BuildSubResourcesList(subresources)}"
             };
 
         }

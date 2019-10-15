@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Xml.Serialization;
 
@@ -66,17 +67,37 @@ namespace YahooFantasyWrapper.Models.Response
         [XmlArrayItem(ElementName = "roster_position", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
         public List<RosterPosition> RosterPositions { get; set; }
         [XmlElement(ElementName = "stat_categories", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
-        [XmlArrayItem(ElementName = "stat", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
-        public List<Stat> StatCategories { get; set; }
-        [XmlArray(ElementName = "stat_modifiers", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
-        [XmlArrayItem(ElementName = "stat", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
-        public List<Stat> StatModifiers { get; set; }
+        public StatsEnumerable StatCategories { get; set; }
+        [XmlElement(ElementName = "stat_modifiers", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
+        public StatsEnumerable StatModifiers { get; set; }
         [XmlElement(ElementName = "pickem_enabled", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
         public string PickemEnabled { get; set; }
         [XmlElement(ElementName = "uses_fractional_points", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
         public string UsesFractionalPoints { get; set; }
         [XmlElement(ElementName = "uses_negative_points", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
         public string UsesNegativePoints { get; set; }
+
+        public List<Stat> GetModifiedStats()
+        {
+            return StatCategories.Stats.Select(stat =>
+            {
+                var modifier = StatModifiers.Stats.First(s => s.StatId == stat.StatId);
+                stat.ValueText = modifier.ValueText;
+                return stat;
+            }).ToList();
+        }
+        public float GetModfiedStatValue(int id)
+        {
+            var stat = StatCategories.Stats.First(s => s.StatId == id);
+            var modifier = StatModifiers.Stats.First(s => s.StatId == stat.StatId);
+            return modifier.Value.Value;
+        }
     }
 
+    public class StatsEnumerable
+    {
+        [XmlArray(ElementName = "stats", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
+        [XmlArrayItem(ElementName = "stat", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
+        public List<Stat> Stats { get; set; }
+    }
 }

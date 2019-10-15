@@ -51,9 +51,9 @@ namespace YahooFantasyWrapper.Client
         /// <param name="playerKeys"></param>
         /// <param name="auth">Access Token from Auth Api</param>
         /// <returns>Game Resource</returns>
-        public async Task<Game> GetPlayers(string gameKey, string[] playerKeys, AuthModel auth)
+        public async Task<Game> GetPlayers(string gameKey, AuthModel auth)
         {
-            return await Utils.GetResource<Game>(client, ApiEndpoints.GamePlayersEndPoint(gameKey, playerKeys), auth, "game");
+            return await Utils.GetResource<Game>(client, ApiEndpoints.GamePlayersEndPoint(gameKey, EndpointSubResourcesCollection.BuildResourceList(EndpointSubResources.Ownership)), auth, "game");
         }
         /// <summary>
         /// Get Game Resource with GameWeeks Subresource

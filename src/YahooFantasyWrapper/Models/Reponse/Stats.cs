@@ -17,7 +17,7 @@ namespace YahooFantasyWrapper.Models.Response
     public class Stat
     {
         [XmlElement(ElementName = "stat_id", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
-        public string StatId { get; set; }
+        public int StatId { get; set; }
         [XmlElement(ElementName = "name", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
         public string Name { get; set; }
         [XmlElement(ElementName = "display_name", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
@@ -38,6 +38,6 @@ namespace YahooFantasyWrapper.Models.Response
         }
 
         [XmlIgnore]
-        public double? Value { get; private set; }
+        public float? Value { get; private set; }
     }
 }

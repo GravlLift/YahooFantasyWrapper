@@ -6,7 +6,7 @@ namespace YahooFantasyWrapper.Infrastructure
 {
     public static class StatParser
     {
-        public static double? Parse(string value)
+        public static float? Parse(string value)
         {
             if (value == "-")
                 return null;
@@ -15,10 +15,10 @@ namespace YahooFantasyWrapper.Infrastructure
                 //minutes:seconds will return as minutes
                 value = value.Replace(",", "");
                 var split = value.Split(':');
-                return double.Parse(split[0]) + (double.Parse(split[1]) / 60);
+                return float.Parse(split[0]) + (float.Parse(split[1]) / 60);
             }
 
-            return double.Parse(value);
+            return float.Parse(value);
         }
     }
 }

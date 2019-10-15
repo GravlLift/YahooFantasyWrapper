@@ -136,19 +136,19 @@ namespace YahooFantasyWrapper.Models.Response
     {
         private PlayerOwnershipStatus(string value) : base(value) { }
 
-        public static string Available => new PlayerOwnershipStatus("A");
-        public static string FreeAgent => new PlayerOwnershipStatus("FA");
-        public static string Waivers => new PlayerOwnershipStatus("W");
-        public static string Taken => new PlayerOwnershipStatus("T");
-        public static string Keepers => new PlayerOwnershipStatus("K");
+        public static PlayerOwnershipStatus Available => new PlayerOwnershipStatus("A");
+        public static PlayerOwnershipStatus FreeAgent => new PlayerOwnershipStatus("FA");
+        public static PlayerOwnershipStatus Waivers => new PlayerOwnershipStatus("W");
+        public static PlayerOwnershipStatus Taken => new PlayerOwnershipStatus("T");
+        public static PlayerOwnershipStatus Keepers => new PlayerOwnershipStatus("K");
     }
 
     public class PlayerSortType : StringEnum
     {
         private PlayerSortType(string value) : base(value) { }
 
-        public static string Season => new PlayerSortType("season");
-        public static string Week => new PlayerSortType("week");
-        public static string LastMonth => new PlayerSortType("lastmonth");
+        public static PlayerSortType Season => new PlayerSortType("season");
+        public static PlayerSortType Week => new PlayerSortType("week");
+        public static PlayerSortType LastMonth => new PlayerSortType("lastmonth");
     }
 }

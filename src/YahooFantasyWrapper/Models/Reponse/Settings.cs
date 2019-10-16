@@ -68,10 +68,8 @@ namespace YahooFantasyWrapper.Models.Response
         public List<RosterPosition> RosterPositions { get; set; }
         [XmlElement(ElementName = "stat_categories", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
         public StatsEnumerable StatCategories { get; set; }
-        public List<Stat> StatCategories { get; set; }
+        [XmlElement(ElementName = "stat_modifiers", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
         public StatsEnumerable StatModifiers { get; set; }
-        [XmlArrayItem(ElementName = "stat", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
-        public List<Stat> StatModifiers { get; set; }
         [XmlElement(ElementName = "pickem_enabled", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
         public string PickemEnabled { get; set; }
         [XmlElement(ElementName = "uses_fractional_points", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]

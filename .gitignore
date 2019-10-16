@@ -3,6 +3,7 @@
 ################################################################################
 
 *.suo
+*.orig
 /src/YahooFantasyWrapper/obj
 /src/.vs/YahooFantasyWrapper/v15/Server/sqlite3
 /src/packages

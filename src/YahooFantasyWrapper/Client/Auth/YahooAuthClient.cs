@@ -6,11 +6,12 @@ using YahooFantasyWrapper.Configuration;
 using YahooFantasyWrapper.Models;
 using YahooFantasyWrapper.Infrastructure;
 using System.Net.Http;
-using System.Text.Json;
+//using System.Text.Json;
+using Newtonsoft.Json;
 using Microsoft.Extensions.Options;
 using System.Collections.Specialized;
 using System.Text;
-using System.Text.Encodings.Web;
+using Newtonsoft.Json.Linq;
 
 namespace YahooFantasyWrapper.Client
 {
@@ -61,8 +62,10 @@ namespace YahooFantasyWrapper.Client
         /// <param name="args"></param>
         protected void AfterGetauth(BeforeAfterRequestArgs args)
         {
-            var responseJObject = JsonDocument.Parse(args.Response);
-            UserProfileGUID = responseJObject.RootElement.GetProperty("xoauth_yahoo_guid").GetString();
+            //var responseJObject = JsonDocument.Parse(args.Response);
+            //UserProfileGUID = responseJObject.RootElement.GetProperty("xoauth_yahoo_guid").GetString();
+            var responseJObject = JObject.Parse(args.Response);
+            UserProfileGUID = responseJObject.SelectToken("xoauth_yahoo_guid").Value<string>();
         }
 
         /// <summary>
@@ -94,7 +97,8 @@ namespace YahooFantasyWrapper.Client
                 var response = await client.GetAsync(request.RequestUri);
 
                 var result = await response.Content.ReadAsStringAsync();
-                var userInfo = JsonSerializer.Deserialize<UserInfo>(result);
+                //var userInfo = JsonSerializer.Deserialize<UserInfo>(result);
+                var userInfo = JsonConvert.DeserializeObject<UserInfo>(result);
                 return userInfo;
             }
         }
@@ -183,7 +187,8 @@ namespace YahooFantasyWrapper.Client
             try
             {
                 // response can be sent in JSON format
-                var token = JsonDocument.Parse(response).RootElement.GetProperty(key);
+                //var token = JsonDocument.Parse(response).RootElement.GetProperty(key);
+                var token = JObject.Parse(response).SelectToken(key);
                 return token.ToString();
             }
             catch (JsonException)
@@ -295,9 +300,9 @@ namespace YahooFantasyWrapper.Client
             foreach (var parameter in queryString)
             {
                 sb.Append(hasQuery ? '&' : '?');
-                sb.Append(UrlEncoder.Default.Encode(parameter.Key));
+                sb.Append(System.Web.HttpUtility.UrlEncode(parameter.Key));
                 sb.Append('=');
-                sb.Append(UrlEncoder.Default.Encode(parameter.Value));
+                sb.Append(System.Web.HttpUtility.UrlEncode(parameter.Value));
                 hasQuery = true;
             }
 

@@ -33,7 +33,7 @@ namespace YahooFantasyWrapper.Models.Response
         [XmlElement(ElementName = "week")]
         public int Week { get; set; }
         [XmlElement(ElementName = "total")]
-        public double Total { get; set; }
+        public float Total { get; set; }
     }
 
     [XmlRoot(ElementName = "team")]

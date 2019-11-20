@@ -36,7 +36,7 @@ namespace YahooFantasyWrapper.Models.Response
         public string Value { get; set; }
     }
 
-    public abstract class TeamBase
+    public abstract class TeamBase : IComparable
     {
         [XmlElement(ElementName = "team_key")]
         public string TeamKey { get; set; }
@@ -76,6 +76,70 @@ namespace YahooFantasyWrapper.Models.Response
         [XmlArray(ElementName = "matchups")]
         [XmlArrayItem(ElementName = "matchup")]
         public List<Matchup> Matchups { get; set; }
+
+        public int CompareTo(object obj)
+        {
+            if (obj is TeamBase team)
+            {
+                return team.TeamKey.CompareTo(TeamKey);
+            }
+            return 0;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(this, obj))
+            {
+                return true;
+            }
+
+            if (obj is null)
+            {
+                return false;
+            }
+
+            throw new NotImplementedException();
+        }
+
+        public override int GetHashCode()
+        {
+            throw new NotImplementedException();
+        }
+
+        public static bool operator ==(TeamBase left, TeamBase right)
+        {
+            if (left is null)
+            {
+                return right is null;
+            }
+
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(TeamBase left, TeamBase right)
+        {
+            return !(left == right);
+        }
+
+        public static bool operator <(TeamBase left, TeamBase right)
+        {
+            return left is null ? right is object : left.CompareTo(right) < 0;
+        }
+
+        public static bool operator <=(TeamBase left, TeamBase right)
+        {
+            return left is null || left.CompareTo(right) <= 0;
+        }
+
+        public static bool operator >(TeamBase left, TeamBase right)
+        {
+            return left is object && left.CompareTo(right) > 0;
+        }
+
+        public static bool operator >=(TeamBase left, TeamBase right)
+        {
+            return left is null ? right is null : left.CompareTo(right) >= 0;
+        }
     }
 
     [XmlRoot(ElementName = "team")]
@@ -99,9 +163,9 @@ namespace YahooFantasyWrapper.Models.Response
         [XmlElement(ElementName = "coverage_type", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
         public string CoverageType { get; set; }
         [XmlElement(ElementName = "week", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
-        public string Week { get; set; }
+        public int Week { get; set; }
         [XmlElement(ElementName = "is_editable", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
-        public string IsEditable { get; set; }
+        public bool IsEditable { get; set; }
         [XmlArray(ElementName = "players", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
         [XmlArrayItem(ElementName = "player", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
         public List<Player> Players { get; set; }

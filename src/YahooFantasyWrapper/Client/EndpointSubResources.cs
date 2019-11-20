@@ -71,50 +71,29 @@ namespace YahooFantasyWrapper.Client
         /// <returns></returns>
         public static string ToFriendlyString(this EndpointSubResources resource)
         {
-            switch (resource)
+            return resource switch
             {
-                case EndpointSubResources.MetaData:
-                    return "metadata";
-                case EndpointSubResources.GameWeeks:
-                    return "game_weeks";
-                case EndpointSubResources.PositionTypes:
-                    return "position_types";
-                case EndpointSubResources.StatCategories:
-                    return "stat_categories";
-                case EndpointSubResources.DraftAnalysis:
-                    return "draft_analysis";
-                case EndpointSubResources.DraftResults:
-                    return "draftresults";
-                case EndpointSubResources.Players:
-                    return "players";
-                case EndpointSubResources.Settings:
-                    return "settings";
-                case EndpointSubResources.Standings:
-                    return "standings";
-                case EndpointSubResources.Scoreboard:
-                    return "scoreboard";
-                case EndpointSubResources.Teams:
-                    return "teams";
-                case EndpointSubResources.Transactions:
-                    return "transactions";
-                case EndpointSubResources.Stats:
-                    return "stats";
-                case EndpointSubResources.PercentOwned:
-                    return "percent_owned";
-                case EndpointSubResources.Roster:
-                    return "roster";
-                case EndpointSubResources.Matchups:
-                    return "matchups";
-                case EndpointSubResources.Ownership:
-                    return "ownership";
-                case EndpointSubResources.Leagues:
-                    return "leagues";
-                case EndpointSubResources.RosterPositions:
-                    return "roster_positions"; 
-                default:
-                    return "";
-            }
-
+                EndpointSubResources.MetaData => "metadata",
+                EndpointSubResources.GameWeeks => "game_weeks",
+                EndpointSubResources.PositionTypes => "position_types",
+                EndpointSubResources.StatCategories => "stat_categories",
+                EndpointSubResources.DraftAnalysis => "draft_analysis",
+                EndpointSubResources.DraftResults => "draftresults",
+                EndpointSubResources.Players => "players",
+                EndpointSubResources.Settings => "settings",
+                EndpointSubResources.Standings => "standings",
+                EndpointSubResources.Scoreboard => "scoreboard",
+                EndpointSubResources.Teams => "teams",
+                EndpointSubResources.Transactions => "transactions",
+                EndpointSubResources.Stats => "stats",
+                EndpointSubResources.PercentOwned => "percent_owned",
+                EndpointSubResources.Roster => "roster",
+                EndpointSubResources.Matchups => "matchups",
+                EndpointSubResources.Ownership => "ownership",
+                EndpointSubResources.Leagues => "leagues",
+                EndpointSubResources.RosterPositions => "roster_positions",
+                _ => "",
+            };
         }
 
         /// <summary>

@@ -46,6 +46,19 @@ namespace YahooFantasyWrapper.Client
         }
 
         /// <summary>
+        /// Gets Teams Collection based on supplied league Keys
+        /// Attaches Requested SubResources
+        /// </summary>
+        /// <param name="leagueKeys">League Keys to return Resources for </param>
+        /// <param name="subresources">SubResources to include with Team Resource</param>
+        /// <param name="auth">Token for request</param>
+        /// <returns>Team Collection (List of Team Resources)</returns>
+        public async Task<List<League>> GetLeagueRosters(AuthModel auth, string[] leagueKeys = null, int[] weeks = null, EndpointSubResourcesCollection subresources = null)
+        {
+            return await Utils.GetCollection<League>(client, ApiEndpoints.RosterLeagueEndPoint(leagueKeys, subresources, weeks), auth, "league");
+        }
+
+        /// <summary>
         /// Gets Teams Collection based on supplied game Keys for logged in user
         /// Attaches Requested SubResources
         /// </summary>

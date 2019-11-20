@@ -68,7 +68,7 @@ namespace YahooFantasyWrapper.Client
         /// <param name="auth">Access Token from Auth Api</param>
         /// <param name="weeks">Weeks to get the scoreboards for</param>
         /// <returns>League Resource</returns>
-        public async Task<League> GetScoreboard(string leagueKey, AuthModel auth, int?[] weeks = null)
+        public async Task<League> GetScoreboard(string leagueKey, AuthModel auth, int[] weeks = null)
         {
             return await Utils.GetResource<League>(client, ApiEndpoints.LeagueEndPoint(leagueKey, EndpointSubResources.Scoreboard, weeks), auth, "league");
         }

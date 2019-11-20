@@ -27,9 +27,9 @@ namespace YahooFantasyWrapper.Models.Response
         [XmlElement(ElementName = "position_type", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
         public string PositionType { get; set; }
         [XmlElement(ElementName = "is_bench", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
-        public string IsBench { get; set; }
+        public bool IsBench { get; set; }
         [XmlElement(ElementName = "count", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
-        public string Count { get; set; }
+        public int Count { get; set; }
     }
 
     [XmlRoot(ElementName = "selected_position")]

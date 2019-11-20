@@ -149,7 +149,7 @@ namespace YahooFantasyWrapper.Client
 
         #region League
 
-        internal static EndPoint LeagueEndPoint(string leagueKey, EndpointSubResources resource, int?[] weeks = null)
+        internal static EndPoint LeagueEndPoint(string leagueKey, EndpointSubResources resource, int[] weeks = null)
         {
             return new EndPoint
             {
@@ -278,7 +278,7 @@ namespace YahooFantasyWrapper.Client
             return new EndPoint
             {
                 BaseUri = BaseApiUrl,
-                Resource = $"/team/{teamKey}/roster/{BuildWeekList(new int?[] { week })}{BuildDate(date)}"
+                Resource = $"/team/{teamKey}/roster/{BuildWeekList(week)}{BuildDate(date)}"
             };
 
         }
@@ -322,6 +322,21 @@ namespace YahooFantasyWrapper.Client
             {
                 BaseUri = BaseApiUrl,
                 Resource = $"/leagues{leagues}/teams{BuildSubResourcesList(subresources)}"
+            };
+        }
+
+        internal static EndPoint RosterLeagueEndPoint(string[] leagueKeys, EndpointSubResourcesCollection subresources = null, int[] weeks = null)
+        {
+            string leagues = "";
+            if (leagueKeys.Length > 0)
+            {
+                leagues = $";league_keys={ string.Join(",", leagueKeys)}";
+            }
+
+            return new EndPoint
+            {
+                BaseUri = BaseApiUrl,
+                Resource = $"/leagues{leagues}/teams/roster{BuildWeekList(weeks)}{BuildSubResourcesList(subresources)}"
             };
         }
 
@@ -476,8 +491,16 @@ namespace YahooFantasyWrapper.Client
 
             return sb.ToString();
         }
+        private static string BuildWeekList(int? week)
+        {
+            if (week != null)
+            {
+                return $";week={week}";
+            }
+            return "";
+        }
 
-        private static string BuildWeekList(int?[] weeks)
+        private static string BuildWeekList(int[] weeks)
         {
             string weekString = "";
             if (weeks != null && weeks.Length > 0)

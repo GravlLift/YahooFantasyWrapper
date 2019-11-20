@@ -92,15 +92,13 @@ namespace YahooFantasyWrapper.Client
                 Resource = url
             };
 
-            using (var request = RequestFactory.CreateRequest(tempEndPoint, auth.TokenType, auth.AccessToken))
-            {
-                var response = await client.GetAsync(request.RequestUri);
+            using var request = RequestFactory.CreateRequest(tempEndPoint, auth.TokenType, auth.AccessToken);
+            var response = await client.GetAsync(request.RequestUri);
 
-                var result = await response.Content.ReadAsStringAsync();
-                //var userInfo = JsonSerializer.Deserialize<UserInfo>(result);
-                var userInfo = JsonConvert.DeserializeObject<UserInfo>(result);
-                return userInfo;
-            }
+            var result = await response.Content.ReadAsStringAsync();
+            //var userInfo = JsonSerializer.Deserialize<UserInfo>(result);
+            var userInfo = JsonConvert.DeserializeObject<UserInfo>(result);
+            return userInfo;
         }
 
         private void CheckErrorAndSetState(NameValueCollection parameters)
@@ -120,57 +118,54 @@ namespace YahooFantasyWrapper.Client
         /// <param name="parameters">Callback request payload (parameters).</param>
         private async Task QueryAuth(string grantType, NameValueCollection parameters)
         {
-            using (var request = RequestFactory.CreateRequest(
+            using var request = RequestFactory.CreateRequest(
                 AuthApiEndPoints.authServiceEndpoint,
-                HttpMethod.Post))
-            {
-
-                var body = new Dictionary<string, string>
+                HttpMethod.Post);
+            var body = new Dictionary<string, string>
                 {
                     {"client_id", configuration.Value.ClientId },
                     {"client_secret", configuration.Value.ClientSecret },
                     {"grant_type", grantType }
                 };
 
-                if (grantType == "refresh_token")
-                {
-                    body.Add("refresh_token", parameters.GetOrThrowUnexpectedResponse("refresh_token"));
-                }
-                else
-                {
-                    body.Add("code", parameters.GetOrThrowUnexpectedResponse("code"));
-                    body.Add("redirect_uri", configuration.Value.RedirectUri);
-                }
-
-                request.Content = new FormUrlEncodedContent(body);
-                var response = await client.SendAsync(request);
-
-                AfterGetauth(new BeforeAfterRequestArgs
-                {
-                    Response = await response.Content.ReadAsStringAsync(),
-                    Parameters = parameters
-                });
-
-                auth = auth ?? new AuthModel();
-
-                auth.AccessToken = ParseTokenResponse(await response.Content.ReadAsStringAsync(), AccessTokenKey);
-                if (string.IsNullOrEmpty(auth.AccessToken))
-                    throw new UnexpectedResponseException(AccessTokenKey);
-
-                auth.TokenType = ParseTokenResponse(await response.Content.ReadAsStringAsync(), TokenTypeKey);
-
-                if (int.TryParse(ParseTokenResponse(await response.Content.ReadAsStringAsync(), ExpiresKey), out int expiresIn)
-                    && DateTimeOffset.TryParse(response.Headers.GetValues("Date").FirstOrDefault(), out DateTimeOffset responseTimeStamp))
-                    auth.ExpiresAt = responseTimeStamp.AddSeconds(expiresIn);
-
-                if (grantType != "refresh_token")
-                {
-                    auth.RefreshToken = ParseTokenResponse(await response.Content.ReadAsStringAsync(), RefreshTokenKey);
-                }
-
-                if (persistAuthorizationService != null)
-                    await persistAuthorizationService.UpdateAuthModelAsync(auth);
+            if (grantType == "refresh_token")
+            {
+                body.Add("refresh_token", parameters.GetOrThrowUnexpectedResponse("refresh_token"));
             }
+            else
+            {
+                body.Add("code", parameters.GetOrThrowUnexpectedResponse("code"));
+                body.Add("redirect_uri", configuration.Value.RedirectUri);
+            }
+
+            request.Content = new FormUrlEncodedContent(body);
+            var response = await client.SendAsync(request);
+
+            AfterGetauth(new BeforeAfterRequestArgs
+            {
+                Response = await response.Content.ReadAsStringAsync(),
+                Parameters = parameters
+            });
+
+            auth ??= new AuthModel();
+
+            auth.AccessToken = ParseTokenResponse(await response.Content.ReadAsStringAsync(), AccessTokenKey);
+            if (string.IsNullOrEmpty(auth.AccessToken))
+                throw new UnexpectedResponseException(AccessTokenKey);
+
+            auth.TokenType = ParseTokenResponse(await response.Content.ReadAsStringAsync(), TokenTypeKey);
+
+            if (int.TryParse(ParseTokenResponse(await response.Content.ReadAsStringAsync(), ExpiresKey), out int expiresIn)
+                && DateTimeOffset.TryParse(response.Headers.GetValues("Date").FirstOrDefault(), out DateTimeOffset responseTimeStamp))
+                auth.ExpiresAt = responseTimeStamp.AddSeconds(expiresIn);
+
+            if (grantType != "refresh_token")
+            {
+                auth.RefreshToken = ParseTokenResponse(await response.Content.ReadAsStringAsync(), RefreshTokenKey);
+            }
+
+            if (persistAuthorizationService != null)
+                await persistAuthorizationService.UpdateAuthModelAsync(auth);
         }
 
         /// <summary>
@@ -248,9 +243,8 @@ namespace YahooFantasyWrapper.Client
         /// Any additional information that will be posted back by service.
         public string GetLoginLinkUri()
         {
-            using (var request = RequestFactory.CreateRequest(AuthApiEndPoints.AccessCodeServiceEndpoint))
-            {
-                var body = new Dictionary<string, string>
+            using var request = RequestFactory.CreateRequest(AuthApiEndPoints.AccessCodeServiceEndpoint);
+            var body = new Dictionary<string, string>
                 {
                     {"response_type", "code" },
                     {"client_id", configuration.Value.ClientId},
@@ -258,8 +252,7 @@ namespace YahooFantasyWrapper.Client
                     {"redirect_uri", configuration.Value.RedirectUri }
                 };
 
-                return AddQueryString(request.RequestUri.ToString(), body);
-            }
+            return AddQueryString(request.RequestUri.ToString(), body);
         }
 
         /// <summary>

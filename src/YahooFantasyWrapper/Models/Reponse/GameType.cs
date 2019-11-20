@@ -15,19 +15,14 @@ namespace YahooFantasyWrapper.Models.Response
     {
         public static string ToFriendlyString(this GameType me)
         {
-            switch (me)
+            return me switch
             {
-                case GameType.Full:
-                    return "full";
-                case GameType.PickemGroup:
-                    return "pickem-group";
-                case GameType.PickemTeam:
-                    return "pickem-team";
-                case GameType.PickemTeamList:
-                    return "pickem-team-list";
-                default:
-                    return "";
-            }
+                GameType.Full => "full",
+                GameType.PickemGroup => "pickem-group",
+                GameType.PickemTeam => "pickem-team",
+                GameType.PickemTeamList => "pickem-team-list",
+                _ => "",
+            };
         }
     }
 }

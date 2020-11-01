@@ -53,7 +53,15 @@ namespace YahooFantasyWrapper.Client
         /// Add/Drops Players
         /// </summary>
         /// <returns></returns>
-        public async Task AddOrDropPlayerAsync(AuthModel auth, string leagueKey, MultiPlayerTransaction transaction)
+        public async Task AddPlayerAsync(AuthModel auth, string leagueKey, SinglePlayerTransaction transaction)
+        {
+            await Utils.PostCollection(client, ApiEndpoints.TransactionsLeagueEndPoint(leagueKey), auth, transaction);
+        }
+        /// <summary>
+        /// Add/Drops Players
+        /// </summary>
+        /// <returns></returns>
+        public async Task AddAndDropPlayerAsync(AuthModel auth, string leagueKey, MultiPlayerTransaction transaction)
         {
             await Utils.PostCollection(client, ApiEndpoints.TransactionsLeagueEndPoint(leagueKey), auth, transaction);
         }

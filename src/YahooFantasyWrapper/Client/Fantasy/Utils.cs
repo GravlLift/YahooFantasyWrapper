@@ -133,7 +133,13 @@ namespace YahooFantasyWrapper.Client
             request.Content = new StreamContent(memoryStream);
             request.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/xml");
 
-            await client.SendAsync(request);
+            var response = await client.SendAsync(request);
+            if(!response.IsSuccessStatusCode)
+            {
+                throw new InvalidOperationException(
+                    GetErrorMessage(
+                        XDocument.Parse(await response.Content.ReadAsStringAsync())));
+            }
         }
 
         private static string GetErrorMessage(XDocument xml)

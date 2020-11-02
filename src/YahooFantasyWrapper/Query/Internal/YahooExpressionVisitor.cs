@@ -19,7 +19,7 @@ namespace YahooFantasyWrapper.Query.Internal
 
         public override string ToString()
         {
-            return "/" + string.Join("/", Segments);
+            return "/fantasy/v2/" + string.Join("/", Segments);
         }
 
         public override Expression Visit(Expression node)

@@ -3,15 +3,16 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Net.Http;
 using YahooFantasyWrapper.Query.Internal;
 
 namespace YahooFantasyWrapper
 {
     public class YahooSet<TEntity> : IQueryable<TEntity>
     {
-        public YahooSet()
+        public YahooSet(YahooQueryProvider queryProvider)
         {
-            Provider = new YahooQueryProvider();
+            Provider = queryProvider;
             Expression = Expression.Constant(this);
         }
 

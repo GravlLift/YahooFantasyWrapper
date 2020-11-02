@@ -6,7 +6,7 @@ using System.Xml.Serialization;
 namespace YahooFantasyWrapper.Models.Response
 {
     [XmlRoot(ElementName = "league", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
-    public class League
+    public class League : IYahooCollection
     {
         [XmlElement(ElementName = "league_key", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
         public string LeagueKey { get; set; }

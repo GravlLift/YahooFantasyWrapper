@@ -7,7 +7,7 @@ using System.Xml.Serialization;
 namespace YahooFantasyWrapper.Models.Response
 {
     [XmlRoot(ElementName = "settings", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
-    public class Settings
+    public class Settings : IYahooResource
     {
         [XmlElement(ElementName = "draft_type", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
         public string DraftType { get; set; }

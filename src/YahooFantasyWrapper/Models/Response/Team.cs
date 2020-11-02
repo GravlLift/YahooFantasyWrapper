@@ -36,7 +36,7 @@ namespace YahooFantasyWrapper.Models.Response
         public string Value { get; set; }
     }
 
-    public abstract class TeamBase : IComparable
+    public abstract class TeamBase : IYahooCollection, IComparable
     {
         [XmlElement(ElementName = "team_key")]
         public string TeamKey { get; set; }
@@ -158,7 +158,7 @@ namespace YahooFantasyWrapper.Models.Response
 
 
     [XmlRoot(ElementName = "roster", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
-    public class Roster
+    public class Roster : IYahooResource
     {
         [XmlElement(ElementName = "coverage_type", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
         public string CoverageType { get; set; }

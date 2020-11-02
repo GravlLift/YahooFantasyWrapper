@@ -47,7 +47,7 @@ namespace YahooFantasyWrapper.Models.Response
     }
 
     [XmlRoot(ElementName = "matchup")]
-    public class Matchup
+    public class Matchup : IYahooCollection
     {
         [XmlElement(ElementName = "week")]
         public int Week { get; set; }

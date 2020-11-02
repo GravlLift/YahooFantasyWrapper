@@ -36,12 +36,12 @@ namespace YahooFantasyWrapper.Models.Response
     }
 
     [XmlRoot(ElementName = "game", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
-    public class Game
+    public class Game : IYahooCollection
     {
         [XmlElement(ElementName = "game_key", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
         public string GameKey { get; set; }
         [XmlElement(ElementName = "game_id", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
-        public string GameId { get; set; }
+        public int GameId { get; set; }
         [XmlElement(ElementName = "name", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
         public string Name { get; set; }
         [XmlElement(ElementName = "code", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]

@@ -6,11 +6,11 @@ using System.Xml.Serialization;
 
 namespace YahooFantasyWrapper.Query.Internal
 {
-    internal class YahooFilterExpressionVisitor : ExpressionVisitor
+    internal class YahooWhereExpressionVisitor : ExpressionVisitor
     {
         internal Dictionary<string, HashSet<string>> Filters = new Dictionary<string, HashSet<string>>();
 
-        public YahooFilterExpressionVisitor(MethodCallExpression expression)
+        public YahooWhereExpressionVisitor(MethodCallExpression expression)
         {
             VisitMethodCall(expression);
         }

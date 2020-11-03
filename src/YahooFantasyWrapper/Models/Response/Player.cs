@@ -42,7 +42,7 @@ namespace YahooFantasyWrapper.Models.Response
     }
 
     [XmlRoot(ElementName = "player", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
-    public class Player
+    public class Player : IYahooCollection
     {
         [XmlElement(ElementName = "player_key", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
         public string PlayerKey { get; set; }

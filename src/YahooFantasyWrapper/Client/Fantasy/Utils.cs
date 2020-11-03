@@ -134,7 +134,7 @@ namespace YahooFantasyWrapper.Client
             request.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/xml");
 
             var response = await client.SendAsync(request);
-            if(!response.IsSuccessStatusCode)
+            if (!response.IsSuccessStatusCode)
             {
                 throw new InvalidOperationException(
                     GetErrorMessage(
@@ -142,7 +142,7 @@ namespace YahooFantasyWrapper.Client
             }
         }
 
-        private static string GetErrorMessage(XDocument xml)
+        public static string GetErrorMessage(XDocument xml)
         {
             var result =
                 from e in xml.Root.Elements()

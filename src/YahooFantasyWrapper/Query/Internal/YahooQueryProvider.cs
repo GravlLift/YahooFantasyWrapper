@@ -7,6 +7,9 @@ using System.Threading;
 using System.Net.Http.Xml;
 using YahooFantasyWrapper.Models.Response;
 using System.Threading.Tasks;
+using YahooFantasyWrapper.Client;
+using System.Net.Http.Headers;
+using System.Xml.Linq;
 
 namespace YahooFantasyWrapper.Query.Internal
 {
@@ -20,10 +23,12 @@ namespace YahooFantasyWrapper.Query.Internal
                 .Single(m => (m.Name == "Execute") && m.IsGenericMethod);
 
         private readonly HttpClient httpClient;
+        private readonly IYahooAuthClient authClient;
 
-        public YahooQueryProvider(HttpClient httpClient)
+        public YahooQueryProvider(HttpClient httpClient, IYahooAuthClient authClient)
         {
             this.httpClient = httpClient;
+            this.authClient = authClient;
         }
 
         public IQueryable CreateQuery(Expression expression)
@@ -42,8 +47,35 @@ namespace YahooFantasyWrapper.Query.Internal
 
         public TResult Execute<TResult>(Expression expression)
         {
-            var urlString = new YahooExpressionVisitor(expression).ToString();
-            return httpClient.GetFromXmlAsync<TResult>(urlString).GetAwaiter().GetResult();
+            return ExecuteAsync<TResult>(expression).GetAwaiter().GetResult();
+        }
+
+        public async Task<TResult> ExecuteAsync<TResult>(Expression expression)
+        {
+            var requestUri = new YahooExpressionVisitor(expression).ToString();
+            var authToken = await authClient.GetCurrentToken();
+
+            var request = new HttpRequestMessage(HttpMethod.Get, requestUri);
+            request.Headers.Authorization = new AuthenticationHeaderValue(authToken.TokenType, authToken.AccessToken);
+
+            var taskResponse = httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
+            using HttpResponseMessage response = await taskResponse.ConfigureAwait(false);
+
+            if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+            {
+                var errorMessage = Utils.GetErrorMessage(XDocument.Parse(await response.Content.ReadAsStringAsync()));
+                throw errorMessage switch
+                {
+                    "Please provide valid credentials. OAuth oauth_problem=\"unable_to_determine_oauth_type\", realm=\"yahooapis.com\"" => new NoAuthorizationPresentException(),
+                    "Please provide valid credentials. OAuth oauth_problem=\"token_expired\", realm=\"yahooapis.com\"" => new ExpiredAuthorizationException(),
+                    _ => new GenericYahooException(errorMessage),
+                };
+            }
+            response.EnsureSuccessStatusCode();
+            // Nullable forgiving reason:
+            // GetAsync will usually return Content as not-null.
+            // If Content happens to be null, the extension will throw.
+            return await response.Content!.ReadFromXmlAsync<TResult>().ConfigureAwait(false);
         }
     }
 }

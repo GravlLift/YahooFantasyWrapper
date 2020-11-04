@@ -1,6 +1,6 @@
 ﻿using System.Xml.Serialization;
 
-namespace YahooFantasyWrapper.Models.Request
+namespace YahooFantasyWrapper.Models
 {
 
     [XmlRoot(ElementName = "fantasy_content")]

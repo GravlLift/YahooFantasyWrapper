@@ -10,25 +10,25 @@ namespace System.Net.Http.Xml
 {
     public static class HttpContentXmlExtensions
     {
-        public static Task<object?> ReadFromXmlAsync(this HttpContent content, Type type)
+        public static Task<object?> ReadFromXmlAsync(this HttpContent content, Type type, XmlSerializer? xmlSerializer = null)
         {
             ValidateContent(content);
             Debug.Assert(content.Headers.ContentType != null);
             Encoding? sourceEncoding = XmlContent.GetEncoding(content.Headers.ContentType.CharSet);
 
-            return ReadFromXmlAsyncCore(content, type, sourceEncoding);
+            return ReadFromXmlAsyncCore(content, type, sourceEncoding, xmlSerializer);
         }
 
-        public static Task<T> ReadFromXmlAsync<T>(this HttpContent content)
+        public static Task<T> ReadFromXmlAsync<T>(this HttpContent content, XmlSerializer? xmlSerializer = null)
         {
             ValidateContent(content);
             Debug.Assert(content.Headers.ContentType != null);
             Encoding? sourceEncoding = XmlContent.GetEncoding(content.Headers.ContentType.CharSet);
 
-            return ReadFromXmlAsyncCore<T>(content, sourceEncoding);
+            return ReadFromXmlAsyncCore<T>(content, sourceEncoding, xmlSerializer);
         }
 
-        private static async Task<object?> ReadFromXmlAsyncCore(HttpContent content, Type type, Encoding? sourceEncoding)
+        private static async Task<object?> ReadFromXmlAsyncCore(HttpContent content, Type type, Encoding? sourceEncoding, XmlSerializer? xmlSerializer)
         {
             Stream contentStream = await content.ReadAsStreamAsync().ConfigureAwait(false);
 
@@ -40,12 +40,12 @@ namespace System.Net.Http.Xml
 
             using (contentStream)
             {
-                var xmlSerializer = new XmlSerializer(type);
+                xmlSerializer ??= new XmlSerializer(type);
                 return xmlSerializer.Deserialize(contentStream);
             }
         }
 
-        private static async Task<T> ReadFromXmlAsyncCore<T>(HttpContent content, Encoding? sourceEncoding)
+        private static async Task<T> ReadFromXmlAsyncCore<T>(HttpContent content, Encoding? sourceEncoding, XmlSerializer? xmlSerializer)
         {
             Stream contentStream = await content.ReadAsStreamAsync().ConfigureAwait(false);
 
@@ -57,8 +57,8 @@ namespace System.Net.Http.Xml
 
             using (contentStream)
             {
-                var xmlSerialzer = new XmlSerializer(typeof(T));
-                return (T)xmlSerialzer.Deserialize(contentStream);
+                xmlSerializer ??= new XmlSerializer(typeof(T));
+                return (T)xmlSerializer.Deserialize(contentStream);
             }
         }
 

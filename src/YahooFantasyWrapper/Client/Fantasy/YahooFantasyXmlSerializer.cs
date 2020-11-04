@@ -3,20 +3,25 @@ using System.Reflection;
 using System.Xml;
 using System.Xml.Serialization;
 using YahooFantasyWrapper.Infrastructure;
-using YahooFantasyWrapper.Models.Request;
+using YahooFantasyWrapper.Models;
 
 namespace YahooFantasyWrapper.Client.Fantasy
 {
-    public class YahooFantasyXmlSerializer<TContent>
+    public class YahooFantasyXmlSerializer<TContent> : XmlSerializer
     {
-        private readonly XmlSerializer xmlSerializer;
+        private static XmlAttributeOverrides attributeOverides
+        {
+            get
+            {
+                var attrOverrides = new XmlAttributeOverrides();
+                attrOverrides.Add<FantasyContent<TContent>>(f => f.Content, OverrideContentAttribute);
+                return attrOverrides;
+            }
+        }
 
         public YahooFantasyXmlSerializer()
-        {
-            var attrOverrides = new XmlAttributeOverrides();
-            attrOverrides.Add<FantasyContent<TContent>>(f => f.Content, OverrideContentAttribute);
-            xmlSerializer = new XmlSerializer(typeof(FantasyContent<TContent>), attrOverrides);
-        }
+            : base(typeof(FantasyContent<TContent>), attributeOverides, Array.Empty<Type>(), null, "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")
+        { }
 
         private static XmlAttributes OverrideContentAttribute
         {
@@ -37,7 +42,7 @@ namespace YahooFantasyWrapper.Client.Fantasy
             {
                 Content = o
             };
-            xmlSerializer.Serialize(writer, fantasyWrapper, new XmlSerializerNamespaces(new[] { XmlQualifiedName.Empty }));
+            Serialize(writer, fantasyWrapper, new XmlSerializerNamespaces(new[] { XmlQualifiedName.Empty }));
         }
     }
 }

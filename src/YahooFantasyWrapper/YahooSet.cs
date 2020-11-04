@@ -30,13 +30,9 @@ namespace YahooFantasyWrapper
         public IQueryProvider Provider { get; private set; }
 
         public IEnumerator<TEntity> GetEnumerator()
-        {
-            throw new NotImplementedException();
-        }
+            => Provider.Execute<IEnumerable<TEntity>>(Expression).GetEnumerator();
 
         IEnumerator IEnumerable.GetEnumerator()
-        {
-            throw new NotImplementedException();
-        }
+            => Provider.Execute<IEnumerable>(Expression).GetEnumerator();
     }
 }

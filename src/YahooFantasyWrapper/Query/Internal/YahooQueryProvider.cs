@@ -10,6 +10,8 @@ using System.Threading.Tasks;
 using YahooFantasyWrapper.Client;
 using System.Net.Http.Headers;
 using System.Xml.Linq;
+using YahooFantasyWrapper.Models;
+using YahooFantasyWrapper.Client.Fantasy;
 
 namespace YahooFantasyWrapper.Query.Internal
 {
@@ -37,9 +39,7 @@ namespace YahooFantasyWrapper.Query.Internal
                 .Invoke(this, new object[] { expression });
 
         public IQueryable<TEntity> CreateQuery<TEntity>(Expression expression)
-        {
-            return new YahooSet<TEntity>(this, expression);
-        }
+            => new YahooSet<TEntity>(this, expression);
 
         public object Execute(Expression expression)
             => _genericExecuteMethod.MakeGenericMethod(expression.Type)
@@ -66,8 +66,10 @@ namespace YahooFantasyWrapper.Query.Internal
                 var errorMessage = Utils.GetErrorMessage(XDocument.Parse(await response.Content.ReadAsStringAsync()));
                 throw errorMessage switch
                 {
-                    "Please provide valid credentials. OAuth oauth_problem=\"unable_to_determine_oauth_type\", realm=\"yahooapis.com\"" => new NoAuthorizationPresentException(),
-                    "Please provide valid credentials. OAuth oauth_problem=\"token_expired\", realm=\"yahooapis.com\"" => new ExpiredAuthorizationException(),
+                    "Please provide valid credentials. OAuth oauth_problem=\"unable_to_determine_oauth_type\", realm=\"yahooapis.com\""
+                        => new NoAuthorizationPresentException(),
+                    "Please provide valid credentials. OAuth oauth_problem=\"token_expired\", realm=\"yahooapis.com\""
+                        => new ExpiredAuthorizationException(),
                     _ => new GenericYahooException(errorMessage),
                 };
             }
@@ -75,7 +77,10 @@ namespace YahooFantasyWrapper.Query.Internal
             // Nullable forgiving reason:
             // GetAsync will usually return Content as not-null.
             // If Content happens to be null, the extension will throw.
-            return await response.Content!.ReadFromXmlAsync<TResult>().ConfigureAwait(false);
+            var result = await response.Content!
+                .ReadFromXmlAsync<FantasyContent<TResult>>(new YahooFantasyXmlSerializer<TResult>())
+                .ConfigureAwait(false);
+            return result.Content;
         }
     }
 }

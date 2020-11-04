@@ -29,9 +29,14 @@ namespace YahooFantasyWrapper.Query.Internal
                     {
                         var xmlElementAttribute = leftExpression.Member.GetCustomAttribute<XmlElementAttribute>();
 
-                        if (node.Right is ConstantExpression rightExpression)
+                        if (node.Right is ConstantExpression rightConstantExpression)
                         {
-                            Filters.Add(xmlElementAttribute.ElementName, rightExpression.Value.ToString());
+                            Filters.Add(xmlElementAttribute.ElementName, rightConstantExpression.Value.ToString());
+                            return node;
+                        }
+                        else if (node.Right is MemberExpression rightMemberExpression)
+                        {
+                            Filters.Add(xmlElementAttribute.ElementName, GetValue(rightMemberExpression).ToString());
                             return node;
                         }
                     }
@@ -43,6 +48,17 @@ namespace YahooFantasyWrapper.Query.Internal
                     throw new NotImplementedException($"Node type {node.NodeType} has not been implemented.");
             }
 
+        }
+
+        private object GetValue(MemberExpression member)
+        {
+            var objectMember = Expression.Convert(member, typeof(object));
+
+            var getterLambda = Expression.Lambda<Func<object>>(objectMember);
+
+            var getter = getterLambda.Compile();
+
+            return getter();
         }
     }
 }

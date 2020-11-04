@@ -9,7 +9,7 @@ namespace YahooFantasyWrapper.Client.Fantasy
     {
         protected readonly HttpClient client;
 
-        public Manager(HttpClient client)
+        protected Manager(HttpClient client)
         {
             this.client = client;
         }

@@ -417,17 +417,17 @@ namespace YahooFantasyWrapper.Client
                 sb.Append($";is_available={Convert.ToInt32(filters.IsAvailable.Value)}");
             }
 
-            if (filters.Seasons != null && filters.Seasons.Length > 0)
+            if (filters.Seasons != null && filters.Seasons.Count > 0)
             {
                 sb.Append($";seasons={string.Join(",", filters.Seasons)}");
             }
 
-            if (filters.GameCodes != null && filters.GameCodes.Length > 0)
+            if (filters.GameCodes != null && filters.GameCodes.Count > 0)
             {
                 sb.Append($";game_codes={string.Join(",", filters.GameCodes.Select(a => Enum<GameCode>.GetName(a)))}");
             }
 
-            if (filters.GameTypes != null && filters.GameTypes.Length > 0)
+            if (filters.GameTypes != null && filters.GameTypes.Count > 0)
             {
                 sb.Append($";game_types={ string.Join(",", filters.GameTypes.Select(a => a.ToFriendlyString()))}");
 
@@ -444,12 +444,12 @@ namespace YahooFantasyWrapper.Client
 
             StringBuilder sb = new StringBuilder();
 
-            if (filters.Positions != null && filters.Positions.Length > 0)
+            if (filters.Positions != null && filters.Positions.Count > 0)
             {
                 sb.Append($";position={string.Join(",", filters.Positions)}");
             }
 
-            if (filters.Statuses != null && filters.Statuses.Length > 0)
+            if (filters.Statuses != null && filters.Statuses.Count > 0)
             {
                 sb.Append($";status={string.Join(",", filters.Statuses.Select(s => s.ToString()))}");
             }
@@ -515,7 +515,7 @@ namespace YahooFantasyWrapper.Client
             string dt = "";
             if (date != null)
             {
-                dt = $";date={ date.Value.ToString("yyyy-M-dd") }";
+                dt = $";date={ date.Value:yyyy-M-dd}";
             }
 
             return dt;

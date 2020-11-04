@@ -36,7 +36,7 @@ namespace YahooFantasyWrapper.Client
         /// <summary>
         /// Client configuration object.
         /// </summary>
-        private readonly IOptions<YahooConfiguration> configuration;
+        private readonly YahooConfiguration configuration;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="YahooAuthClient"/> class.
@@ -46,7 +46,7 @@ namespace YahooFantasyWrapper.Client
         /// <param name="persistAuthorizationService"></param>
         public YahooAuthClient(
             HttpClient client,
-            IOptions<YahooConfiguration> configuration,
+            YahooConfiguration configuration,
             IPersistAuthorizationService persistAuthorizationService)
         {
             this.client = client;
@@ -123,8 +123,8 @@ namespace YahooFantasyWrapper.Client
                 HttpMethod.Post);
             var body = new Dictionary<string, string>
                 {
-                    {"client_id", configuration.Value.ClientId },
-                    {"client_secret", configuration.Value.ClientSecret },
+                    {"client_id", configuration.ClientId },
+                    {"client_secret", configuration.ClientSecret },
                     {"grant_type", grantType }
                 };
 
@@ -135,7 +135,7 @@ namespace YahooFantasyWrapper.Client
             else
             {
                 body.Add("code", parameters.GetOrThrowUnexpectedResponse("code"));
-                body.Add("redirect_uri", configuration.Value.RedirectUri);
+                body.Add("redirect_uri", configuration.RedirectUri);
             }
 
             request.Content = new FormUrlEncodedContent(body);
@@ -245,12 +245,12 @@ namespace YahooFantasyWrapper.Client
         {
             using var request = RequestFactory.CreateRequest(AuthApiEndPoints.AccessCodeServiceEndpoint);
             var body = new Dictionary<string, string>
-                {
-                    {"response_type", "code" },
-                    {"client_id", configuration.Value.ClientId},
-                    {"client_secret", configuration.Value.ClientSecret },
-                    {"redirect_uri", configuration.Value.RedirectUri }
-                };
+            {
+                {"response_type", "code" },
+                {"client_id", configuration.ClientId},
+                {"client_secret", configuration.ClientSecret },
+                {"redirect_uri", configuration.RedirectUri }
+            };
 
             return AddQueryString(request.RequestUri.ToString(), body);
         }

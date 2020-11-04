@@ -11,9 +11,9 @@ namespace YahooFantasyWrapper.Client
     public class GameCollectionFilters
     {
         public bool? IsAvailable { get; set; }
-        public int[] Seasons { get; set; }
-        public GameCode[] GameCodes { get; set; }
-        public GameType[] GameTypes { get; set; }
+        public ICollection<int> Seasons { get; set; }
+        public ICollection<GameCode> GameCodes { get; set; }
+        public ICollection<GameType> GameTypes { get; set; }
     }
 
     /// <summary>
@@ -21,8 +21,8 @@ namespace YahooFantasyWrapper.Client
     /// </summary>
     public class PlayerCollectionFilters
     {
-        public string[] Positions { get; set; }
-        public PlayerOwnershipStatus[] Statuses { get; set; }
+        public ICollection<string> Positions { get; set; }
+        public ICollection<PlayerOwnershipStatus> Statuses { get; set; }
         public string Search { get; set; }
         public string Sort { get; set; }
         public PlayerSortType SortType { get; set; }

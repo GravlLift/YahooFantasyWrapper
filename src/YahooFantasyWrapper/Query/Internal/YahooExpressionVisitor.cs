@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -9,13 +10,17 @@ namespace YahooFantasyWrapper.Query.Internal
     public class YahooExpressionVisitor : ExpressionVisitor
     {
         internal List<YahooUrlSegment> Segments = new List<YahooUrlSegment>();
+        private YahooUrlSegment RootSegment => Segments.First();
         private YahooUrlSegment CurrentSegment => Segments.Last();
 
         public YahooExpressionVisitor(Expression expression)
         {
             Segments.Add(new YahooUrlSegment
             {
-                ResourceType = expression.Type
+                ResourceType = typeof(IEnumerable).IsAssignableFrom(expression.Type) ?
+                    expression.Type.GenericTypeArguments[0] :
+                    expression.Type,
+                IsCollection = expression.Type.IsAssignableFrom(typeof(Models.Response.IYahooCollection))
             });
             Visit(expression);
         }
@@ -32,23 +37,23 @@ namespace YahooFantasyWrapper.Query.Internal
 
         protected override Expression VisitMethodCall(MethodCallExpression node)
         {
-            if (node.Method.Name == nameof(Enumerable.First))
+            if (node.Method.Name == nameof(Enumerable.Where) ||
+                node.Method.Name == nameof(Enumerable.First))
             {
                 var filters = new YahooWhereExpressionVisitor(node).Filters;
                 foreach (var filter in filters)
                 {
-                    if (CurrentSegment.Modifiers.ContainsKey(filter.Key))
+                    if (RootSegment.Modifiers.ContainsKey(filter.Key))
                     {
-                        CurrentSegment.Modifiers[filter.Key].UnionWith(filter.Value);
+                        RootSegment.Modifiers[filter.Key].UnionWith(filter.Value);
                     }
                     else
                     {
-                        CurrentSegment.Modifiers.Add(filter.Key, filter.Value);
+                        RootSegment.Modifiers.Add(filter.Key, filter.Value);
                     }
                 }
-                return node;
             }
-            else if (node.Method.Name == nameof(IQueryableExtensions.Filter))
+            else if (node.Method.Name == nameof(QueryableExtensions.Filter))
             {
                 var filter = node.Arguments[1];
                 if (filter is ConstantExpression constantExpressionFilter && constantExpressionFilter.Value != null)
@@ -77,9 +82,49 @@ namespace YahooFantasyWrapper.Query.Internal
                 {
                     throw new NotImplementedException($"Filter is of unhandled type {filter.Type.Name}");
                 }
-                return node;
             }
-
+            else if (node.Method.Name == nameof(QueryableExtensions.SubResource))
+            {
+                var expressionArgument = node.Arguments[1];
+                if (expressionArgument is UnaryExpression unaryExpression)
+                {
+                    if (unaryExpression.Operand is LambdaExpression lambdaExpression)
+                    {
+                        if (lambdaExpression.Body is MemberExpression memberExpression)
+                        {
+                            var propertyType = ((PropertyInfo)memberExpression.Member).PropertyType;
+                            if (typeof(IEnumerable).IsAssignableFrom(propertyType))
+                            {
+                                Segments.Add(new YahooUrlSegment
+                                {
+                                    ResourceType = propertyType.GenericTypeArguments[0],
+                                    IsCollection = true
+                                });
+                            }
+                            else
+                            {
+                                Segments.Add(new YahooUrlSegment
+                                {
+                                    ResourceType = propertyType,
+                                    IsCollection = false
+                                });
+                            }
+                        }
+                        else
+                        {
+                            throw new NotImplementedException($"Lambda expression is of unhandled type {unaryExpression.Type.Name}");
+                        }
+                    }
+                    else
+                    {
+                        throw new NotImplementedException($"Unary operand is of unhandled type {unaryExpression.Type.Name}");
+                    }
+                }
+                else
+                {
+                    throw new NotImplementedException($"Argument is of unhandled type {expressionArgument.Type.Name}");
+                }
+            }
             return base.VisitMethodCall(node);
         }
 

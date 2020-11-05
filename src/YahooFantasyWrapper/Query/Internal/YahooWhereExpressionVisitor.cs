@@ -31,12 +31,12 @@ namespace YahooFantasyWrapper.Query.Internal
 
                         if (node.Right is ConstantExpression rightConstantExpression)
                         {
-                            Filters.Add(xmlElementAttribute.ElementName, rightConstantExpression.Value.ToString());
+                            Filters.AddUnion(xmlElementAttribute.ElementName, rightConstantExpression.Value.ToString());
                             return node;
                         }
                         else if (node.Right is MemberExpression rightMemberExpression)
                         {
-                            Filters.Add(xmlElementAttribute.ElementName, GetValue(rightMemberExpression).ToString());
+                            Filters.AddUnion(xmlElementAttribute.ElementName, GetValue(rightMemberExpression).ToString());
                             return node;
                         }
                     }

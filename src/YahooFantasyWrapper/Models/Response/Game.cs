@@ -82,7 +82,7 @@ namespace YahooFantasyWrapper.Models.Response
     }
 
     [XmlRoot(ElementName = "user", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
-    public class User
+    public class User : IYahooCollection
     {
         [XmlElement(ElementName = "guid", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
         public string Guid { get; set; }

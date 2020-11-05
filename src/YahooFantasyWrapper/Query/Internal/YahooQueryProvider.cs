@@ -17,9 +17,9 @@ namespace YahooFantasyWrapper.Query.Internal
 {
     public class YahooQueryProvider : IQueryProvider
     {
-        private static readonly MethodInfo _genericCreateQueryMethod
+        private static readonly MethodInfo _createYahooQueryMethod
             = typeof(YahooQueryProvider).GetRuntimeMethods()
-                .Single(m => (m.Name == "CreateQuery") && m.IsGenericMethod);
+                .Single(m => (m.Name == "CreateYahooQuery") && m.IsGenericMethod);
         private static readonly MethodInfo _genericExecuteMethod
             = typeof(YahooQueryProvider).GetRuntimeMethods()
                 .Single(m => (m.Name == "Execute") && m.IsGenericMethod);
@@ -34,11 +34,17 @@ namespace YahooFantasyWrapper.Query.Internal
         }
 
         public IQueryable CreateQuery(Expression expression)
-            => (IQueryable)_genericCreateQueryMethod
+            => (IQueryable)_createYahooQueryMethod
                 .MakeGenericMethod(expression.Type.GetSequenceType())
                 .Invoke(this, new object[] { expression });
 
         public IQueryable<TEntity> CreateQuery<TEntity>(Expression expression)
+            => (IQueryable<TEntity>)_createYahooQueryMethod
+                .MakeGenericMethod(typeof(TEntity))
+                .Invoke(this, new object[] { expression });
+
+        internal IQueryable<TEntity> CreateYahooQuery<TEntity>(Expression expression)
+            where TEntity : IYahooEntity
             => new YahooSet<TEntity>(this, expression);
 
         public object Execute(Expression expression)

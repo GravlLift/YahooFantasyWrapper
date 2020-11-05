@@ -26,28 +26,6 @@ namespace YahooFantasyWrapper.Client
             this.client = client;
         }
 
-        public GameResourceManager GameResourceManager => new GameResourceManager(client);
-
-        public GameCollectionsManager GameCollectionsManager => new GameCollectionsManager(client);
-
-        public UserResourceManager UserResourceManager => new UserResourceManager(client);
-
-        public LeagueResourceManager LeagueResourceManager => new LeagueResourceManager(client);
-
-        public LeaguesCollectionManager LeaguesCollectionManager => new LeaguesCollectionManager(client);
-
-        public PlayerResourceManager PlayerResourceManager => new PlayerResourceManager(client);
-
-        public PlayersCollectionManager PlayersCollectionManager => new PlayersCollectionManager(client);
-
-        public RosterResourceManager RosterResourceManager => new RosterResourceManager(client);
-
-        public TeamResourceManager TeamResourceManager => new TeamResourceManager(client);
-
-        public TeamsCollectionManager TeamsCollectionManager => new TeamsCollectionManager(client);
-
-        public TransactionResourceManager TransactionResourceManager => new TransactionResourceManager(client);
-
         public TransactionsCollectionManager TransactionsCollectionManager => new TransactionsCollectionManager(client);
     }
 }

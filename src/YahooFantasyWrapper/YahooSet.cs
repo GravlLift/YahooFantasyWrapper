@@ -3,12 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Net.Http;
+using YahooFantasyWrapper.Models.Response;
 using YahooFantasyWrapper.Query.Internal;
 
 namespace YahooFantasyWrapper
 {
-    public class YahooSet<TEntity> : IQueryable<TEntity>
+    public class YahooSet<TYahooEntity> : IYahooQueryable<TYahooEntity, TYahooEntity>
+        where TYahooEntity : IYahooEntity
     {
         public YahooSet(YahooQueryProvider queryProvider)
         {
@@ -23,16 +24,16 @@ namespace YahooFantasyWrapper
         }
 
         public Type ElementType
-            => typeof(TEntity);
+            => typeof(TYahooEntity);
 
         public Expression Expression { get; private set; }
 
         public IQueryProvider Provider { get; private set; }
 
-        public IEnumerator<TEntity> GetEnumerator()
-            => Provider.Execute<IEnumerable<TEntity>>(Expression).GetEnumerator();
+        public IEnumerator<TYahooEntity> GetEnumerator()
+            => Provider.Execute<List<TYahooEntity>>(Expression).GetEnumerator();
 
         IEnumerator IEnumerable.GetEnumerator()
-            => Provider.Execute<IEnumerable>(Expression).GetEnumerator();
+            => throw new NotImplementedException();
     }
 }

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Reflection;
 using System.Xml;
 using System.Xml.Serialization;
@@ -19,18 +21,44 @@ namespace YahooFantasyWrapper.Client.Fantasy
             }
         }
 
+        private static Type fantasyContentType
+        {
+            get
+            {
+                if (typeof(IEnumerable).IsAssignableFrom(typeof(TContent)))
+                {
+                    return typeof(FantasyContent<>)
+                        .MakeGenericType(typeof(List<>)
+                            .MakeGenericType(typeof(TContent).GetGenericArguments()[0]));
+                }
+                else
+                {
+                    return typeof(FantasyContent<TContent>);
+                }
+            }
+        }
+
         public YahooFantasyXmlSerializer()
-            : base(typeof(FantasyContent<TContent>), attributeOverides, Array.Empty<Type>(), null, "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")
+            : base(fantasyContentType, attributeOverides, Array.Empty<Type>(), null, "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")
         { }
 
         private static XmlAttributes OverrideContentAttribute
         {
             get
             {
-                XmlRootAttribute attribute = typeof(TContent).GetCustomAttribute<XmlRootAttribute>();
-
                 XmlAttributes attrs = new XmlAttributes();
-                attrs.XmlElements.Add(new XmlElementAttribute { ElementName = attribute.ElementName });
+                if (typeof(IEnumerable).IsAssignableFrom(typeof(TContent)))
+                {
+                    XmlRootAttribute attribute = typeof(TContent).GetGenericArguments()[0]
+                        .GetCustomAttribute<XmlRootAttribute>();
+                    attrs.XmlArray = new XmlArrayAttribute($"{attribute.ElementName}s");
+                    attrs.XmlArrayItems.Add(new XmlArrayItemAttribute { ElementName = attribute.ElementName });
+                }
+                else
+                {
+                    XmlRootAttribute attribute = typeof(TContent).GetCustomAttribute<XmlRootAttribute>();
+                    attrs.XmlElements.Add(new XmlElementAttribute { ElementName = attribute.ElementName });
+                }
 
                 return attrs;
             }

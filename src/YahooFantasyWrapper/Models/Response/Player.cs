@@ -95,7 +95,7 @@ namespace YahooFantasyWrapper.Models.Response
     }
 
     [XmlRoot(ElementName = "ownership", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
-    public class PlayerOwnership
+    public class PlayerOwnership : IYahooResource
     {
         [XmlElement(ElementName = "ownership_type")]
         public PlayerOwnershipType OwnershipType { get; set; }

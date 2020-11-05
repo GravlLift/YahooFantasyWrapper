@@ -20,9 +20,15 @@ namespace YahooFantasyWrapper.Models.Response
 
     }
 
-
-    public interface IYahooCollection<TYahooCollection, TYahooSubResource>
+    public interface IYahooQueryable<TYahooCollection>
         : IQueryable<TYahooCollection>
+        where TYahooCollection : IYahooEntity
+    {
+
+    }
+
+    public interface IYahooQueryable<TYahooCollection, TYahooSubResource>
+        : IYahooQueryable<TYahooCollection>
         where TYahooCollection : IYahooEntity
         where TYahooSubResource : IYahooEntity
     {

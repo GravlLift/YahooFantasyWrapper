@@ -14,7 +14,7 @@
             }
         }
 
-        public static void Add<TKey, TValue>(this IDictionary<TKey, HashSet<TValue>> dictionary, TKey key, TValue value)
+        public static void AddUnion<TKey, TValue>(this IDictionary<TKey, HashSet<TValue>> dictionary, TKey key, TValue value)
         {
             if (dictionary.ContainsKey(key))
             {

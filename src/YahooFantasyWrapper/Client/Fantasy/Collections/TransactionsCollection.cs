@@ -18,10 +18,13 @@ namespace YahooFantasyWrapper.Client
     /// The transactions collection is qualified in the URI by a particular league.
     /// Each element beneath the Transactions Collection will be a Transaction Resource
     /// </summary>
-    public class TransactionsCollectionManager : Fantasy.Manager
+    public class TransactionsCollectionManager
     {
-        public TransactionsCollectionManager(HttpClient client) : base(client)
+        private readonly HttpClient client;
+
+        public TransactionsCollectionManager(HttpClient client)
         {
+            this.client = client;
         }
 
         /// <summary>

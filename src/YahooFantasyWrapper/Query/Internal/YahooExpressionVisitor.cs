@@ -4,24 +4,70 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using YahooFantasyWrapper.Client;
 
 namespace YahooFantasyWrapper.Query.Internal
 {
+
     public class YahooExpressionVisitor : ExpressionVisitor
     {
-        internal List<YahooUrlSegment> Segments = new List<YahooUrlSegment>();
-        private YahooUrlSegment RootSegment => Segments.First();
-        private YahooUrlSegment CurrentSegment => Segments.Last();
+        // Ordered list with a type for key and a boolean for value representing
+        // if the type indicate a collection
+        private readonly List<(Type type, bool isCollection)> SegmentTypes = new List<(Type type, bool isCollection)>();
+
+        // This confusing nightmare is a grouping of modifiers by type in no particular order,
+        // in case a method needs to add modifiers before the segment has been ordered
+        private readonly Dictionary<Type, Dictionary<string, HashSet<string>>> SegmentModifiers
+            = new Dictionary<Type, Dictionary<string, HashSet<string>>>();
+
+        // By their powers combioned...
+        private IEnumerable<YahooUrlSegment> Segments
+            => SegmentTypes.Select(kvp
+                => new YahooUrlSegment
+                {
+                    ResourceType = kvp.type,
+                    IsCollection = kvp.isCollection,
+                    Modifiers = SegmentModifiers[kvp.type]
+                });
+
+        private Dictionary<string, HashSet<string>> RootModifiers => SegmentModifiers[SegmentTypes[0].type];
+        private void AddSegment(Type type, bool isCollection)
+        {
+            if (SegmentTypes.Count == 0)
+            {
+                // Adding root segment
+                SegmentTypes.Add((type, isCollection));
+            }
+            else
+            {
+                SegmentTypes.Insert(1, (type, isCollection));
+            }
+
+            if (!SegmentModifiers.ContainsKey(type))
+            {
+                SegmentModifiers.Add(type, new Dictionary<string, HashSet<string>>());
+            }
+        }
+        private void AddModifer(Type type, string key, string value)
+        {
+            if (SegmentModifiers.ContainsKey(type))
+            {
+                SegmentModifiers[type].AddUnion(key, value);
+            }
+            else
+            {
+                SegmentModifiers.Add(type,
+                    new Dictionary<string, HashSet<string>> { { key, new HashSet<string> { value } } });
+            }
+        }
 
         public YahooExpressionVisitor(Expression expression)
         {
-            Segments.Add(new YahooUrlSegment
-            {
-                ResourceType = typeof(IEnumerable).IsAssignableFrom(expression.Type) ?
-                    expression.Type.GenericTypeArguments[0] :
-                    expression.Type,
-                IsCollection = expression.Type.IsAssignableFrom(typeof(Models.Response.IYahooCollection))
-            });
+            AddSegment(
+                typeof(IEnumerable).IsAssignableFrom(expression.Type)
+                    ? expression.Type.GenericTypeArguments[0]
+                    : expression.Type,
+                expression.Type.IsAssignableFrom(typeof(Models.Response.IYahooCollection)));
             Visit(expression);
         }
 
@@ -43,13 +89,13 @@ namespace YahooFantasyWrapper.Query.Internal
                 var filters = new YahooWhereExpressionVisitor(node).Filters;
                 foreach (var filter in filters)
                 {
-                    if (RootSegment.Modifiers.ContainsKey(filter.Key))
+                    if (RootModifiers.ContainsKey(filter.Key))
                     {
-                        RootSegment.Modifiers[filter.Key].UnionWith(filter.Value);
+                        RootModifiers[filter.Key].UnionWith(filter.Value);
                     }
                     else
                     {
-                        RootSegment.Modifiers.Add(filter.Key, filter.Value);
+                        RootModifiers.Add(filter.Key, filter.Value);
                     }
                 }
             }
@@ -61,20 +107,27 @@ namespace YahooFantasyWrapper.Query.Internal
                     Type filterType = constantExpressionFilter.Value.GetType();
                     foreach (var property in filterType.GetRuntimeProperties())
                     {
-                        var filterValue = property.GetValue(constantExpressionFilter.Value);
-                        // TODO: Parse key from attribute or something
-                        var filterKey = property.Name.ToLowerInvariant();
-                        if (filterValue == default)
+                        var propertyValue = property.GetValue(constantExpressionFilter.Value);
+
+                        var filterKey = property.GetCustomAttribute<YahooFilterAttribute>()?.Key ??
+                            property.Name.ToLowerInvariant();
+                        if (propertyValue == default)
                         {
                             continue;
                         }
-                        else if (typeof(IEnumerable<>).IsAssignableFrom(filterValue.GetType()))
+                        else if (typeof(IEnumerable<>).IsAssignableFrom(property.PropertyType))
                         {
                             throw new NotImplementedException($"Filters with arrays not yet implemented.");
                         }
+                        else if (propertyValue is bool booleanValue)
+                        {
+                            AddModifer(node.Method.ReturnType.GenericTypeArguments[1], filterKey,
+                                booleanValue ? "1" : "0");
+                        }
                         else
                         {
-                            CurrentSegment.Modifiers.Add(filterKey, filterValue.ToString());
+                            AddModifer(node.Method.ReturnType.GenericTypeArguments[1], filterKey,
+                                propertyValue.ToString());
                         }
                     }
                 }
@@ -95,19 +148,11 @@ namespace YahooFantasyWrapper.Query.Internal
                             var propertyType = ((PropertyInfo)memberExpression.Member).PropertyType;
                             if (typeof(IEnumerable).IsAssignableFrom(propertyType))
                             {
-                                Segments.Add(new YahooUrlSegment
-                                {
-                                    ResourceType = propertyType.GenericTypeArguments[0],
-                                    IsCollection = true
-                                });
+                                AddSegment(propertyType.GenericTypeArguments[0], true);
                             }
                             else
                             {
-                                Segments.Add(new YahooUrlSegment
-                                {
-                                    ResourceType = propertyType,
-                                    IsCollection = false
-                                });
+                                AddSegment(propertyType, false);
                             }
                         }
                         else

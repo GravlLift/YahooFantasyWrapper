@@ -22,29 +22,18 @@ namespace YahooFantasyWrapper.Query.Internal
                 .GetCustomAttribute(ResourceType, typeof(XmlRootAttribute));
             sb.Append(xmlRootAttribute.ElementName);
 
-            if (IsCollection == false)
+            // Check if this can be labeled as a collection, basically only a key
+            // selector
+            if (Modifiers.Count == 1)
             {
-                var keyFilter = Modifiers.SingleOrDefault(m => m.Key.EndsWith("_key"));
-                if (string.IsNullOrEmpty(keyFilter.Key))
+                var modifier = Modifiers.Single();
+                if (!modifier.Key.EndsWith("_key") || modifier.Value.Count != 1)
                 {
-                    // Key is not the only filter, this is a collection
                     IsCollection = true;
-                }
-                else
-                {
-                    if (keyFilter.Value.Count > 1)
-                    {
-                        // Filtering for multiple keys, this is a collection
-                        IsCollection = true;
-                    }
-                    else
-                    {
-                        sb.Append($"/{keyFilter.Value.Single()}");
-                    }
                 }
             }
 
-            if (IsCollection == true)
+            if (IsCollection)
             {
                 sb.Append("s");
                 if (Modifiers.Count > 0)
@@ -56,6 +45,23 @@ namespace YahooFantasyWrapper.Query.Internal
                         sb.Append($"{modifier.Key}={string.Join(",", modifier.Value)}");
                     }
                 }
+            }
+            else
+            {
+                if(Modifiers.Count == 1 && Modifiers.First().Key.EndsWith("_key") && Modifiers.First().Value.Count == 1)
+                {
+                    sb.Append($"/{Modifiers.First().Value.Single()}");
+                }
+                else if (Modifiers.Count > 1)
+                {
+                    sb.Append(";");
+
+                    foreach (var modifier in Modifiers)
+                    {
+                        sb.Append($"{modifier.Key}={string.Join(",", modifier.Value)}");
+                    }
+                }
+
             }
 
             return sb.ToString();

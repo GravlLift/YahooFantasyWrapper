@@ -128,7 +128,7 @@ namespace System.Collections.Generic
             = typeof(QueryableExtensions)
                 .GetTypeInfo().GetDeclaredMethods(nameof(SubResource))
                 .Single(mi => mi.GetGenericArguments().Length == 3 &&
-                    mi.GetGenericArguments()[1].GetGenericParameterConstraints()[0] == typeof(IYahooCollection));
+                    mi.GetGenericArguments()[2].GetGenericParameterConstraints()[0] == typeof(IYahooResource));
         public static IYahooQueryable<TSource, TYahooSubResource> SubResource<TSource, TPrevSubCollection, TYahooSubResource>(
             this IYahooQueryable<TSource, TPrevSubCollection> source,
             Expression<Func<TPrevSubCollection, TYahooSubResource>> expression)
@@ -138,7 +138,7 @@ namespace System.Collections.Generic
             => new YahooCollection<TSource, TYahooSubResource>(
                 source.Provider.CreateQuery<TSource>(
                     Expression.Call(instance: null,
-                        method: CollectionNextSubResourceMethodInfo
+                        method: ResourceNextSubResourceMethodInfo
                             .MakeGenericMethod(typeof(TSource), typeof(TPrevSubCollection), typeof(TYahooSubResource)),
                         arguments: new[] { source.Expression, Expression.Quote(expression) })));
 
@@ -163,7 +163,7 @@ namespace System.Collections.Generic
             = typeof(QueryableExtensions)
                 .GetTypeInfo().GetDeclaredMethods(nameof(SubResource))
                 .Single(mi => mi.GetGenericArguments().Length == 3 &&
-                    mi.GetGenericArguments()[1].GetGenericParameterConstraints()[0] == typeof(IYahooCollection));
+                    mi.GetGenericArguments()[2].GetGenericParameterConstraints()[0] == typeof(IYahooCollection));
         public static IYahooQueryable<TSource, TSubCollection> SubResource<TSource, TPrevSubCollection, TSubCollection>(
             this IYahooQueryable<TSource, TPrevSubCollection> source,
             Expression<Func<TPrevSubCollection, IEnumerable<TSubCollection>>> expression)

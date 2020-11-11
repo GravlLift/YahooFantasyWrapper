@@ -29,6 +29,8 @@ namespace YahooFantasyWrapper.Client
     /// </summary>
     public class PlayerCollectionFilters
     {
+        [YahooFilter(Key = "player_keys")]
+        public ICollection<string> PlayerKeys { get; set; }
         public ICollection<string> Positions { get; set; }
         public ICollection<PlayerOwnershipStatus> Statuses { get; set; }
         public string Search { get; set; }
@@ -51,6 +53,12 @@ namespace YahooFantasyWrapper.Client
     }
 
     public class UserCollectionFilters
+    {
+        [YahooFilter(Key = "use_login")]
+        public bool? UseLogin { get; set; }
+    }
+
+    public class TeamCollectionFilters
     {
         [YahooFilter(Key = "use_login")]
         public bool? UseLogin { get; set; }

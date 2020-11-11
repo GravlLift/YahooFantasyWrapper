@@ -21,7 +21,7 @@ namespace YahooFantasyWrapper.Models.Response
     }
 
     public interface IYahooQueryable<TYahooCollection>
-        : IQueryable<TYahooCollection>
+        : IQueryable<TYahooCollection>, IAsyncEnumerable<TYahooCollection>
         where TYahooCollection : IYahooEntity
     {
 

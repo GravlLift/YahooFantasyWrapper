@@ -89,6 +89,9 @@ namespace YahooFantasyWrapper.Models.Response
         [XmlArray(ElementName = "games", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
         [XmlArrayItem(ElementName = "game", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
         public List<Game> Games { get; set; }
+        [XmlArray(ElementName = "teams", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
+        [XmlArrayItem(ElementName = "team", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
+        public List<Team> Teams { get; set; }
     }
 
     public enum GameCode

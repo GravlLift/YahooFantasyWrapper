@@ -3,7 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading;
 using YahooFantasyWrapper.Models.Response;
+using YahooFantasyWrapper.Query;
 using YahooFantasyWrapper.Query.Internal;
 
 namespace YahooFantasyWrapper
@@ -17,7 +19,7 @@ namespace YahooFantasyWrapper
             Expression = Expression.Constant(this);
         }
 
-        internal YahooSet(IQueryProvider provider, Expression expression)
+        internal YahooSet(IAsyncQueryProvider provider, Expression expression)
         {
             Provider = provider;
             Expression = expression;
@@ -32,6 +34,11 @@ namespace YahooFantasyWrapper
 
         public IEnumerator<TYahooEntity> GetEnumerator()
             => Provider.Execute<List<TYahooEntity>>(Expression).GetEnumerator();
+
+        IAsyncEnumerator<TYahooEntity> IAsyncEnumerable<TYahooEntity>.GetAsyncEnumerator(CancellationToken cancellationToken)
+            => ((IAsyncQueryProvider)Provider).ExecuteAsync<IAsyncEnumerable<TYahooEntity>>(Expression)
+                .GetAwaiter().GetResult()
+                .GetAsyncEnumerator(cancellationToken);
 
         IEnumerator IEnumerable.GetEnumerator()
             => throw new NotImplementedException();

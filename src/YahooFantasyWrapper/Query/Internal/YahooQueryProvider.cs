@@ -12,10 +12,30 @@ using System.Net.Http.Headers;
 using System.Xml.Linq;
 using YahooFantasyWrapper.Models;
 using YahooFantasyWrapper.Client.Fantasy;
+using System.Xml.Serialization;
+using System.Collections.Generic;
+using System.Collections;
 
 namespace YahooFantasyWrapper.Query.Internal
 {
-    public class YahooQueryProvider : IQueryProvider
+    public class FakeAsyncList<T> : List<T>, IAsyncEnumerable<T>
+    {
+        public IAsyncEnumerator<T> GetAsyncEnumerator(CancellationToken cancellationToken = default)
+        {
+            var enumerator = GetEnumerator();
+            return AsyncEnumerator.Create(
+                moveNextAsync: () => new ValueTask<bool>(enumerator.MoveNext()),
+                getCurrent: () => enumerator.Current,
+                disposeAsync: () =>
+                {
+                    enumerator.Dispose();
+                    return new ValueTask();
+                });
+
+        }
+    }
+
+    public class YahooQueryProvider : IAsyncQueryProvider
     {
         private static readonly MethodInfo _createYahooQueryMethod
             = typeof(YahooQueryProvider).GetRuntimeMethods()
@@ -53,18 +73,21 @@ namespace YahooFantasyWrapper.Query.Internal
 
         public TResult Execute<TResult>(Expression expression)
         {
-            return ExecuteAsync<TResult>(expression).GetAwaiter().GetResult();
+            return ExecuteAsync<TResult>(expression)
+                .GetAwaiter().GetResult();
         }
 
-        public async Task<TResult> ExecuteAsync<TResult>(Expression expression)
+        public async Task<TResult> ExecuteAsync<TResult>(Expression expression, CancellationToken cancellationToken = default)
         {
             var requestUri = new YahooExpressionVisitor(expression).ToString();
-            var authToken = await authClient.GetCurrentToken();
-
             var request = new HttpRequestMessage(HttpMethod.Get, requestUri);
+
+            // Get auth token for request
+            var authToken = await authClient.GetCurrentToken();
             request.Headers.Authorization = new AuthenticationHeaderValue(authToken.TokenType, authToken.AccessToken);
 
-            var taskResponse = httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
+            // Send request
+            var taskResponse = httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
             using HttpResponseMessage response = await taskResponse.ConfigureAwait(false);
 
             if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
@@ -79,14 +102,53 @@ namespace YahooFantasyWrapper.Query.Internal
                     _ => new GenericYahooException(errorMessage),
                 };
             }
+
             response.EnsureSuccessStatusCode();
-            // Nullable forgiving reason:
-            // GetAsync will usually return Content as not-null.
-            // If Content happens to be null, the extension will throw.
-            var result = await response.Content!
-                .ReadFromXmlAsync<FantasyContent<TResult>>(new YahooFantasyXmlSerializer<TResult>())
-                .ConfigureAwait(false);
-            return result.Content;
+
+            TResult result;
+
+            if (typeof(IEnumerable).IsAssignableFrom(typeof(TResult)))
+            {
+                var unwrappedType = typeof(TResult).GetGenericArguments()[0];
+
+                // Create serializer of type YahooFantasyXmlSerializer<FakeAsyncList<TResult[0]>>
+                var serializer = (XmlSerializer)Activator
+                    .CreateInstance(typeof(YahooFantasyXmlSerializer<>)
+                        .MakeGenericType(typeof(FakeAsyncList<>)
+                            .MakeGenericType(unwrappedType)));
+
+                var fantasyContent = await response.Content!
+                    .ReadFromXmlAsync(unwrappedType, serializer)
+                    .ConfigureAwait(false);
+
+                result = ((FantasyContent<TResult>)fantasyContent).Content;
+            }
+            else if (typeof(IAsyncEnumerable<>).IsAssignableFromGenericType(typeof(TResult)))
+            {
+                var unwrappedType = typeof(TResult).GetGenericArguments()[0];
+
+                // Create serializer of type YahooFantasyXmlSerializer<FakeAsyncList<unwrappedType>>
+                var serializer = (XmlSerializer)Activator
+                    .CreateInstance(typeof(YahooFantasyXmlSerializer<>)
+                        .MakeGenericType(typeof(FakeAsyncList<>)
+                            .MakeGenericType(unwrappedType)));
+
+                var fantasyContent = await response.Content!
+                    .ReadFromXmlAsync(unwrappedType, serializer)
+                    .ConfigureAwait(false);
+
+                result = ((dynamic)fantasyContent).Content;
+            }
+            else
+            {
+                var fantasyContent = await response.Content!
+                    .ReadFromXmlAsync<FantasyContent<TResult>>(new YahooFantasyXmlSerializer<TResult>())
+                    .ConfigureAwait(false);
+
+                result = fantasyContent.Content;
+            }
+
+            return result;
         }
     }
 }

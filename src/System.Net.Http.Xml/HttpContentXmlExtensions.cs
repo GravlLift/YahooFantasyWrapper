@@ -92,7 +92,7 @@ namespace System.Net.Http.Xml
             }
 
             index += typeLength + 1;
-            int suffixStart = mediaType.Slice(index).IndexOf('+');
+            int suffixStart = mediaType[index..].IndexOf('+');
 
             // Empty prefix subtype ("application/+Xml") not allowed.
             if (suffixStart <= 0)
@@ -101,7 +101,7 @@ namespace System.Net.Http.Xml
             }
 
             index += suffixStart + 1;
-            ReadOnlySpan<char> suffix = mediaType.Slice(index);
+            ReadOnlySpan<char> suffix = mediaType[index..];
             if (suffix.CompareTo(XmlContent.XmlSubtype.AsSpan(), StringComparison.OrdinalIgnoreCase) != 0)
             {
                 return false;

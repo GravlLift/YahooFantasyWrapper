@@ -111,7 +111,7 @@ namespace YahooFantasyWrapper.Query.Internal
             {
                 var unwrappedType = typeof(TResult).GetGenericArguments()[0];
 
-                // Create serializer of type YahooFantasyXmlSerializer<FakeAsyncList<TResult[0]>>
+                // Create serializer of type YahooFantasyXmlSerializer<FakeAsyncList<unwrappedType>>
                 var serializer = (XmlSerializer)Activator
                     .CreateInstance(typeof(YahooFantasyXmlSerializer<>)
                         .MakeGenericType(typeof(FakeAsyncList<>)
@@ -133,11 +133,11 @@ namespace YahooFantasyWrapper.Query.Internal
                         .MakeGenericType(typeof(FakeAsyncList<>)
                             .MakeGenericType(unwrappedType)));
 
-                var fantasyContent = await response.Content!
+                dynamic fantasyContent = await response.Content!
                     .ReadFromXmlAsync(unwrappedType, serializer)
                     .ConfigureAwait(false);
 
-                result = ((dynamic)fantasyContent).Content;
+                result = fantasyContent.Content;
             }
             else
             {

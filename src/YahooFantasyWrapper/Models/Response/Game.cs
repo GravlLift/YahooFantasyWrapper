@@ -17,7 +17,7 @@ namespace YahooFantasyWrapper.Models.Response
     }
 
     [XmlRoot(ElementName = "manager", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
-    public class Manager
+    public class Manager : IYahooCollection
     {
         [XmlElement(ElementName = "manager_id", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
         public string Manager_id { get; set; }

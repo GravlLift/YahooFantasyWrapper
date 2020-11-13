@@ -31,8 +31,8 @@ namespace YahooFantasyWrapper.Client
     {
         [YahooFilter(Key = "player_keys")]
         public ICollection<string> PlayerKeys { get; set; }
-        public ICollection<string> Positions { get; set; }
-        public ICollection<PlayerOwnershipStatus> Statuses { get; set; }
+        public ICollection<string> Position { get; set; }
+        public ICollection<PlayerOwnershipStatus> Status { get; set; }
         public string Search { get; set; }
         public string Sort { get; set; }
         [YahooFilter(Key = "sort_type")]
@@ -41,8 +41,7 @@ namespace YahooFantasyWrapper.Client
         public int? SortSeason { get; set; }
         [YahooFilter(Key = "sort_week")]
         public int? SortWeek { get; set; }
-        [YahooFilter(Key = "start_index")]
-        public int? StartIndex { get; set; }
+        public int? Start { get; set; }
         public int? Count { get; set; }
     }
 

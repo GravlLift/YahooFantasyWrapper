@@ -95,15 +95,5 @@ namespace YahooFantasyWrapper.Client
                 _ => "",
             };
         }
-
-        /// <summary>
-        /// Check if List of SubResources is null or empty
-        /// </summary>
-        /// <param name="subresources">List of SubResources</param>
-        /// <returns>if it is empty or not</returns>
-        public static bool IsNotEmpty(this EndpointSubResourcesCollection subresources)
-        {
-            return subresources != null && subresources.Resources.Count > 0;
-        }
     }
 }

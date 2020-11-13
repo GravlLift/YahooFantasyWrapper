@@ -115,9 +115,11 @@ namespace YahooFantasyWrapper.Query.Internal
                         {
                             continue;
                         }
-                        else if (typeof(IEnumerable<>).IsAssignableFrom(property.PropertyType))
+                        else if (typeof(IEnumerable).IsAssignableFrom(property.PropertyType))
                         {
-                            throw new NotImplementedException($"Filters with arrays not yet implemented.");
+                            var enumerable = (IEnumerable<object>)propertyValue;
+                            AddModifer(node.Method.ReturnType.GenericTypeArguments[1], filterKey,
+                                string.Join(",", enumerable.Select(o => o.ToString())));
                         }
                         else if (propertyValue is bool booleanValue)
                         {

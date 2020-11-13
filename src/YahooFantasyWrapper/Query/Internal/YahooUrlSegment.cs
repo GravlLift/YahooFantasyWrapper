@@ -38,11 +38,9 @@ namespace YahooFantasyWrapper.Query.Internal
                 sb.Append("s");
                 if (Modifiers.Count > 0)
                 {
-                    sb.Append(";");
-
                     foreach (var modifier in Modifiers)
                     {
-                        sb.Append($"{modifier.Key}={string.Join(",", modifier.Value)}");
+                        sb.Append($";{modifier.Key}={string.Join(",", modifier.Value)}");
                     }
                 }
             }
@@ -54,11 +52,9 @@ namespace YahooFantasyWrapper.Query.Internal
                 }
                 else if (Modifiers.Count > 1)
                 {
-                    sb.Append(";");
-
                     foreach (var modifier in Modifiers)
                     {
-                        sb.Append($"{modifier.Key}={string.Join(",", modifier.Value)}");
+                        sb.Append($";{modifier.Key}={string.Join(",", modifier.Value)}");
                     }
                 }
 

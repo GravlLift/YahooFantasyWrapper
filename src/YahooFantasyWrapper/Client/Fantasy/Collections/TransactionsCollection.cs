@@ -26,32 +26,6 @@ namespace YahooFantasyWrapper.Client
         {
             this.client = client;
         }
-
-        /// <summary>
-        /// Gets Transactions Collection based on supplied Keys
-        /// Attaches Requested SubResources
-        /// </summary>
-        /// <param name="transactionKeys">Transaction Keys to return Resources for </param>
-        /// <param name="subresources">SubResources to include with Transaction Resource</param>
-        /// <param name="auth">Token for request</param>
-        /// <returns>Transaction Collection (List of Transaction Resources)</returns>
-        public async Task<List<Models.Response.Transaction>> GetTransactions(string[] transactionKeys, EndpointSubResourcesCollection subresources, AuthModel auth)
-        {
-            return await Utils.GetCollection<Models.Response.Transaction>(client, ApiEndpoints.TransactionsEndPoint(transactionKeys, subresources), auth, "transaction");
-        }
-
-        /// <summary>
-        /// Gets Transactions Collection based on supplied league Keys
-        /// Attaches Requested SubResources
-        /// </summary>
-        /// <param name="leagueKey">League Keys to return Resources for </param>
-        /// <param name="subresources">SubResources to include with Transaction Resource</param>
-        /// <param name="auth">Token for request</param>
-        /// <returns>Transaction Collection (List of Transaction Resources)</returns>
-        public async Task<List<Models.Response.Transaction>> GetTransactionsLeagues(string leagueKey, EndpointSubResourcesCollection subresources, AuthModel auth)
-        {
-            return await Utils.GetCollection<Models.Response.Transaction>(client, ApiEndpoints.TransactionsLeagueEndPoint(leagueKey, subresources), auth, "transaction");
-        }
         /// <summary>
         /// Add/Drops Players
         /// </summary>

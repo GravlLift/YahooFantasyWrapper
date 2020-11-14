@@ -1,5 +1,4 @@
 ﻿using System;
-using Microsoft.Extensions.Configuration;
 using Polly;
 using YahooFantasyWrapper;
 using YahooFantasyWrapper.Client;

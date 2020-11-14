@@ -32,6 +32,11 @@ namespace YahooFantasyWrapper.Query.Internal
                     IsCollection = true;
                 }
             }
+            // Or if we have multiple non-out modifiers
+            else if (Modifiers.Where(m => m.Key != "out").Count() > 1)
+            {
+                IsCollection = true;
+            }
 
             if (IsCollection)
             {
@@ -46,7 +51,7 @@ namespace YahooFantasyWrapper.Query.Internal
             }
             else
             {
-                if(Modifiers.Count == 1 && Modifiers.First().Key.EndsWith("_key") && Modifiers.First().Value.Count == 1)
+                if (Modifiers.Count == 1 && Modifiers.First().Key.EndsWith("_key") && Modifiers.First().Value.Count == 1)
                 {
                     sb.Append($"/{Modifiers.First().Value.Single()}");
                 }

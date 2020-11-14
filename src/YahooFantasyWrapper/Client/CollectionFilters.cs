@@ -17,11 +17,11 @@ namespace YahooFantasyWrapper.Client
     {
         [YahooFilter(Key = "is_available")]
         public bool? IsAvailable { get; set; }
-        public ICollection<int> Seasons { get; set; }
+        public IEnumerable<int> Seasons { get; set; }
         [YahooFilter(Key = "game_codes")]
-        public ICollection<GameCode> GameCodes { get; set; }
+        public IEnumerable<GameCode> GameCodes { get; set; }
         [YahooFilter(Key = "game_types")]
-        public ICollection<GameType> GameTypes { get; set; }
+        public IEnumerable<GameType> GameTypes { get; set; }
     }
 
     /// <summary>
@@ -30,9 +30,9 @@ namespace YahooFantasyWrapper.Client
     public class PlayerCollectionFilters
     {
         [YahooFilter(Key = "player_keys")]
-        public ICollection<string> PlayerKeys { get; set; }
-        public ICollection<string> Position { get; set; }
-        public ICollection<PlayerOwnershipStatus> Status { get; set; }
+        public IEnumerable<string> PlayerKeys { get; set; }
+        public IEnumerable<string> Position { get; set; }
+        public IEnumerable<PlayerOwnershipStatus> Status { get; set; }
         public string Search { get; set; }
         public string Sort { get; set; }
         [YahooFilter(Key = "sort_type")]

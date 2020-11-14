@@ -115,7 +115,7 @@ namespace YahooFantasyWrapper.Query.Internal
                         {
                             continue;
                         }
-                        else if (typeof(IEnumerable).IsAssignableFrom(property.PropertyType))
+                        else if (property.PropertyType != typeof(string) && typeof(IEnumerable).IsAssignableFrom(property.PropertyType))
                         {
                             var enumerable = (IEnumerable<object>)propertyValue;
                             AddModifer(node.Method.ReturnType.GenericTypeArguments[1], filterKey,

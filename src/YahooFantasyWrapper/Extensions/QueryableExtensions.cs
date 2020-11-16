@@ -119,6 +119,36 @@ namespace System.Collections.Generic
                             method: TeamFilterMethodInfo.MakeGenericMethod(typeof(TYahooEntity)),
                             arguments: new[] { source.Expression, Expression.Constant(filters) }))
                     : source);
+
+        internal static readonly MethodInfo RosterFilterMethodInfo
+            = typeof(QueryableExtensions)
+                .GetTypeInfo().GetDeclaredMethods(nameof(Filter))
+                .Single(mi => mi.ReturnType.GenericTypeArguments[1] == typeof(Roster));
+        public static IYahooQueryable<TYahooEntity, Roster> Filter<TYahooEntity>(this IYahooQueryable<TYahooEntity, Roster> source,
+            RosterCollectionFilters filters)
+            where TYahooEntity : IYahooEntity
+            => new YahooCollection<TYahooEntity, Roster>(
+                source.Provider is YahooQueryProvider
+                    ? source.Provider.CreateQuery<TYahooEntity>(
+                        Expression.Call(instance: null,
+                            method: RosterFilterMethodInfo.MakeGenericMethod(typeof(TYahooEntity)),
+                            arguments: new[] { source.Expression, Expression.Constant(filters) }))
+                    : source);
+
+        internal static readonly MethodInfo MatchupFilterMethodInfo
+            = typeof(QueryableExtensions)
+                .GetTypeInfo().GetDeclaredMethods(nameof(Filter))
+                .Single(mi => mi.ReturnType.GenericTypeArguments[1] == typeof(Matchup));
+        public static IYahooQueryable<TYahooEntity, Matchup> Filter<TYahooEntity>(this IYahooQueryable<TYahooEntity, Matchup> source,
+            MatchupCollectionFilters filters)
+            where TYahooEntity : IYahooEntity
+            => new YahooCollection<TYahooEntity, Matchup>(
+                source.Provider is YahooQueryProvider
+                    ? source.Provider.CreateQuery<TYahooEntity>(
+                        Expression.Call(instance: null,
+                            method: MatchupFilterMethodInfo.MakeGenericMethod(typeof(TYahooEntity)),
+                            arguments: new[] { source.Expression, Expression.Constant(filters) }))
+                    : source);
         #endregion
 
         #region SubResource

@@ -88,22 +88,20 @@ namespace YahooFantasyWrapper.Models.Response
 
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(this, obj))
-            {
-                return true;
-            }
-
             if (obj is null)
             {
                 return false;
             }
-
-            throw new NotImplementedException();
+            else if (obj is TeamBase teamBase)
+            {
+                return TeamKey == teamBase.TeamKey;
+            }
+            return false;
         }
 
         public override int GetHashCode()
         {
-            throw new NotImplementedException();
+            return TeamKey.GetHashCode();
         }
 
         public static bool operator ==(TeamBase left, TeamBase right)

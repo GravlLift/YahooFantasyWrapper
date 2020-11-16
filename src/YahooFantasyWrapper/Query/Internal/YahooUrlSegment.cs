@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Xml.Serialization;
+using YahooFantasyWrapper.Models.Response;
 
 namespace YahooFantasyWrapper.Query.Internal
 {
@@ -24,18 +25,28 @@ namespace YahooFantasyWrapper.Query.Internal
 
             // Check if this can be labeled as a collection, basically only a key
             // selector
-            if (Modifiers.Count == 1)
+            if (typeof(IYahooResource).IsAssignableFrom(ResourceType))
             {
-                var modifier = Modifiers.Single();
-                if (!modifier.Key.EndsWith("_key") || modifier.Value.Count != 1)
+                // Resources can only ever be resources
+                IsCollection = false;
+            }
+            else
+            {
+                // Collections can be collections or resources
+                if (Modifiers.Count == 1)
+                {
+                    // Force collection if we are trying to filter by multiple keys at once
+                    var modifier = Modifiers.Single();
+                    if (!modifier.Key.EndsWith("_key") || modifier.Value.Count != 1)
+                    {
+                        IsCollection = true;
+                    }
+                }
+                // Or if we have multiple non-out modifiers
+                else if (Modifiers.Where(m => m.Key != "out").Count() > 1)
                 {
                     IsCollection = true;
                 }
-            }
-            // Or if we have multiple non-out modifiers
-            else if (Modifiers.Where(m => m.Key != "out").Count() > 1)
-            {
-                IsCollection = true;
             }
 
             if (IsCollection)
@@ -55,7 +66,7 @@ namespace YahooFantasyWrapper.Query.Internal
                 {
                     sb.Append($"/{Modifiers.First().Value.Single()}");
                 }
-                else if (Modifiers.Count > 1)
+                else
                 {
                     foreach (var modifier in Modifiers)
                     {

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Text;
 using YahooFantasyWrapper.Client;
 
 namespace YahooFantasyWrapper.Query.Internal
@@ -117,7 +118,7 @@ namespace YahooFantasyWrapper.Query.Internal
                         }
                         else if (property.PropertyType != typeof(string) && typeof(IEnumerable).IsAssignableFrom(property.PropertyType))
                         {
-                            var enumerable = (IEnumerable<object>)propertyValue;
+                            var enumerable = ((IEnumerable)propertyValue).Cast<object>();
                             AddModifer(node.Method.ReturnType.GenericTypeArguments[1], filterKey,
                                 string.Join(",", enumerable.Select(o => o.ToString())));
                         }

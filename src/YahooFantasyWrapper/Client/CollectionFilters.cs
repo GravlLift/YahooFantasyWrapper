@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using YahooFantasyWrapper.Models;
 using YahooFantasyWrapper.Models.Response;
 
 namespace YahooFantasyWrapper.Client
@@ -8,6 +9,16 @@ namespace YahooFantasyWrapper.Client
     internal sealed class YahooFilterAttribute : Attribute
     {
         public string Key { get; set; }
+    }
+
+    public class MatchupCollectionFilters
+    {
+        public IEnumerable<int> Weeks { get; set; }
+    }
+
+    public class RosterCollectionFilters
+    {
+        public int? Week { get; set; }
     }
 
     /// <summary>
@@ -31,7 +42,7 @@ namespace YahooFantasyWrapper.Client
     {
         [YahooFilter(Key = "player_keys")]
         public IEnumerable<string> PlayerKeys { get; set; }
-        public IEnumerable<string> Position { get; set; }
+        public IEnumerable<FantasyPosition> Position { get; set; }
         public IEnumerable<PlayerOwnershipStatus> Status { get; set; }
         public string Search { get; set; }
         public string Sort { get; set; }

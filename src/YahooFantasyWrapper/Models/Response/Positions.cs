@@ -19,7 +19,7 @@ namespace YahooFantasyWrapper.Models.Response
     public class RosterPosition
     {
         [XmlElement(ElementName = "position", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
-        public string Position { get; set; }
+        public FantasyPosition Position { get; set; }
         [XmlElement(ElementName = "abbreviation", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
         public string Abbreviation { get; set; }
         [XmlElement(ElementName = "display_name", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
@@ -27,7 +27,7 @@ namespace YahooFantasyWrapper.Models.Response
         [XmlElement(ElementName = "position_type", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
         public string PositionType { get; set; }
         [XmlElement(ElementName = "is_bench", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
-        public bool IsBench { get; set; }
+        public bool? IsBench { get; set; }
         [XmlElement(ElementName = "count", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
         public int Count { get; set; }
     }
@@ -40,6 +40,6 @@ namespace YahooFantasyWrapper.Models.Response
         [XmlElement(ElementName = "date")]
         public string Date { get; set; }
         [XmlElement(ElementName = "position")]
-        public string Position { get; set; }
+        public FantasyPosition Position { get; set; }
     }
 }

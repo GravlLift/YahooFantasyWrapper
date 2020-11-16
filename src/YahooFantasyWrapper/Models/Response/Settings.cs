@@ -20,19 +20,19 @@ namespace YahooFantasyWrapper.Models.Response
         [XmlElement(ElementName = "uses_playoff", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
         public bool UsesPlayoff { get; set; }
         [XmlElement(ElementName = "has_playoff_consolation_games", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
-        public string HasPlayoffConsolationGames { get; set; }
+        public bool HasPlayoffConsolationGames { get; set; }
         [XmlElement(ElementName = "playoff_start_week", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
         public int PlayoffStartWeek { get; set; }
         [XmlElement(ElementName = "uses_playoff_reseeding", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
-        public string UsesPlayoffReseeding { get; set; }
+        public bool UsesPlayoffReseeding { get; set; }
         [XmlElement(ElementName = "uses_lock_eliminated_teams", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
-        public string UsesLockEliminatedTeams { get; set; }
+        public bool UsesLockEliminatedTeams { get; set; }
         [XmlElement(ElementName = "num_playoff_teams", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
-        public string NumPlayoffTeams { get; set; }
+        public int NumPlayoffTeams { get; set; }
         [XmlElement(ElementName = "num_playoff_consolation_teams", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
-        public string NumPlayoffConsolationTeams { get; set; }
+        public int NumPlayoffConsolationTeams { get; set; }
         [XmlElement(ElementName = "has_multiweek_championship", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
-        public string HasMultiweekChampionship { get; set; }
+        public bool HasMultiweekChampionship { get; set; }
         [XmlElement(ElementName = "waiver_type", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
         public string WaiverType { get; set; }
         [XmlElement(ElementName = "waiver_rule", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
@@ -40,13 +40,13 @@ namespace YahooFantasyWrapper.Models.Response
         [XmlElement(ElementName = "uses_faab", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
         public bool UsesFaab { get; set; }
         [XmlElement(ElementName = "draft_time", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
-        public DateTimeOffset DraftTime { get; set; }
+        public string DraftTime { get; set; }
         [XmlElement(ElementName = "draft_pick_time", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
         public string DraftPickTime { get; set; }
         [XmlElement(ElementName = "post_draft_players", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
         public string PostDraftPlayers { get; set; }
         [XmlElement(ElementName = "max_teams", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
-        public string MaxTeams { get; set; }
+        public int? MaxTeams { get; set; }
         [XmlElement(ElementName = "waiver_time", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
         public int WaiverTime { get; set; }
         [XmlElement(ElementName = "trade_end_date", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
@@ -60,7 +60,7 @@ namespace YahooFantasyWrapper.Models.Response
         [XmlElement(ElementName = "cant_cut_list", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
         public string CantCutList { get; set; }
         [XmlElement(ElementName = "is_publicly_viewable", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
-        public string IsPubliclyViewable { get; set; }
+        public bool IsPubliclyViewable { get; set; }
         [XmlElement(ElementName = "can_trade_draft_picks", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
         public bool CanTradeDraftPicks { get; set; }
         [XmlArray(ElementName = "roster_positions", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]

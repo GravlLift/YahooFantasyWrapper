@@ -49,11 +49,11 @@ namespace YahooFantasyWrapper.Models.Response
         [XmlElement(ElementName = "start_week", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
         public int StartWeek { get; set; }
         [XmlElement(ElementName = "start_date", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
-        public string StartDate { get; set; }
+        public DateTime StartDate { get; set; }
         [XmlElement(ElementName = "end_week", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
         public int EndWeek { get; set; }
         [XmlElement(ElementName = "end_date", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
-        public string EndDate { get; set; }
+        public DateTime EndDate { get; set; }
         [XmlElement(ElementName = "game_code", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
         public string GameCode { get; set; }
         [XmlElement(ElementName = "season", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]

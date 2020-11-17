@@ -11,7 +11,7 @@ namespace YahooFantasyWrapper.Models.Response
         [XmlElement(ElementName = "league_key", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
         public string LeagueKey { get; set; }
         [XmlElement(ElementName = "league_id", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
-        public string LeagueId { get; set; }
+        public int LeagueId { get; set; }
         [XmlElement(ElementName = "name", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
         public string Name { get; set; }
         [XmlElement(ElementName = "url", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]

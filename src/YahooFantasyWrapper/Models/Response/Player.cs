@@ -47,7 +47,7 @@ namespace YahooFantasyWrapper.Models.Response
         [XmlElement(ElementName = "player_key", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
         public string PlayerKey { get; set; }
         [XmlElement(ElementName = "player_id", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
-        public string PlayerId { get; set; }
+        public int PlayerId { get; set; }
         [XmlElement(ElementName = "name", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
         public Name Name { get; set; }
         [XmlElement(ElementName = "editorial_player_key", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
@@ -91,6 +91,9 @@ namespace YahooFantasyWrapper.Models.Response
         public PlayerStats PlayerStats { get; set; }
         [XmlElement(ElementName = "ownership", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
         public PlayerOwnership Ownership { get; set; }
+
+        public override string ToString()
+            => Name?.ToString();
 
     }
 

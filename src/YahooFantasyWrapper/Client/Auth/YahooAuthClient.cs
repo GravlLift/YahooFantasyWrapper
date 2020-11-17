@@ -281,7 +281,7 @@ namespace YahooFantasyWrapper.Client
             // If there is an anchor, then the query string must be inserted before its first occurance.
             if (anchorIndex != -1)
             {
-                anchorText = uri.Substring(anchorIndex);
+                anchorText = uri[anchorIndex..];
                 uriToBeAppended = uri.Substring(0, anchorIndex);
             }
 

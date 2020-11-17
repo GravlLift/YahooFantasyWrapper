@@ -30,6 +30,8 @@ namespace YahooFantasyWrapper.Models.Response
         public bool? IsBench { get; set; }
         [XmlElement(ElementName = "count", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
         public int Count { get; set; }
+        public override string ToString()
+            => Position.ToString();
     }
 
     [XmlRoot(ElementName = "selected_position")]

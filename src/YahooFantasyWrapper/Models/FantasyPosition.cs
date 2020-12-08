@@ -1,4 +1,5 @@
-﻿using System.Xml.Serialization;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Xml.Serialization;
 
 namespace YahooFantasyWrapper.Models
 {
@@ -8,6 +9,7 @@ namespace YahooFantasyWrapper.Models
         WR,
         RB,
         TE,
+        [Display(Name = "W/R/T")]
         [XmlEnum("W/R/T")]
         WRT,
         K,

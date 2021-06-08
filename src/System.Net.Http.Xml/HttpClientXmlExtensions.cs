@@ -31,7 +31,7 @@ namespace System.Net.Http.Xml
             return GetFromXmlAsyncCore(taskResponse, type, xmlSerializer);
         }
 
-        public static Task<TValue> GetFromXmlAsync<TValue>(this HttpClient client, string? requestUri, XmlSerializer? xmlSerializer = null, CancellationToken cancellationToken = default)
+        public static Task<TValue?> GetFromXmlAsync<TValue>(this HttpClient client, string? requestUri, XmlSerializer? xmlSerializer = null, CancellationToken cancellationToken = default)
         {
             if (client == null)
             {
@@ -42,7 +42,7 @@ namespace System.Net.Http.Xml
             return GetFromXmlAsyncCore<TValue>(taskResponse, xmlSerializer);
         }
 
-        public static Task<TValue> GetFromXmlAsync<TValue>(this HttpClient client, Uri? requestUri, XmlSerializer? xmlSerializer = null, CancellationToken cancellationToken = default)
+        public static Task<TValue?> GetFromXmlAsync<TValue>(this HttpClient client, Uri? requestUri, XmlSerializer? xmlSerializer = null, CancellationToken cancellationToken = default)
         {
             if (client == null)
             {
@@ -63,7 +63,7 @@ namespace System.Net.Http.Xml
             return await response.Content!.ReadFromXmlAsync(type, xmlSerializer).ConfigureAwait(false);
         }
 
-        private static async Task<T> GetFromXmlAsyncCore<T>(Task<HttpResponseMessage> taskResponse, XmlSerializer? xmlSerializer)
+        private static async Task<T?> GetFromXmlAsyncCore<T>(Task<HttpResponseMessage> taskResponse, XmlSerializer? xmlSerializer)
         {
             using HttpResponseMessage response = await taskResponse.ConfigureAwait(false);
             response.EnsureSuccessStatusCode();

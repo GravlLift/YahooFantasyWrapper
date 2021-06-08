@@ -19,7 +19,7 @@ namespace System.Net.Http.Xml
             return ReadFromXmlAsyncCore(content, type, sourceEncoding, xmlSerializer);
         }
 
-        public static Task<T> ReadFromXmlAsync<T>(this HttpContent content, XmlSerializer? xmlSerializer = null)
+        public static Task<T?> ReadFromXmlAsync<T>(this HttpContent content, XmlSerializer? xmlSerializer = null)
         {
             ValidateContent(content);
             Debug.Assert(content.Headers.ContentType != null);
@@ -45,7 +45,7 @@ namespace System.Net.Http.Xml
             }
         }
 
-        private static async Task<T> ReadFromXmlAsyncCore<T>(HttpContent content, Encoding? sourceEncoding, XmlSerializer? xmlSerializer)
+        private static async Task<T?> ReadFromXmlAsyncCore<T>(HttpContent content, Encoding? sourceEncoding, XmlSerializer? xmlSerializer)
         {
             Stream contentStream = await content.ReadAsStreamAsync().ConfigureAwait(false);
 
@@ -58,7 +58,7 @@ namespace System.Net.Http.Xml
             using (contentStream)
             {
                 xmlSerializer ??= new XmlSerializer(typeof(T));
-                return (T)xmlSerializer.Deserialize(contentStream);
+                return (T?)xmlSerializer.Deserialize(contentStream);
             }
         }
 

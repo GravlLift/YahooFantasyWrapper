@@ -14,12 +14,12 @@ namespace YahooFantasyWrapper.Query.Internal
     {
         // Ordered list with a type for key and a boolean for value representing
         // if the type indicate a collection
-        private readonly List<(Type type, bool isCollection)> SegmentTypes = new List<(Type type, bool isCollection)>();
+        private readonly List<(Type type, bool isCollection)> SegmentTypes = new();
 
         // This confusing nightmare is a grouping of modifiers by type in no particular order,
         // in case a method needs to add modifiers before the segment has been ordered
         private readonly Dictionary<Type, Dictionary<string, HashSet<string>>> SegmentModifiers
-            = new Dictionary<Type, Dictionary<string, HashSet<string>>>();
+            = new();
 
         // By their powers combioned...
         private IEnumerable<YahooUrlSegment> Segments

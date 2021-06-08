@@ -26,6 +26,6 @@ namespace YahooFantasyWrapper.Client
             this.client = client;
         }
 
-        public TransactionsCollectionManager TransactionsCollectionManager => new TransactionsCollectionManager(client);
+        public TransactionsCollectionManager TransactionsCollectionManager => new(client);
     }
 }

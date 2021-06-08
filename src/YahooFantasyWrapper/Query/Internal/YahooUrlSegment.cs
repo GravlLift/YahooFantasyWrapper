@@ -13,7 +13,7 @@ namespace YahooFantasyWrapper.Query.Internal
         // The key and values to be comma separated
         // For a filter, this implies OR
         // For an out, this implies sub resources
-        public Dictionary<string, HashSet<string>> Modifiers = new Dictionary<string, HashSet<string>>();
+        public Dictionary<string, HashSet<string>> Modifiers = new();
         public bool IsCollection { get; set; }
 
         public override string ToString()

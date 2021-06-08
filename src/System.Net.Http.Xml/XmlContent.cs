@@ -17,7 +17,7 @@ namespace System.Net.Http.Xml
         internal const string XmlType = "application";
         internal const string XmlSubtype = "xml";
         private static MediaTypeHeaderValue DefaultMediaType
-            => new MediaTypeHeaderValue(XmlMediaType) { CharSet = "utf-8" };
+            => new(XmlMediaType) { CharSet = "utf-8" };
 
         //internal static readonly XmlSerializerOptions s_defaultSerializerOptions
         //    = new XmlSerializerOptions { PropertyNameCaseInsensitive = true, PropertyNamingPolicy = XmlNamingPolicy.CamelCase };
@@ -48,7 +48,7 @@ namespace System.Net.Http.Xml
             => Create(inputValue, typeof(T), mediaType/*, options*/);
 
         public static XmlContent Create(object? inputValue, Type inputType, MediaTypeHeaderValue? mediaType = null /*, XmlSerializerNamespaces? namespaces = null*/)
-            => new XmlContent(inputValue, inputType, mediaType/*, options*/);
+            => new(inputValue, inputType, mediaType/*, options*/);
 
         protected override Task SerializeToStreamAsync(Stream stream, TransportContext? context)
             => SerializeToStreamAsyncCore(stream, CancellationToken.None);

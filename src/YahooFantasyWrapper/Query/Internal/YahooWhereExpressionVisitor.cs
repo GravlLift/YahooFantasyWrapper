@@ -8,7 +8,7 @@ namespace YahooFantasyWrapper.Query.Internal
 {
     internal class YahooWhereExpressionVisitor : ExpressionVisitor
     {
-        internal Dictionary<string, HashSet<string>> Filters = new Dictionary<string, HashSet<string>>();
+        internal Dictionary<string, HashSet<string>> Filters = new();
 
         public YahooWhereExpressionVisitor(MethodCallExpression expression)
         {

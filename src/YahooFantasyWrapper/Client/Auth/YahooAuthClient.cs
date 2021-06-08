@@ -1,17 +1,17 @@
-﻿using System.Linq;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
-using YahooFantasyWrapper.Configuration;
-using YahooFantasyWrapper.Models;
-using YahooFantasyWrapper.Infrastructure;
+using System.Collections.Specialized;
+using System.Linq;
 using System.Net.Http;
+using System.Text;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Options;
 //using System.Text.Json;
 using Newtonsoft.Json;
-using Microsoft.Extensions.Options;
-using System.Collections.Specialized;
-using System.Text;
 using Newtonsoft.Json.Linq;
+using YahooFantasyWrapper.Configuration;
+using YahooFantasyWrapper.Infrastructure;
+using YahooFantasyWrapper.Models;
 
 namespace YahooFantasyWrapper.Client
 {

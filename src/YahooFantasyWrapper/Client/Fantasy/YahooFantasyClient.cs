@@ -1,18 +1,18 @@
-﻿using System.Threading.Tasks;
-using System.Net;
-using YahooFantasyWrapper.Models;
-using System.Reflection;
-using System.Net.Http.Headers;
-using System.Net.Http;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Reflection;
 using System.Text;
+using System.Threading.Tasks;
+using System.Xml.Linq;
+using System.Xml.Serialization;
 using YahooFantasyWrapper.Configuration;
 using YahooFantasyWrapper.Infrastructure;
-using System.Collections.Specialized;
-using System.Xml.Serialization;
-using System.Xml.Linq;
-using System.Linq;
+using YahooFantasyWrapper.Models;
 
 
 namespace YahooFantasyWrapper.Client

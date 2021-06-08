@@ -1,20 +1,20 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Net.Http.Xml;
 using System.Reflection;
 using System.Threading;
-using System.Net.Http.Xml;
-using YahooFantasyWrapper.Models.Response;
 using System.Threading.Tasks;
-using YahooFantasyWrapper.Client;
-using System.Net.Http.Headers;
 using System.Xml.Linq;
-using YahooFantasyWrapper.Models;
-using YahooFantasyWrapper.Client.Fantasy;
 using System.Xml.Serialization;
-using System.Collections.Generic;
-using System.Collections;
+using YahooFantasyWrapper.Client;
+using YahooFantasyWrapper.Client.Fantasy;
+using YahooFantasyWrapper.Models;
+using YahooFantasyWrapper.Models.Response;
 
 namespace YahooFantasyWrapper.Query.Internal
 {

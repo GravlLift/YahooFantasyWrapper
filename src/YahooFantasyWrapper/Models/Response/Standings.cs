@@ -3,8 +3,6 @@ using System.Xml.Serialization;
 
 namespace YahooFantasyWrapper.Models.Response
 {
-
-
     [XmlRoot(ElementName = "team_points")]
     public class TeamPoints
     {
@@ -54,7 +52,6 @@ namespace YahooFantasyWrapper.Models.Response
         [XmlElement(ElementName = "points_against")]
         public string PointsAgainst { get; set; }
     }
-
 
     [XmlRoot(ElementName = "standings")]
     public class Standings

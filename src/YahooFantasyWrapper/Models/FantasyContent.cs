@@ -2,7 +2,6 @@
 
 namespace YahooFantasyWrapper.Models
 {
-
     [XmlRoot(ElementName = "fantasy_content")]
     public class FantasyContent<T>
     {

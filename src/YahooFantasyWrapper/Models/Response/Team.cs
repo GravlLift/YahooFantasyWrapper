@@ -19,9 +19,13 @@ namespace YahooFantasyWrapper.Models.Response
     {
         [XmlElement(ElementName = "team_logo")]
         public TeamLogo TeamLogo { get; set; }
-        [XmlElement(ElementName = "size", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
+        [XmlElement(
+            ElementName = "size",
+            Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
         public string Size { get; set; }
-        [XmlElement(ElementName = "url", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
+        [XmlElement(
+            ElementName = "url",
+            Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
         public string Url { get; set; }
     }
 
@@ -143,10 +147,8 @@ namespace YahooFantasyWrapper.Models.Response
     [XmlRoot(ElementName = "team")]
     public class Team : TeamBase
     {
-
         [XmlElement(ElementName = "roster")]
         public Roster Roster { get; set; }
-
 
         [XmlElement(ElementName = "team_points")]
         public TeamPoints TeamPoints { get; set; }
@@ -154,18 +156,29 @@ namespace YahooFantasyWrapper.Models.Response
         public TeamStandings TeamStandings { get; set; }
     }
 
-
-    [XmlRoot(ElementName = "roster", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
+    [XmlRoot(
+        ElementName = "roster",
+        Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
     public class Roster : IYahooResource
     {
-        [XmlElement(ElementName = "coverage_type", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
+        [XmlElement(
+            ElementName = "coverage_type",
+            Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
         public string CoverageType { get; set; }
-        [XmlElement(ElementName = "week", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
+        [XmlElement(
+            ElementName = "week",
+            Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
         public int Week { get; set; }
-        [XmlElement(ElementName = "is_editable", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
+        [XmlElement(
+            ElementName = "is_editable",
+            Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
         public bool IsEditable { get; set; }
-        [XmlArray(ElementName = "players", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
-        [XmlArrayItem(ElementName = "player", Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
+        [XmlArray(
+            ElementName = "players",
+            Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
+        [XmlArrayItem(
+            ElementName = "player",
+            Namespace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng")]
         public List<Player> Players { get; set; }
     }
 }

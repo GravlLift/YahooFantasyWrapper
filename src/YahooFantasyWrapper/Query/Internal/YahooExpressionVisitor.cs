@@ -9,7 +9,6 @@ using YahooFantasyWrapper.Client;
 
 namespace YahooFantasyWrapper.Query.Internal
 {
-
     public class YahooExpressionVisitor : ExpressionVisitor
     {
         // Ordered list with a type for key and a boolean for value representing
@@ -18,20 +17,23 @@ namespace YahooFantasyWrapper.Query.Internal
 
         // This confusing nightmare is a grouping of modifiers by type in no particular order,
         // in case a method needs to add modifiers before the segment has been ordered
-        private readonly Dictionary<Type, Dictionary<string, HashSet<string>>> SegmentModifiers
-            = new();
+        private readonly Dictionary<Type, Dictionary<string, HashSet<string>>> SegmentModifiers =
+            new();
 
         // By their powers combioned...
-        private IEnumerable<YahooUrlSegment> Segments
-            => SegmentTypes.Select(kvp
-                => new YahooUrlSegment
-                {
-                    ResourceType = kvp.type,
-                    IsCollection = kvp.isCollection,
-                    Modifiers = SegmentModifiers[kvp.type]
-                });
+        private IEnumerable<YahooUrlSegment> Segments =>
+            SegmentTypes.Select(
+                kvp =>
+                    new YahooUrlSegment
+                    {
+                        ResourceType = kvp.type,
+                        IsCollection = kvp.isCollection,
+                        Modifiers = SegmentModifiers[kvp.type]
+                    }
+            );
 
-        private Dictionary<string, HashSet<string>> RootModifiers => SegmentModifiers[SegmentTypes[0].type];
+        private Dictionary<string, HashSet<string>> RootModifiers =>
+            SegmentModifiers[SegmentTypes[0].type];
         private void AddSegment(Type type, bool isCollection)
         {
             if (SegmentTypes.Count == 0)
@@ -57,8 +59,13 @@ namespace YahooFantasyWrapper.Query.Internal
             }
             else
             {
-                SegmentModifiers.Add(type,
-                    new Dictionary<string, HashSet<string>> { { key, new HashSet<string> { value } } });
+                SegmentModifiers.Add(
+                    type,
+                    new Dictionary<string, HashSet<string>>
+                    {
+                        { key, new HashSet<string> { value } }
+                    }
+                );
             }
         }
 
@@ -68,7 +75,8 @@ namespace YahooFantasyWrapper.Query.Internal
                 typeof(IEnumerable).IsAssignableFrom(expression.Type)
                     ? expression.Type.GenericTypeArguments[0]
                     : expression.Type,
-                expression.Type.IsAssignableFrom(typeof(Models.Response.IYahooCollection)));
+                expression.Type.IsAssignableFrom(typeof(Models.Response.IYahooCollection))
+            );
             Visit(expression);
         }
 
@@ -84,9 +92,10 @@ namespace YahooFantasyWrapper.Query.Internal
 
         protected override Expression VisitMethodCall(MethodCallExpression node)
         {
-            if (node.Method.Name == nameof(Enumerable.Where) ||
-                node.Method.Name == nameof(Enumerable.First))
-            {
+            if (
+                node.Method.Name == nameof(Enumerable.Where)
+                || node.Method.Name == nameof(Enumerable.First)
+            ) {
                 var filters = new YahooWhereExpressionVisitor(node).Filters;
                 foreach (var filter in filters)
                 {
@@ -103,40 +112,57 @@ namespace YahooFantasyWrapper.Query.Internal
             else if (node.Method.Name == nameof(QueryableExtensions.Filter))
             {
                 var filter = node.Arguments[1];
-                if (filter is ConstantExpression constantExpressionFilter && constantExpressionFilter.Value != null)
-                {
+                if (
+                    filter
+                        is ConstantExpression constantExpressionFilter
+                    && constantExpressionFilter.Value != null
+                ) {
                     Type filterType = constantExpressionFilter.Value.GetType();
                     foreach (var property in filterType.GetRuntimeProperties())
                     {
                         var propertyValue = property.GetValue(constantExpressionFilter.Value);
 
-                        var filterKey = property.GetCustomAttribute<YahooFilterAttribute>()?.Key ??
-                            property.Name.ToLowerInvariant();
+                        var filterKey =
+                            property.GetCustomAttribute<YahooFilterAttribute>()?.Key
+                            ?? property.Name.ToLowerInvariant();
                         if (propertyValue == default)
                         {
                             continue;
                         }
-                        else if (property.PropertyType != typeof(string) && typeof(IEnumerable).IsAssignableFrom(property.PropertyType))
-                        {
+                        else if (
+                            property.PropertyType != typeof(string)
+                            && typeof(IEnumerable).IsAssignableFrom(property.PropertyType)
+                        ) {
                             var enumerable = ((IEnumerable)propertyValue).Cast<object>();
-                            AddModifer(node.Method.ReturnType.GenericTypeArguments[1], filterKey,
-                                string.Join(",", enumerable.Select(o => o.ToString())));
+                            AddModifer(
+                                node.Method.ReturnType.GenericTypeArguments[1],
+                                filterKey,
+                                string.Join(",", enumerable.Select(o => o.ToString()))
+                            );
                         }
                         else if (propertyValue is bool booleanValue)
                         {
-                            AddModifer(node.Method.ReturnType.GenericTypeArguments[1], filterKey,
-                                booleanValue ? "1" : "0");
+                            AddModifer(
+                                node.Method.ReturnType.GenericTypeArguments[1],
+                                filterKey,
+                                booleanValue ? "1" : "0"
+                            );
                         }
                         else
                         {
-                            AddModifer(node.Method.ReturnType.GenericTypeArguments[1], filterKey,
-                                propertyValue.ToString());
+                            AddModifer(
+                                node.Method.ReturnType.GenericTypeArguments[1],
+                                filterKey,
+                                propertyValue.ToString()
+                            );
                         }
                     }
                 }
                 else
                 {
-                    throw new NotImplementedException($"Filter is of unhandled type {filter.Type.Name}");
+                    throw new NotImplementedException(
+                        $"Filter is of unhandled type {filter.Type.Name}"
+                    );
                 }
             }
             else if (node.Method.Name == nameof(QueryableExtensions.SubResource))
@@ -160,21 +186,26 @@ namespace YahooFantasyWrapper.Query.Internal
                         }
                         else
                         {
-                            throw new NotImplementedException($"Lambda expression is of unhandled type {unaryExpression.Type.Name}");
+                            throw new NotImplementedException(
+                                $"Lambda expression is of unhandled type {unaryExpression.Type.Name}"
+                            );
                         }
                     }
                     else
                     {
-                        throw new NotImplementedException($"Unary operand is of unhandled type {unaryExpression.Type.Name}");
+                        throw new NotImplementedException(
+                            $"Unary operand is of unhandled type {unaryExpression.Type.Name}"
+                        );
                     }
                 }
                 else
                 {
-                    throw new NotImplementedException($"Argument is of unhandled type {expressionArgument.Type.Name}");
+                    throw new NotImplementedException(
+                        $"Argument is of unhandled type {expressionArgument.Type.Name}"
+                    );
                 }
             }
             return base.VisitMethodCall(node);
         }
-
     }
 }

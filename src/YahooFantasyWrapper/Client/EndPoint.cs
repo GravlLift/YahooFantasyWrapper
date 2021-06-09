@@ -22,6 +22,9 @@ namespace YahooFantasyWrapper.Client
         /// <summary>
         /// Complete URI of endpoint (base URI combined with resource URI).
         /// </summary>
-        public string Uri { get { return BaseUri + Resource; } }
+        public string Uri
+        {
+            get { return BaseUri + Resource; }
+        }
     }
 }

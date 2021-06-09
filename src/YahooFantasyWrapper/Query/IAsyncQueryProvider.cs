@@ -10,6 +10,9 @@ namespace YahooFantasyWrapper.Query
 {
     public interface IAsyncQueryProvider : IQueryProvider
     {
-        Task<TResult> ExecuteAsync<TResult>(Expression expression, CancellationToken cancellationToken = default);
+        Task<TResult> ExecuteAsync<TResult>(
+            Expression expression,
+            CancellationToken cancellationToken = default
+        );
     }
 }

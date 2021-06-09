@@ -19,7 +19,7 @@ namespace YahooFantasyWrapper.Client
         /// </summary>
         /// <param name="parameters">QS Parameters to parse for auth</param>
         /// <returns></returns>
-        /// 
+        ///
         Task<UserInfo> GetUserInfo(NameValueCollection parameters);
 
         /// <summary>

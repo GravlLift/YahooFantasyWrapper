@@ -13,7 +13,9 @@ namespace System.Collections.Generic
 {
     public static class QueryableExtensions
     {
-        private sealed class YahooCollection<TYahooCollection, TYahooSubResource> : IYahooQueryable<TYahooCollection, TYahooSubResource>, IAsyncEnumerable<TYahooCollection>
+        private sealed class YahooCollection<TYahooCollection, TYahooSubResource>
+            : IYahooQueryable<TYahooCollection, TYahooSubResource>,
+                IAsyncEnumerable<TYahooCollection>
             where TYahooCollection : IYahooEntity
             where TYahooSubResource : IYahooEntity
         {
@@ -24,204 +26,305 @@ namespace System.Collections.Generic
                 _queryable = queryable;
             }
 
-            public Expression Expression
-                => _queryable.Expression;
+            public Expression Expression => _queryable.Expression;
 
-            public Type ElementType
-                => _queryable.ElementType;
+            public Type ElementType => _queryable.ElementType;
 
-            public IQueryProvider Provider
-                => _queryable.Provider;
+            public IQueryProvider Provider => _queryable.Provider;
 
-            public IAsyncEnumerator<TYahooCollection> GetAsyncEnumerator(CancellationToken cancellationToken = default)
-                => ((IAsyncEnumerable<TYahooCollection>)_queryable).GetAsyncEnumerator(cancellationToken);
+            public IAsyncEnumerator<TYahooCollection> GetAsyncEnumerator(
+                CancellationToken cancellationToken = default
+            ) =>
+                ((IAsyncEnumerable<TYahooCollection>)_queryable).GetAsyncEnumerator(
+                    cancellationToken
+                );
 
-            public IEnumerator<TYahooCollection> GetEnumerator()
-                => _queryable.GetEnumerator();
+            public IEnumerator<TYahooCollection> GetEnumerator() => _queryable.GetEnumerator();
 
-            IEnumerator IEnumerable.GetEnumerator()
-                => GetEnumerator();
+            IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
         }
 
         #region Filter
 
-        internal static readonly MethodInfo PlayerFilterMethodInfo
-            = typeof(QueryableExtensions)
-                .GetTypeInfo().GetDeclaredMethods(nameof(Filter))
-                .Single(mi => mi.ReturnType.GenericTypeArguments[1] == typeof(Player));
-        public static IYahooQueryable<TYahooEntity, Player> Filter<TYahooEntity>(this IYahooQueryable<TYahooEntity, Player> source,
-            PlayerCollectionFilters filters)
-            where TYahooEntity : IYahooEntity
-            => new YahooCollection<TYahooEntity, Player>(
+        internal static readonly MethodInfo PlayerFilterMethodInfo = typeof(QueryableExtensions).GetTypeInfo()
+            .GetDeclaredMethods(nameof(Filter))
+            .Single(mi => mi.ReturnType.GenericTypeArguments[1] == typeof(Player));
+        public static IYahooQueryable<TYahooEntity, Player> Filter<TYahooEntity>(
+            this IYahooQueryable<TYahooEntity, Player> source,
+            PlayerCollectionFilters filters
+        )
+            where TYahooEntity : IYahooEntity =>
+            new YahooCollection<TYahooEntity, Player>(
                 source.Provider is YahooQueryProvider
                     ? source.Provider.CreateQuery<TYahooEntity>(
-                        Expression.Call(instance: null,
-                            method: PlayerFilterMethodInfo.MakeGenericMethod(typeof(TYahooEntity)),
-                            arguments: new[] { source.Expression, Expression.Constant(filters) }))
-                    : source);
+                            Expression.Call(
+                                instance: null,
+                                method: PlayerFilterMethodInfo.MakeGenericMethod(
+                                    typeof(TYahooEntity)
+                                ),
+                                arguments: new[] { source.Expression, Expression.Constant(filters) }
+                            )
+                        )
+                    : source
+            );
 
-        internal static readonly MethodInfo GameFilterMethodInfo
-            = typeof(QueryableExtensions)
-                .GetTypeInfo().GetDeclaredMethods(nameof(Filter))
-                .Single(mi => mi.ReturnType.GenericTypeArguments[1] == typeof(Game));
-        public static IYahooQueryable<TYahooEntity, Game> Filter<TYahooEntity>(this IYahooQueryable<TYahooEntity, Game> source,
-            GameCollectionFilters filters)
-            where TYahooEntity : IYahooEntity
-            => new YahooCollection<TYahooEntity, Game>(
+        internal static readonly MethodInfo GameFilterMethodInfo = typeof(QueryableExtensions).GetTypeInfo()
+            .GetDeclaredMethods(nameof(Filter))
+            .Single(mi => mi.ReturnType.GenericTypeArguments[1] == typeof(Game));
+        public static IYahooQueryable<TYahooEntity, Game> Filter<TYahooEntity>(
+            this IYahooQueryable<TYahooEntity, Game> source,
+            GameCollectionFilters filters
+        )
+            where TYahooEntity : IYahooEntity =>
+            new YahooCollection<TYahooEntity, Game>(
                 source.Provider is YahooQueryProvider
                     ? source.Provider.CreateQuery<TYahooEntity>(
-                        Expression.Call(instance: null,
-                            method: GameFilterMethodInfo.MakeGenericMethod(typeof(TYahooEntity)),
-                            arguments: new[] { source.Expression, Expression.Constant(filters) }))
-                    : source);
+                            Expression.Call(
+                                instance: null,
+                                method: GameFilterMethodInfo.MakeGenericMethod(
+                                    typeof(TYahooEntity)
+                                ),
+                                arguments: new[] { source.Expression, Expression.Constant(filters) }
+                            )
+                        )
+                    : source
+            );
 
-        internal static readonly MethodInfo LeagueFilterMethodInfo
-            = typeof(QueryableExtensions)
-                .GetTypeInfo().GetDeclaredMethods(nameof(Filter))
-                .Single(mi => mi.ReturnType.GenericTypeArguments[1] == typeof(League));
-        public static IYahooQueryable<TYahooEntity, League> Filter<TYahooEntity>(this IYahooQueryable<TYahooEntity, League> source,
-            LeagueCollectionFilters filters)
-            where TYahooEntity : IYahooEntity
-            => new YahooCollection<TYahooEntity, League>(
+        internal static readonly MethodInfo LeagueFilterMethodInfo = typeof(QueryableExtensions).GetTypeInfo()
+            .GetDeclaredMethods(nameof(Filter))
+            .Single(mi => mi.ReturnType.GenericTypeArguments[1] == typeof(League));
+        public static IYahooQueryable<TYahooEntity, League> Filter<TYahooEntity>(
+            this IYahooQueryable<TYahooEntity, League> source,
+            LeagueCollectionFilters filters
+        )
+            where TYahooEntity : IYahooEntity =>
+            new YahooCollection<TYahooEntity, League>(
                 source.Provider is YahooQueryProvider
                     ? source.Provider.CreateQuery<TYahooEntity>(
-                        Expression.Call(instance: null,
-                            method: LeagueFilterMethodInfo.MakeGenericMethod(typeof(TYahooEntity)),
-                            arguments: new[] { source.Expression, Expression.Constant(filters) }))
-                    : source);
+                            Expression.Call(
+                                instance: null,
+                                method: LeagueFilterMethodInfo.MakeGenericMethod(
+                                    typeof(TYahooEntity)
+                                ),
+                                arguments: new[] { source.Expression, Expression.Constant(filters) }
+                            )
+                        )
+                    : source
+            );
 
-        internal static readonly MethodInfo UserFilterMethodInfo
-            = typeof(QueryableExtensions)
-                .GetTypeInfo().GetDeclaredMethods(nameof(Filter))
-                .Single(mi => mi.ReturnType.GenericTypeArguments[1] == typeof(User));
-        public static IYahooQueryable<TYahooEntity, User> Filter<TYahooEntity>(this IYahooQueryable<TYahooEntity, User> source,
-            UserCollectionFilters filters)
-            where TYahooEntity : IYahooEntity
-            => new YahooCollection<TYahooEntity, User>(
+        internal static readonly MethodInfo UserFilterMethodInfo = typeof(QueryableExtensions).GetTypeInfo()
+            .GetDeclaredMethods(nameof(Filter))
+            .Single(mi => mi.ReturnType.GenericTypeArguments[1] == typeof(User));
+        public static IYahooQueryable<TYahooEntity, User> Filter<TYahooEntity>(
+            this IYahooQueryable<TYahooEntity, User> source,
+            UserCollectionFilters filters
+        )
+            where TYahooEntity : IYahooEntity =>
+            new YahooCollection<TYahooEntity, User>(
                 source.Provider is YahooQueryProvider
                     ? source.Provider.CreateQuery<TYahooEntity>(
-                        Expression.Call(instance: null,
-                            method: UserFilterMethodInfo.MakeGenericMethod(typeof(TYahooEntity)),
-                            arguments: new[] { source.Expression, Expression.Constant(filters) }))
-                    : source);
+                            Expression.Call(
+                                instance: null,
+                                method: UserFilterMethodInfo.MakeGenericMethod(
+                                    typeof(TYahooEntity)
+                                ),
+                                arguments: new[] { source.Expression, Expression.Constant(filters) }
+                            )
+                        )
+                    : source
+            );
 
-        internal static readonly MethodInfo TeamFilterMethodInfo
-            = typeof(QueryableExtensions)
-                .GetTypeInfo().GetDeclaredMethods(nameof(Filter))
-                .Single(mi => mi.ReturnType.GenericTypeArguments[1] == typeof(Team));
-        public static IYahooQueryable<TYahooEntity, Team> Filter<TYahooEntity>(this IYahooQueryable<TYahooEntity, Team> source,
-            TeamCollectionFilters filters)
-            where TYahooEntity : IYahooEntity
-            => new YahooCollection<TYahooEntity, Team>(
+        internal static readonly MethodInfo TeamFilterMethodInfo = typeof(QueryableExtensions).GetTypeInfo()
+            .GetDeclaredMethods(nameof(Filter))
+            .Single(mi => mi.ReturnType.GenericTypeArguments[1] == typeof(Team));
+        public static IYahooQueryable<TYahooEntity, Team> Filter<TYahooEntity>(
+            this IYahooQueryable<TYahooEntity, Team> source,
+            TeamCollectionFilters filters
+        )
+            where TYahooEntity : IYahooEntity =>
+            new YahooCollection<TYahooEntity, Team>(
                 source.Provider is YahooQueryProvider
                     ? source.Provider.CreateQuery<TYahooEntity>(
-                        Expression.Call(instance: null,
-                            method: TeamFilterMethodInfo.MakeGenericMethod(typeof(TYahooEntity)),
-                            arguments: new[] { source.Expression, Expression.Constant(filters) }))
-                    : source);
+                            Expression.Call(
+                                instance: null,
+                                method: TeamFilterMethodInfo.MakeGenericMethod(
+                                    typeof(TYahooEntity)
+                                ),
+                                arguments: new[] { source.Expression, Expression.Constant(filters) }
+                            )
+                        )
+                    : source
+            );
 
-        internal static readonly MethodInfo RosterFilterMethodInfo
-            = typeof(QueryableExtensions)
-                .GetTypeInfo().GetDeclaredMethods(nameof(Filter))
-                .Single(mi => mi.ReturnType.GenericTypeArguments[1] == typeof(Roster));
-        public static IYahooQueryable<TYahooEntity, Roster> Filter<TYahooEntity>(this IYahooQueryable<TYahooEntity, Roster> source,
-            RosterCollectionFilters filters)
-            where TYahooEntity : IYahooEntity
-            => new YahooCollection<TYahooEntity, Roster>(
+        internal static readonly MethodInfo RosterFilterMethodInfo = typeof(QueryableExtensions).GetTypeInfo()
+            .GetDeclaredMethods(nameof(Filter))
+            .Single(mi => mi.ReturnType.GenericTypeArguments[1] == typeof(Roster));
+        public static IYahooQueryable<TYahooEntity, Roster> Filter<TYahooEntity>(
+            this IYahooQueryable<TYahooEntity, Roster> source,
+            RosterCollectionFilters filters
+        )
+            where TYahooEntity : IYahooEntity =>
+            new YahooCollection<TYahooEntity, Roster>(
                 source.Provider is YahooQueryProvider
                     ? source.Provider.CreateQuery<TYahooEntity>(
-                        Expression.Call(instance: null,
-                            method: RosterFilterMethodInfo.MakeGenericMethod(typeof(TYahooEntity)),
-                            arguments: new[] { source.Expression, Expression.Constant(filters) }))
-                    : source);
+                            Expression.Call(
+                                instance: null,
+                                method: RosterFilterMethodInfo.MakeGenericMethod(
+                                    typeof(TYahooEntity)
+                                ),
+                                arguments: new[] { source.Expression, Expression.Constant(filters) }
+                            )
+                        )
+                    : source
+            );
 
-        internal static readonly MethodInfo MatchupFilterMethodInfo
-            = typeof(QueryableExtensions)
-                .GetTypeInfo().GetDeclaredMethods(nameof(Filter))
-                .Single(mi => mi.ReturnType.GenericTypeArguments[1] == typeof(Matchup));
-        public static IYahooQueryable<TYahooEntity, Matchup> Filter<TYahooEntity>(this IYahooQueryable<TYahooEntity, Matchup> source,
-            MatchupCollectionFilters filters)
-            where TYahooEntity : IYahooEntity
-            => new YahooCollection<TYahooEntity, Matchup>(
+        internal static readonly MethodInfo MatchupFilterMethodInfo = typeof(QueryableExtensions).GetTypeInfo()
+            .GetDeclaredMethods(nameof(Filter))
+            .Single(mi => mi.ReturnType.GenericTypeArguments[1] == typeof(Matchup));
+        public static IYahooQueryable<TYahooEntity, Matchup> Filter<TYahooEntity>(
+            this IYahooQueryable<TYahooEntity, Matchup> source,
+            MatchupCollectionFilters filters
+        )
+            where TYahooEntity : IYahooEntity =>
+            new YahooCollection<TYahooEntity, Matchup>(
                 source.Provider is YahooQueryProvider
                     ? source.Provider.CreateQuery<TYahooEntity>(
-                        Expression.Call(instance: null,
-                            method: MatchupFilterMethodInfo.MakeGenericMethod(typeof(TYahooEntity)),
-                            arguments: new[] { source.Expression, Expression.Constant(filters) }))
-                    : source);
+                            Expression.Call(
+                                instance: null,
+                                method: MatchupFilterMethodInfo.MakeGenericMethod(
+                                    typeof(TYahooEntity)
+                                ),
+                                arguments: new[] { source.Expression, Expression.Constant(filters) }
+                            )
+                        )
+                    : source
+            );
         #endregion
 
         #region SubResource
 
-        internal static readonly MethodInfo ResourceSubResourceMethodInfo
-            = typeof(QueryableExtensions)
-                .GetTypeInfo().GetDeclaredMethods(nameof(SubResource))
-                .Single(mi => mi.GetGenericArguments().Length == 2 &&
-                    mi.GetGenericArguments()[1].GetGenericParameterConstraints()[0] == typeof(IYahooResource));
-        public static IYahooQueryable<TSource, TYahooSubResource> SubResource<TSource, TYahooSubResource>(
-            this IQueryable<TSource> source,
-            Expression<Func<TSource, TYahooSubResource>> expression)
+        internal static readonly MethodInfo ResourceSubResourceMethodInfo = typeof(QueryableExtensions).GetTypeInfo()
+            .GetDeclaredMethods(nameof(SubResource))
+            .Single(
+                mi =>
+                    mi.GetGenericArguments().Length == 2
+                    && mi.GetGenericArguments()[1].GetGenericParameterConstraints()[0]
+                    == typeof(IYahooResource)
+            );
+        public static IYahooQueryable<TSource, TYahooSubResource> SubResource<
+            TSource,
+            TYahooSubResource
+        >(this IQueryable<TSource> source, Expression<Func<TSource, TYahooSubResource>> expression)
             where TSource : IYahooEntity
-            where TYahooSubResource : IYahooResource
-            => new YahooCollection<TSource, TYahooSubResource>(
+            where TYahooSubResource : IYahooResource =>
+            new YahooCollection<TSource, TYahooSubResource>(
                 source.Provider.CreateQuery<TSource>(
-                    Expression.Call(instance: null,
-                        method: ResourceSubResourceMethodInfo
-                            .MakeGenericMethod(typeof(TSource), typeof(TYahooSubResource)),
-                        arguments: new[] { source.Expression, Expression.Quote(expression) })));
+                    Expression.Call(
+                        instance: null,
+                        method: ResourceSubResourceMethodInfo.MakeGenericMethod(
+                            typeof(TSource),
+                            typeof(TYahooSubResource)
+                        ),
+                        arguments: new[] { source.Expression, Expression.Quote(expression) }
+                    )
+                )
+            );
 
-        internal static readonly MethodInfo ResourceNextSubResourceMethodInfo
-            = typeof(QueryableExtensions)
-                .GetTypeInfo().GetDeclaredMethods(nameof(SubResource))
-                .Single(mi => mi.GetGenericArguments().Length == 3 &&
-                    mi.GetGenericArguments()[2].GetGenericParameterConstraints()[0] == typeof(IYahooResource));
-        public static IYahooQueryable<TSource, TYahooSubResource> SubResource<TSource, TPrevSubCollection, TYahooSubResource>(
+        internal static readonly MethodInfo ResourceNextSubResourceMethodInfo = typeof(QueryableExtensions).GetTypeInfo()
+            .GetDeclaredMethods(nameof(SubResource))
+            .Single(
+                mi =>
+                    mi.GetGenericArguments().Length == 3
+                    && mi.GetGenericArguments()[2].GetGenericParameterConstraints()[0]
+                    == typeof(IYahooResource)
+            );
+        public static IYahooQueryable<TSource, TYahooSubResource> SubResource<
+            TSource,
+            TPrevSubCollection,
+            TYahooSubResource
+        >(
             this IYahooQueryable<TSource, TPrevSubCollection> source,
-            Expression<Func<TPrevSubCollection, TYahooSubResource>> expression)
+            Expression<Func<TPrevSubCollection, TYahooSubResource>> expression
+        )
             where TSource : IYahooEntity
             where TPrevSubCollection : IYahooEntity
-            where TYahooSubResource : IYahooResource
-            => new YahooCollection<TSource, TYahooSubResource>(
+            where TYahooSubResource : IYahooResource =>
+            new YahooCollection<TSource, TYahooSubResource>(
                 source.Provider.CreateQuery<TSource>(
-                    Expression.Call(instance: null,
-                        method: ResourceNextSubResourceMethodInfo
-                            .MakeGenericMethod(typeof(TSource), typeof(TPrevSubCollection), typeof(TYahooSubResource)),
-                        arguments: new[] { source.Expression, Expression.Quote(expression) })));
+                    Expression.Call(
+                        instance: null,
+                        method: ResourceNextSubResourceMethodInfo.MakeGenericMethod(
+                            typeof(TSource),
+                            typeof(TPrevSubCollection),
+                            typeof(TYahooSubResource)
+                        ),
+                        arguments: new[] { source.Expression, Expression.Quote(expression) }
+                    )
+                )
+            );
 
-
-        internal static readonly MethodInfo CollectionSubResourceMethodInfo
-            = typeof(QueryableExtensions)
-                .GetTypeInfo().GetDeclaredMethods(nameof(SubResource))
-                .Single(mi => mi.GetGenericArguments().Length == 2 &&
-                    mi.GetGenericArguments()[1].GetGenericParameterConstraints()[0] == typeof(IYahooCollection));
-        public static IYahooQueryable<TSource, TYahooSubCollection> SubResource<TSource, TYahooSubCollection>(
+        internal static readonly MethodInfo CollectionSubResourceMethodInfo = typeof(QueryableExtensions).GetTypeInfo()
+            .GetDeclaredMethods(nameof(SubResource))
+            .Single(
+                mi =>
+                    mi.GetGenericArguments().Length == 2
+                    && mi.GetGenericArguments()[1].GetGenericParameterConstraints()[0]
+                    == typeof(IYahooCollection)
+            );
+        public static IYahooQueryable<TSource, TYahooSubCollection> SubResource<
+            TSource,
+            TYahooSubCollection
+        >(
             this IQueryable<TSource> source,
-            Expression<Func<TSource, IEnumerable<TYahooSubCollection>>> expression)
+            Expression<Func<TSource, IEnumerable<TYahooSubCollection>>> expression
+        )
             where TSource : IYahooEntity
-            where TYahooSubCollection : IYahooCollection
-            => new YahooCollection<TSource, TYahooSubCollection>(
+            where TYahooSubCollection : IYahooCollection =>
+            new YahooCollection<TSource, TYahooSubCollection>(
                 source.Provider.CreateQuery<TSource>(
-                    Expression.Call(instance: null,
-                        method: CollectionSubResourceMethodInfo.MakeGenericMethod(typeof(TSource), typeof(TYahooSubCollection)),
-                        arguments: new[] { source.Expression, Expression.Quote(expression) })));
+                    Expression.Call(
+                        instance: null,
+                        method: CollectionSubResourceMethodInfo.MakeGenericMethod(
+                            typeof(TSource),
+                            typeof(TYahooSubCollection)
+                        ),
+                        arguments: new[] { source.Expression, Expression.Quote(expression) }
+                    )
+                )
+            );
 
-        internal static readonly MethodInfo CollectionNextSubResourceMethodInfo
-            = typeof(QueryableExtensions)
-                .GetTypeInfo().GetDeclaredMethods(nameof(SubResource))
-                .Single(mi => mi.GetGenericArguments().Length == 3 &&
-                    mi.GetGenericArguments()[2].GetGenericParameterConstraints()[0] == typeof(IYahooCollection));
-        public static IYahooQueryable<TSource, TSubCollection> SubResource<TSource, TPrevSubCollection, TSubCollection>(
+        internal static readonly MethodInfo CollectionNextSubResourceMethodInfo = typeof(QueryableExtensions).GetTypeInfo()
+            .GetDeclaredMethods(nameof(SubResource))
+            .Single(
+                mi =>
+                    mi.GetGenericArguments().Length == 3
+                    && mi.GetGenericArguments()[2].GetGenericParameterConstraints()[0]
+                    == typeof(IYahooCollection)
+            );
+        public static IYahooQueryable<TSource, TSubCollection> SubResource<
+            TSource,
+            TPrevSubCollection,
+            TSubCollection
+        >(
             this IYahooQueryable<TSource, TPrevSubCollection> source,
-            Expression<Func<TPrevSubCollection, IEnumerable<TSubCollection>>> expression)
+            Expression<Func<TPrevSubCollection, IEnumerable<TSubCollection>>> expression
+        )
             where TSource : IYahooEntity
             where TPrevSubCollection : IYahooEntity
-            where TSubCollection : IYahooCollection
-            => new YahooCollection<TSource, TSubCollection>(
+            where TSubCollection : IYahooCollection =>
+            new YahooCollection<TSource, TSubCollection>(
                 source.Provider.CreateQuery<TSource>(
-                    Expression.Call(instance: null,
-                        method: CollectionNextSubResourceMethodInfo
-                            .MakeGenericMethod(typeof(TSource), typeof(TPrevSubCollection), typeof(TSubCollection)),
-                        arguments: new[] { source.Expression, Expression.Quote(expression) })));
+                    Expression.Call(
+                        instance: null,
+                        method: CollectionNextSubResourceMethodInfo.MakeGenericMethod(
+                            typeof(TSource),
+                            typeof(TPrevSubCollection),
+                            typeof(TSubCollection)
+                        ),
+                        arguments: new[] { source.Expression, Expression.Quote(expression) }
+                    )
+                )
+            );
         #endregion
 
         #region First/FirstOrDefault
@@ -254,10 +357,14 @@ namespace System.Collections.Generic
         /// </exception>
         public static Task<TSource> FirstAsync<TSource>(
             this IYahooQueryable<TSource> source,
-            CancellationToken cancellationToken = default)
-            where TSource : IYahooCollection
-        {
-            return ExecuteAsync<TSource, TSource>(QueryableMethods.FirstWithoutPredicate, source, cancellationToken);
+            CancellationToken cancellationToken = default
+        )
+            where TSource : IYahooCollection {
+            return ExecuteAsync<TSource, TSource>(
+                QueryableMethods.FirstWithoutPredicate,
+                source,
+                cancellationToken
+            );
         }
 
         /// <summary>
@@ -299,11 +406,15 @@ namespace System.Collections.Generic
         public static Task<TSource> FirstAsync<TSource>(
             this IYahooQueryable<TSource> source,
             Expression<Func<TSource, bool>> predicate,
-            CancellationToken cancellationToken = default)
-            where TSource : IYahooCollection
-        {
-            return ExecuteAsync<TSource, TSource>(QueryableMethods.FirstWithPredicate,
-                source, predicate, cancellationToken);
+            CancellationToken cancellationToken = default
+        )
+            where TSource : IYahooCollection {
+            return ExecuteAsync<TSource, TSource>(
+                QueryableMethods.FirstWithPredicate,
+                source,
+                predicate,
+                cancellationToken
+            );
         }
 
         /// <summary>
@@ -332,11 +443,14 @@ namespace System.Collections.Generic
         /// </exception>
         public static Task<TSource> FirstOrDefaultAsync<TSource>(
             this IYahooQueryable<TSource> source,
-            CancellationToken cancellationToken = default)
-            where TSource : IYahooCollection
-        {
-            return ExecuteAsync<TSource, TSource>(QueryableMethods.FirstOrDefaultWithoutPredicate,
-                source, cancellationToken);
+            CancellationToken cancellationToken = default
+        )
+            where TSource : IYahooCollection {
+            return ExecuteAsync<TSource, TSource>(
+                QueryableMethods.FirstOrDefaultWithoutPredicate,
+                source,
+                cancellationToken
+            );
         }
 
         /// <summary>
@@ -369,11 +483,15 @@ namespace System.Collections.Generic
         public static Task<TSource> FirstOrDefaultAsync<TSource>(
             this IYahooQueryable<TSource> source,
             Expression<Func<TSource, bool>> predicate,
-            CancellationToken cancellationToken = default)
-            where TSource : IYahooCollection
-        {
-            return ExecuteAsync<TSource, TSource>(QueryableMethods.FirstOrDefaultWithPredicate,
-                source, predicate, cancellationToken);
+            CancellationToken cancellationToken = default
+        )
+            where TSource : IYahooCollection {
+            return ExecuteAsync<TSource, TSource>(
+                QueryableMethods.FirstOrDefaultWithPredicate,
+                source,
+                predicate,
+                cancellationToken
+            );
         }
 
         #endregion
@@ -406,12 +524,13 @@ namespace System.Collections.Generic
         /// </exception>
         public static async Task<List<TSource>> ToListAsync<TSource>(
             this IYahooQueryable<TSource> source,
-            CancellationToken cancellationToken = default)
-            where TSource : IYahooCollection
-        {
+            CancellationToken cancellationToken = default
+        )
+            where TSource : IYahooCollection {
             var list = new List<TSource>();
-            await foreach (var element in source.AsAsyncEnumerable().WithCancellation(cancellationToken))
-            {
+            await foreach (
+                var element in source.AsAsyncEnumerable().WithCancellation(cancellationToken)
+            ) {
                 list.Add(element);
             }
 
@@ -443,9 +562,10 @@ namespace System.Collections.Generic
         /// </exception>
         public static async Task<TSource[]> ToArrayAsync<TSource>(
             this IYahooQueryable<TSource> source,
-            CancellationToken cancellationToken = default)
-            where TSource : IYahooCollection
-            => (await source.ToListAsync(cancellationToken).ConfigureAwait(false)).ToArray();
+            CancellationToken cancellationToken = default
+        )
+            where TSource : IYahooCollection =>
+            (await source.ToListAsync(cancellationToken).ConfigureAwait(false)).ToArray();
 
         #endregion
 
@@ -472,15 +592,17 @@ namespace System.Collections.Generic
         ///     <paramref name="source" /> is not a <see cref="IAsyncEnumerable{T}" />.
         /// </exception>
         public static IAsyncEnumerable<TSource> AsAsyncEnumerable<TSource>(
-            this IYahooQueryable<TSource> source)
-            where TSource : IYahooCollection
-        {
+            this IYahooQueryable<TSource> source
+        )
+            where TSource : IYahooCollection {
             if (source is IAsyncEnumerable<TSource> asyncEnumerable)
             {
                 return asyncEnumerable;
             }
 
-            throw new InvalidOperationException($"The source 'IQueryable' doesn't implement 'IAsyncEnumerable<{typeof(TSource)}>'. Only sources that implement 'IAsyncEnumerable' can be used for asynchronous operations.");
+            throw new InvalidOperationException(
+                $"The source 'IQueryable' doesn't implement 'IAsyncEnumerable<{typeof(TSource)}>'. Only sources that implement 'IAsyncEnumerable' can be used for asynchronous operations."
+            );
         }
 
         #endregion
@@ -491,16 +613,18 @@ namespace System.Collections.Generic
             MethodInfo operatorMethodInfo,
             IQueryable<TSource> source,
             Expression expression,
-            CancellationToken cancellationToken = default)
-        {
+            CancellationToken cancellationToken = default
+        ) {
             if (source.Provider is IAsyncQueryProvider provider)
             {
                 if (operatorMethodInfo.IsGenericMethod)
                 {
-                    operatorMethodInfo
-                        = operatorMethodInfo.GetGenericArguments().Length == 2
-                            ? operatorMethodInfo.MakeGenericMethod(typeof(TSource), typeof(TResult).GetGenericArguments().Single())
-                            : operatorMethodInfo.MakeGenericMethod(typeof(TSource));
+                    operatorMethodInfo = operatorMethodInfo.GetGenericArguments().Length == 2
+                        ? operatorMethodInfo.MakeGenericMethod(
+                                typeof(TSource),
+                                typeof(TResult).GetGenericArguments().Single()
+                            )
+                        : operatorMethodInfo.MakeGenericMethod(typeof(TSource));
                 }
 
                 return await provider.ExecuteAsync<TResult>(
@@ -509,28 +633,41 @@ namespace System.Collections.Generic
                         method: operatorMethodInfo,
                         arguments: expression == null
                             ? new[] { source.Expression }
-                            : new[] { source.Expression, expression }),
-                    cancellationToken);
+                            : new[] { source.Expression, expression }
+                    ),
+                    cancellationToken
+                );
             }
 
-            throw new InvalidOperationException($"The source 'IQueryable' doesn't implement 'IAsyncEnumerable<{typeof(TSource)}>'. Only sources that implement 'IAsyncEnumerable' can be used for asynchronous operations.");
+            throw new InvalidOperationException(
+                $"The source 'IQueryable' doesn't implement 'IAsyncEnumerable<{typeof(TSource)}>'. Only sources that implement 'IAsyncEnumerable' can be used for asynchronous operations."
+            );
         }
 
         private static Task<TResult> ExecuteAsync<TSource, TResult>(
             MethodInfo operatorMethodInfo,
             IQueryable<TSource> source,
             LambdaExpression expression,
-            CancellationToken cancellationToken = default)
-            => ExecuteAsync<TSource, TResult>(
-                operatorMethodInfo, source, Expression.Quote(expression), cancellationToken);
+            CancellationToken cancellationToken = default
+        ) =>
+            ExecuteAsync<TSource, TResult>(
+                operatorMethodInfo,
+                source,
+                Expression.Quote(expression),
+                cancellationToken
+            );
 
         private static Task<TResult> ExecuteAsync<TSource, TResult>(
             MethodInfo operatorMethodInfo,
             IQueryable<TSource> source,
-            CancellationToken cancellationToken = default)
-            => ExecuteAsync<TSource, TResult>(
-                operatorMethodInfo, source, (Expression)null, cancellationToken);
-
+            CancellationToken cancellationToken = default
+        ) =>
+            ExecuteAsync<TSource, TResult>(
+                operatorMethodInfo,
+                source,
+                (Expression)null,
+                cancellationToken
+            );
         #endregion
     }
 }

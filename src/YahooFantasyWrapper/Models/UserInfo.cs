@@ -2,7 +2,6 @@
 
 namespace YahooFantasyWrapper.Models
 {
-
     public class UserInfo
     {
         public Profile Profile { get; set; }
@@ -51,5 +50,4 @@ namespace YahooFantasyWrapper.Models
 
         public long Width { get; set; }
     }
-
 }

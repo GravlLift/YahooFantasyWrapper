@@ -8,6 +8,9 @@
         }
         public string Value { get; }
         public override string ToString() => Value;
-        public static implicit operator string(StringEnum e) { return e.ToString(); }
+        public static implicit operator string(StringEnum e)
+        {
+            return e.ToString();
+        }
     }
 }

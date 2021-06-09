@@ -22,12 +22,10 @@ namespace YahooFantasyWrapper.Client
         /// </summary>
         /// <param name="resources">subresources for api</param>
         /// <returns></returns>
-        public static EndpointSubResourcesCollection BuildResourceList(params EndpointSubResources[] resources)
-        {
-            var collection = new EndpointSubResourcesCollection
-            {
-                Resources = resources.ToList()
-            };
+        public static EndpointSubResourcesCollection BuildResourceList(
+            params EndpointSubResources[] resources
+        ) {
+            var collection = new EndpointSubResourcesCollection { Resources = resources.ToList() };
             return collection;
         }
     }
@@ -35,31 +33,24 @@ namespace YahooFantasyWrapper.Client
     public enum EndpointSubResources
     {
         MetaData, // "metadata"
-        GameWeeks,// "game_weeks"
-        PositionTypes,//  "position_types"
-        RosterPositions,//  "roster_positions"
-        StatCategories,// "stat_categories"
-
-
-
-        DraftResults,// "draftresults"
-        Players,// "players"
-        Settings,// "settings"
-        Standings,// "standings"
-        Scoreboard,// "scoreboard"
-        Teams,// "teams"
-        Transactions,// "transactions"
-
-        Stats,// "stats"
-        PercentOwned,// "percent_owned"
-        DraftAnalysis,// "draft_analysis"
-
-        Roster,// "roster"
-        Matchups,// "matchups"
-
-        Ownership,// "ownership"
-
-        Leagues// "leagues"
+        GameWeeks, // "game_weeks"
+        PositionTypes, //  "position_types"
+        RosterPositions, //  "roster_positions"
+        StatCategories, // "stat_categories"
+        DraftResults, // "draftresults"
+        Players, // "players"
+        Settings, // "settings"
+        Standings, // "standings"
+        Scoreboard, // "scoreboard"
+        Teams, // "teams"
+        Transactions, // "transactions"
+        Stats, // "stats"
+        PercentOwned, // "percent_owned"
+        DraftAnalysis, // "draft_analysis"
+        Roster, // "roster"
+        Matchups, // "matchups"
+        Ownership, // "ownership"
+        Leagues // "leagues"
     }
 
     public static class EndpointSubResourcesExtensions

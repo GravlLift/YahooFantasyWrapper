@@ -82,5 +82,4 @@ namespace YahooFantasyWrapper.Models.Response
         [XmlArrayItem(ElementName = "matchup")]
         public List<Matchup> Matchups { get; set; }
     }
-
 }

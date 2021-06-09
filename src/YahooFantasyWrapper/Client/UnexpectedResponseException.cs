@@ -38,12 +38,9 @@ namespace YahooFantasyWrapper.Client
             FieldName = fieldName;
         }
 
-        public UnexpectedResponseException()
-        {
-        }
+        public UnexpectedResponseException() { }
 
-        public UnexpectedResponseException(string message, Exception innerException) : base(message, innerException)
-        {
-        }
+        public UnexpectedResponseException(string message, Exception innerException)
+            : base(message, innerException) { }
     }
 }

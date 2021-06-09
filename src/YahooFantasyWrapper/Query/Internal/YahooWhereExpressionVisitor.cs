@@ -31,12 +31,18 @@ namespace YahooFantasyWrapper.Query.Internal
 
                         if (node.Right is ConstantExpression rightConstantExpression)
                         {
-                            Filters.AddUnion(xmlElementAttribute.ElementName, rightConstantExpression.Value.ToString());
+                            Filters.AddUnion(
+                                xmlElementAttribute.ElementName,
+                                rightConstantExpression.Value.ToString()
+                            );
                             return node;
                         }
                         else if (node.Right is MemberExpression rightMemberExpression)
                         {
-                            Filters.AddUnion(xmlElementAttribute.ElementName, GetValue(rightMemberExpression).ToString());
+                            Filters.AddUnion(
+                                xmlElementAttribute.ElementName,
+                                GetValue(rightMemberExpression).ToString()
+                            );
                             return node;
                         }
                     }
@@ -45,9 +51,10 @@ namespace YahooFantasyWrapper.Query.Internal
                 case ExpressionType.OrElse:
                     return base.VisitBinary(node);
                 default:
-                    throw new NotImplementedException($"Node type {node.NodeType} has not been implemented.");
+                    throw new NotImplementedException(
+                        $"Node type {node.NodeType} has not been implemented."
+                    );
             }
-
         }
 
         private object GetValue(MemberExpression member)

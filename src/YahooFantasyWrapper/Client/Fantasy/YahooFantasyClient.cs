@@ -14,7 +14,6 @@ using YahooFantasyWrapper.Configuration;
 using YahooFantasyWrapper.Infrastructure;
 using YahooFantasyWrapper.Models;
 
-
 namespace YahooFantasyWrapper.Client
 {
     public class YahooFantasyClient : IYahooFantasyClient

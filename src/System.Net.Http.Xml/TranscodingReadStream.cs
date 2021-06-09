@@ -32,15 +32,27 @@ namespace System.Net.Http.Xml
 
             // The "count" in the buffer is the size of any content from a previous read.
             // Initialize them to 0 since nothing has been read so far.
-            _byteBuffer = new ArraySegment<byte>(ArrayPool<byte>.Shared.Rent(MaxByteBufferSize), 0, count: 0);
+            _byteBuffer = new ArraySegment<byte>(
+                ArrayPool<byte>.Shared.Rent(MaxByteBufferSize),
+                0,
+                count: 0
+            );
 
             // Attempt to allocate a char buffer than can tolerate the worst-case scenario for this
             // encoding. This would allow the byte -> char conversion to complete in a single call.
             // The conversion process is tolerant of char buffer that is not large enough to convert all the bytes at once.
             int maxCharBufferSize = sourceEncoding.GetMaxCharCount(MaxByteBufferSize);
-            _charBuffer = new ArraySegment<char>(ArrayPool<char>.Shared.Rent(maxCharBufferSize), 0, count: 0);
+            _charBuffer = new ArraySegment<char>(
+                ArrayPool<char>.Shared.Rent(maxCharBufferSize),
+                0,
+                count: 0
+            );
 
-            _overflowBuffer = new ArraySegment<byte>(ArrayPool<byte>.Shared.Rent(OverflowBufferSize), 0, count: 0);
+            _overflowBuffer = new ArraySegment<byte>(
+                ArrayPool<byte>.Shared.Rent(OverflowBufferSize),
+                0,
+                count: 0
+            );
 
             _decoder = sourceEncoding.GetDecoder();
             _encoder = Encoding.UTF8.GetEncoder();
@@ -61,11 +73,15 @@ namespace System.Net.Http.Xml
         internal int CharBufferCount => _charBuffer.Count;
         internal int OverflowCount => _overflowBuffer.Count;
 
-        public override int Read(byte[] buffer, int offset, int count)
-            => throw new NotSupportedException();
+        public override int Read(byte[] buffer, int offset, int count) =>
+            throw new NotSupportedException();
 
-        public override Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
-        {
+        public override Task<int> ReadAsync(
+            byte[] buffer,
+            int offset,
+            int count,
+            CancellationToken cancellationToken
+        ) {
             if (buffer == null)
             {
                 throw new ArgumentNullException(nameof(buffer));
@@ -83,15 +99,19 @@ namespace System.Net.Http.Xml
 
             if (buffer.Length - offset < count)
             {
-                throw new ArgumentException("Offset and length were out of bounds for the array or count is greater than the number of elements from index to the end of the source collection.");
+                throw new ArgumentException(
+                    "Offset and length were out of bounds for the array or count is greater than the number of elements from index to the end of the source collection."
+                );
             }
 
             var readBuffer = new ArraySegment<byte>(buffer, offset, count);
             return ReadAsyncCore(readBuffer, cancellationToken);
         }
 
-        private async Task<int> ReadAsyncCore(ArraySegment<byte> readBuffer, CancellationToken cancellationToken)
-        {
+        private async Task<int> ReadAsyncCore(
+            ArraySegment<byte> readBuffer,
+            CancellationToken cancellationToken
+        ) {
             if (readBuffer.Count == 0)
             {
                 return 0;
@@ -124,8 +144,18 @@ namespace System.Net.Http.Xml
             // If the destination buffer is smaller than GetMaxByteCount(1), we avoid encoding to the destination and we use the overflow buffer instead.
             if (readBuffer.Count > OverflowBufferSize || _charBuffer.Count == 0)
             {
-                _encoder.Convert(_charBuffer.Array!, _charBuffer.Offset, _charBuffer.Count, readBuffer.Array!, readBuffer.Offset, readBuffer.Count,
-                    flush: shouldFlushEncoder, out charsRead, out bytesWritten, out completed);
+                _encoder.Convert(
+                    _charBuffer.Array!,
+                    _charBuffer.Offset,
+                    _charBuffer.Count,
+                    readBuffer.Array!,
+                    readBuffer.Offset,
+                    readBuffer.Count,
+                    flush: shouldFlushEncoder,
+                    out charsRead,
+                    out bytesWritten,
+                    out completed
+                );
             }
 
             _charBuffer = _charBuffer.Slice(charsRead);
@@ -135,10 +165,23 @@ namespace System.Net.Http.Xml
                 return bytesWritten;
             }
 
-            _encoder.Convert(_charBuffer.Array!, _charBuffer.Offset, _charBuffer.Count, _overflowBuffer.Array!, byteIndex: 0, _overflowBuffer.Array!.Length,
-                flush: shouldFlushEncoder, out int overFlowChars, out int overflowBytes, out _);
+            _encoder.Convert(
+                _charBuffer.Array!,
+                _charBuffer.Offset,
+                _charBuffer.Count,
+                _overflowBuffer.Array!,
+                byteIndex: 0,
+                _overflowBuffer.Array!.Length,
+                flush: shouldFlushEncoder,
+                out int overFlowChars,
+                out int overflowBytes,
+                out _
+            );
 
-            Debug.Assert(overflowBytes > 0 && overFlowChars > 0, "We expect writes to the overflow buffer to always succeed since it is large enough to accommodate at least one char.");
+            Debug.Assert(
+                overflowBytes > 0 && overFlowChars > 0,
+                "We expect writes to the overflow buffer to always succeed since it is large enough to accommodate at least one char."
+            );
 
             _charBuffer = _charBuffer.Slice(overFlowChars);
 
@@ -150,7 +193,11 @@ namespace System.Net.Http.Xml
 
             Debug.Assert(_overflowBuffer.Array != null);
 
-            _overflowBuffer = new ArraySegment<byte>(_overflowBuffer.Array, readBuffer.Count, overflowBytes - readBuffer.Count);
+            _overflowBuffer = new ArraySegment<byte>(
+                _overflowBuffer.Array,
+                readBuffer.Count,
+                overflowBytes - readBuffer.Count
+            );
 
             Debug.Assert(_overflowBuffer.Count > 0);
 
@@ -162,21 +209,42 @@ namespace System.Net.Http.Xml
             // If we had left-over bytes from a previous read, move it to the start of the buffer and read content into
             // the segment that follows.
             Debug.Assert(_byteBuffer.Array != null);
-            Buffer.BlockCopy(_byteBuffer.Array, _byteBuffer.Offset, _byteBuffer.Array, 0, _byteBuffer.Count);
+            Buffer.BlockCopy(
+                _byteBuffer.Array,
+                _byteBuffer.Offset,
+                _byteBuffer.Array,
+                0,
+                _byteBuffer.Count
+            );
 
             int offset = _byteBuffer.Count;
             int count = _byteBuffer.Array.Length - _byteBuffer.Count;
 
-            int bytesRead = await _stream.ReadAsync(_byteBuffer.Array, offset, count, cancellationToken).ConfigureAwait(false);
+            int bytesRead =
+                await _stream.ReadAsync(_byteBuffer.Array, offset, count, cancellationToken)
+                    .ConfigureAwait(false);
 
             _byteBuffer = new ArraySegment<byte>(_byteBuffer.Array, 0, offset + bytesRead);
 
             Debug.Assert(_byteBuffer.Array != null);
             Debug.Assert(_charBuffer.Array != null);
-            Debug.Assert(_charBuffer.Count == 0, "We should only expect to read more input chars once all buffered content is read");
+            Debug.Assert(
+                _charBuffer.Count == 0,
+                "We should only expect to read more input chars once all buffered content is read"
+            );
 
-            _decoder.Convert(_byteBuffer.Array, _byteBuffer.Offset, _byteBuffer.Count, _charBuffer.Array, charIndex: 0, _charBuffer.Array.Length,
-                flush: bytesRead == 0, out int bytesUsed, out int charsUsed, out _);
+            _decoder.Convert(
+                _byteBuffer.Array,
+                _byteBuffer.Offset,
+                _byteBuffer.Count,
+                _charBuffer.Array,
+                charIndex: 0,
+                _charBuffer.Array.Length,
+                flush: bytesRead == 0,
+                out int bytesUsed,
+                out int charsUsed,
+                out _
+            );
 
             // We flush only when the stream is exhausted and there are no pending bytes in the buffer.
             Debug.Assert(bytesRead != 0 || _byteBuffer.Count - bytesUsed == 0);
@@ -187,17 +255,15 @@ namespace System.Net.Http.Xml
             return bytesRead;
         }
 
-        public override void Flush()
-            => throw new NotSupportedException();
+        public override void Flush() => throw new NotSupportedException();
 
-        public override long Seek(long offset, SeekOrigin origin)
-            => throw new NotSupportedException();
+        public override long Seek(long offset, SeekOrigin origin) =>
+            throw new NotSupportedException();
 
-        public override void SetLength(long value)
-            => throw new NotSupportedException();
+        public override void SetLength(long value) => throw new NotSupportedException();
 
-        public override void Write(byte[] buffer, int offset, int count)
-            => throw new NotSupportedException();
+        public override void Write(byte[] buffer, int offset, int count) =>
+            throw new NotSupportedException();
 
         protected override void Dispose(bool disposing)
         {

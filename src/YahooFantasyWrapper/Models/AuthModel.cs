@@ -32,6 +32,12 @@ namespace YahooFantasyWrapper.Models
         /// <summary>
         /// Determines if a token is present and not expired
         /// </summary>
-        public bool IsValid { get => ExpiresAt != null && DateTimeOffset.UtcNow < ExpiresAt && !string.IsNullOrEmpty(AccessToken); }
+        public bool IsValid
+        {
+            get =>
+                ExpiresAt != null
+                && DateTimeOffset.UtcNow < ExpiresAt
+                && !string.IsNullOrEmpty(AccessToken);
+        }
     }
 }

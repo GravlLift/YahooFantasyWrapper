@@ -10,8 +10,11 @@ namespace System.Net.Http.Xml
 {
     public static class HttpContentXmlExtensions
     {
-        public static Task<object?> ReadFromXmlAsync(this HttpContent content, Type type, XmlSerializer? xmlSerializer = null)
-        {
+        public static Task<object?> ReadFromXmlAsync(
+            this HttpContent content,
+            Type type,
+            XmlSerializer? xmlSerializer = null
+        ) {
             ValidateContent(content);
             Debug.Assert(content.Headers.ContentType != null);
             Encoding? sourceEncoding = XmlContent.GetEncoding(content.Headers.ContentType.CharSet);
@@ -19,8 +22,10 @@ namespace System.Net.Http.Xml
             return ReadFromXmlAsyncCore(content, type, sourceEncoding, xmlSerializer);
         }
 
-        public static Task<T?> ReadFromXmlAsync<T>(this HttpContent content, XmlSerializer? xmlSerializer = null)
-        {
+        public static Task<T?> ReadFromXmlAsync<T>(
+            this HttpContent content,
+            XmlSerializer? xmlSerializer = null
+        ) {
             ValidateContent(content);
             Debug.Assert(content.Headers.ContentType != null);
             Encoding? sourceEncoding = XmlContent.GetEncoding(content.Headers.ContentType.CharSet);
@@ -28,8 +33,12 @@ namespace System.Net.Http.Xml
             return ReadFromXmlAsyncCore<T>(content, sourceEncoding, xmlSerializer);
         }
 
-        private static async Task<object?> ReadFromXmlAsyncCore(HttpContent content, Type type, Encoding? sourceEncoding, XmlSerializer? xmlSerializer)
-        {
+        private static async Task<object?> ReadFromXmlAsyncCore(
+            HttpContent content,
+            Type type,
+            Encoding? sourceEncoding,
+            XmlSerializer? xmlSerializer
+        ) {
             Stream contentStream = await content.ReadAsStreamAsync().ConfigureAwait(false);
 
             // Wrap content stream into a transcoding stream that buffers the data transcoded from the sourceEncoding to utf-8.
@@ -45,8 +54,11 @@ namespace System.Net.Http.Xml
             }
         }
 
-        private static async Task<T?> ReadFromXmlAsyncCore<T>(HttpContent content, Encoding? sourceEncoding, XmlSerializer? xmlSerializer)
-        {
+        private static async Task<T?> ReadFromXmlAsyncCore<T>(
+            HttpContent content,
+            Encoding? sourceEncoding,
+            XmlSerializer? xmlSerializer
+        ) {
             Stream contentStream = await content.ReadAsStreamAsync().ConfigureAwait(false);
 
             // Wrap content stream into a transcoding stream that buffers the data transcoded from the sourceEncoding to utf-8.
@@ -71,11 +83,14 @@ namespace System.Net.Http.Xml
 
             string? mediaType = content.Headers.ContentType?.MediaType;
 
-            if (mediaType == null ||
-                !mediaType.Equals(XmlContent.XmlMediaType, StringComparison.OrdinalIgnoreCase) &&
-                !IsValidStructuredSyntaxXmlSuffix(mediaType.AsSpan()))
-            {
-                throw new NotSupportedException("The provided ContentType is not supported; the supported types are 'application/xml' and the structured syntax suffix 'application/+xml'.");
+            if (
+                mediaType == null
+                || !mediaType.Equals(XmlContent.XmlMediaType, StringComparison.OrdinalIgnoreCase)
+                && !IsValidStructuredSyntaxXmlSuffix(mediaType.AsSpan())
+            ) {
+                throw new NotSupportedException(
+                    "The provided ContentType is not supported; the supported types are 'application/xml' and the structured syntax suffix 'application/+xml'."
+                );
             }
         }
 
@@ -85,9 +100,11 @@ namespace System.Net.Http.Xml
             int typeLength = mediaType.IndexOf('/');
 
             ReadOnlySpan<char> type = mediaType.Slice(index, typeLength);
-            if (typeLength < 0 ||
-                type.CompareTo(XmlContent.XmlType.AsSpan(), StringComparison.OrdinalIgnoreCase) != 0)
-            {
+            if (
+                typeLength < 0
+                || type.CompareTo(XmlContent.XmlType.AsSpan(), StringComparison.OrdinalIgnoreCase)
+                != 0
+            ) {
                 return false;
             }
 
@@ -102,8 +119,10 @@ namespace System.Net.Http.Xml
 
             index += suffixStart + 1;
             ReadOnlySpan<char> suffix = mediaType[index..];
-            if (suffix.CompareTo(XmlContent.XmlSubtype.AsSpan(), StringComparison.OrdinalIgnoreCase) != 0)
-            {
+            if (
+                suffix.CompareTo(XmlContent.XmlSubtype.AsSpan(), StringComparison.OrdinalIgnoreCase)
+                != 0
+            ) {
                 return false;
             }
 

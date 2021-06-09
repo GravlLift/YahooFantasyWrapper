@@ -16,8 +16,10 @@ namespace YahooFantasyWrapper.Client
         #endregion
 
 
-        internal static EndPoint TransactionsLeagueEndPoint(string leagueKey, EndpointSubResourcesCollection subresources = null)
-        {
+        internal static EndPoint TransactionsLeagueEndPoint(
+            string leagueKey,
+            EndpointSubResourcesCollection subresources = null
+        ) {
             return new EndPoint
             {
                 BaseUri = BaseApiUrl,
@@ -30,8 +32,7 @@ namespace YahooFantasyWrapper.Client
             string subs = "";
             if (subresources != null && subresources.Resources.Count > 0)
             {
-                subs = $";out={ string.Join(",", subresources.Resources.Select(a => a.ToFriendlyString()))}";
-
+                subs = $";out={string.Join(",", subresources.Resources.Select(a => a.ToFriendlyString()))}";
             }
             return subs;
         }

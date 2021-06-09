@@ -22,9 +22,9 @@ namespace System
             return sequenceType;
         }
 
-        public static Type TryGetSequenceType(this Type type)
-            => type.TryGetElementType(typeof(IEnumerable<>))
-                ?? type.TryGetElementType(typeof(IAsyncEnumerable<>));
+        public static Type TryGetSequenceType(this Type type) =>
+            type.TryGetElementType(typeof(IEnumerable<>))
+            ?? type.TryGetElementType(typeof(IAsyncEnumerable<>));
 
         public static Type TryGetElementType(this Type type, Type interfaceOrBaseType)
         {
@@ -52,8 +52,10 @@ namespace System
             return singleImplementation?.GenericTypeArguments.FirstOrDefault();
         }
 
-        public static IEnumerable<Type> GetGenericTypeImplementations(this Type type, Type interfaceOrBaseType)
-        {
+        public static IEnumerable<Type> GetGenericTypeImplementations(
+            this Type type,
+            Type interfaceOrBaseType
+        ) {
             var typeInfo = type.GetTypeInfo();
             if (!typeInfo.IsGenericTypeDefinition)
             {
@@ -62,15 +64,15 @@ namespace System
                     : type.GetBaseTypes();
                 foreach (var baseType in baseTypes)
                 {
-                    if (baseType.IsGenericType
-                        && baseType.GetGenericTypeDefinition() == interfaceOrBaseType)
-                    {
+                    if (
+                        baseType.IsGenericType
+                        && baseType.GetGenericTypeDefinition() == interfaceOrBaseType
+                    ) {
                         yield return baseType;
                     }
                 }
 
-                if (type.IsGenericType
-                    && type.GetGenericTypeDefinition() == interfaceOrBaseType)
+                if (type.IsGenericType && type.GetGenericTypeDefinition() == interfaceOrBaseType)
                 {
                     yield return type;
                 }
@@ -98,8 +100,7 @@ namespace System
 
             foreach (var it in interfaceTypes)
             {
-                if (it.IsGenericType && it.GetGenericTypeDefinition() == genericType)
-                    return true;
+                if (it.IsGenericType && it.GetGenericTypeDefinition() == genericType) return true;
             }
 
             if (givenType.IsGenericType && givenType.GetGenericTypeDefinition() == genericType)

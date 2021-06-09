@@ -2,8 +2,11 @@
 {
     public static class DictionaryExtensions
     {
-        public static void SetOrAdd<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key, TValue value)
-        {
+        public static void SetOrAdd<TKey, TValue>(
+            this IDictionary<TKey, TValue> dictionary,
+            TKey key,
+            TValue value
+        ) {
             if (dictionary.ContainsKey(key))
             {
                 dictionary[key] = value;
@@ -14,8 +17,11 @@
             }
         }
 
-        public static void AddUnion<TKey, TValue>(this IDictionary<TKey, HashSet<TValue>> dictionary, TKey key, TValue value)
-        {
+        public static void AddUnion<TKey, TValue>(
+            this IDictionary<TKey, HashSet<TValue>> dictionary,
+            TKey key,
+            TValue value
+        ) {
             if (dictionary.ContainsKey(key))
             {
                 dictionary[key].Add(value);

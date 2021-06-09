@@ -47,13 +47,12 @@ namespace YahooFantasyWrapper.Client
         public YahooAuthClient(
             HttpClient client,
             YahooConfiguration configuration,
-            IPersistAuthorizationService persistAuthorizationService)
-        {
+            IPersistAuthorizationService persistAuthorizationService
+        ) {
             this.client = client;
             this.configuration = configuration;
             this.persistAuthorizationService = persistAuthorizationService;
         }
-
 
         /// <summary>
         /// It's required to store the User GUID obtained in the response for further usage
@@ -85,14 +84,21 @@ namespace YahooFantasyWrapper.Client
         /// <returns></returns>
         protected async Task<UserInfo> GetUserInfo()
         {
-            string url = string.Format(AuthApiEndPoints.UserInfoServiceEndpoint.Resource, UserProfileGUID);
+            string url = string.Format(
+                AuthApiEndPoints.UserInfoServiceEndpoint.Resource,
+                UserProfileGUID
+            );
             var tempEndPoint = new EndPoint
             {
                 BaseUri = AuthApiEndPoints.UserInfoServiceEndpoint.BaseUri,
                 Resource = url
             };
 
-            using var request = RequestFactory.CreateRequest(tempEndPoint, auth.TokenType, auth.AccessToken);
+            using var request = RequestFactory.CreateRequest(
+                tempEndPoint,
+                auth.TokenType,
+                auth.AccessToken
+            );
             var response = await client.GetAsync(request.RequestUri);
 
             var result = await response.Content.ReadAsStringAsync();
@@ -120,13 +126,14 @@ namespace YahooFantasyWrapper.Client
         {
             using var request = RequestFactory.CreateRequest(
                 AuthApiEndPoints.authServiceEndpoint,
-                HttpMethod.Post);
+                HttpMethod.Post
+            );
             var body = new Dictionary<string, string>
-                {
-                    {"client_id", configuration.ClientId },
-                    {"client_secret", configuration.ClientSecret },
-                    {"grant_type", grantType }
-                };
+            {
+                { "client_id", configuration.ClientId },
+                { "client_secret", configuration.ClientSecret },
+                { "grant_type", grantType }
+            };
 
             if (grantType == "refresh_token")
             {
@@ -141,27 +148,46 @@ namespace YahooFantasyWrapper.Client
             request.Content = new FormUrlEncodedContent(body);
             var response = await client.SendAsync(request);
 
-            AfterGetauth(new BeforeAfterRequestArgs
-            {
-                Response = await response.Content.ReadAsStringAsync(),
-                Parameters = parameters
-            });
+            AfterGetauth(
+                new BeforeAfterRequestArgs
+                {
+                    Response = await response.Content.ReadAsStringAsync(),
+                    Parameters = parameters
+                }
+            );
 
             auth ??= new AuthModel();
 
-            auth.AccessToken = ParseTokenResponse(await response.Content.ReadAsStringAsync(), AccessTokenKey);
+            auth.AccessToken = ParseTokenResponse(
+                await response.Content.ReadAsStringAsync(),
+                AccessTokenKey
+            );
             if (string.IsNullOrEmpty(auth.AccessToken))
                 throw new UnexpectedResponseException(AccessTokenKey);
 
-            auth.TokenType = ParseTokenResponse(await response.Content.ReadAsStringAsync(), TokenTypeKey);
+            auth.TokenType = ParseTokenResponse(
+                await response.Content.ReadAsStringAsync(),
+                TokenTypeKey
+            );
 
-            if (int.TryParse(ParseTokenResponse(await response.Content.ReadAsStringAsync(), ExpiresKey), out int expiresIn)
-                && DateTimeOffset.TryParse(response.Headers.GetValues("Date").FirstOrDefault(), out DateTimeOffset responseTimeStamp))
+            if (
+                int.TryParse(
+                    ParseTokenResponse(await response.Content.ReadAsStringAsync(), ExpiresKey),
+                    out int expiresIn
+                )
+                && DateTimeOffset.TryParse(
+                    response.Headers.GetValues("Date").FirstOrDefault(),
+                    out DateTimeOffset responseTimeStamp
+                )
+            )
                 auth.ExpiresAt = responseTimeStamp.AddSeconds(expiresIn);
 
             if (grantType != "refresh_token")
             {
-                auth.RefreshToken = ParseTokenResponse(await response.Content.ReadAsStringAsync(), RefreshTokenKey);
+                auth.RefreshToken = ParseTokenResponse(
+                    await response.Content.ReadAsStringAsync(),
+                    RefreshTokenKey
+                );
             }
 
             if (persistAuthorizationService != null)
@@ -176,8 +202,7 @@ namespace YahooFantasyWrapper.Client
         /// <returns></returns>
         private string ParseTokenResponse(string response, string key)
         {
-            if (string.IsNullOrEmpty(response) || string.IsNullOrEmpty(key))
-                return null;
+            if (string.IsNullOrEmpty(response) || string.IsNullOrEmpty(key)) return null;
 
             try
             {
@@ -199,8 +224,10 @@ namespace YahooFantasyWrapper.Client
         /// <param name="refreshToken">refresh token used for generation of new access token </param>
         /// <param name="forceUpdate">flag to force generation of new access token</param>
         /// <returns>Access Token</returns>
-        public async Task<AuthModel> GetCurrentToken(string refreshToken = null, bool forceUpdate = false)
-        {
+        public async Task<AuthModel> GetCurrentToken(
+            string refreshToken = null,
+            bool forceUpdate = false
+        ) {
             if (auth != null && !forceUpdate && auth.IsValid)
             {
                 return auth;
@@ -243,13 +270,15 @@ namespace YahooFantasyWrapper.Client
         /// Any additional information that will be posted back by service.
         public string GetLoginLinkUri()
         {
-            using var request = RequestFactory.CreateRequest(AuthApiEndPoints.AccessCodeServiceEndpoint);
+            using var request = RequestFactory.CreateRequest(
+                AuthApiEndPoints.AccessCodeServiceEndpoint
+            );
             var body = new Dictionary<string, string>
             {
-                {"response_type", "code" },
-                {"client_id", configuration.ClientId},
-                {"client_secret", configuration.ClientSecret },
-                {"redirect_uri", configuration.RedirectUri }
+                { "response_type", "code" },
+                { "client_id", configuration.ClientId },
+                { "client_secret", configuration.ClientSecret },
+                { "redirect_uri", configuration.RedirectUri }
             };
 
             return AddQueryString(request.RequestUri.ToString(), body);
@@ -262,9 +291,9 @@ namespace YahooFantasyWrapper.Client
         /// <param name="queryString">KVPairs that represent QS params</param>
         /// <returns></returns>
         private static string AddQueryString(
-          string uri,
-          IEnumerable<KeyValuePair<string, string>> queryString)
-        {
+            string uri,
+            IEnumerable<KeyValuePair<string, string>> queryString
+        ) {
             if (uri == null)
             {
                 throw new ArgumentNullException(nameof(uri));

@@ -19,8 +19,11 @@ namespace YahooFantasyWrapper.Query.Internal
         public override string ToString()
         {
             var sb = new StringBuilder();
-            var xmlRootAttribute = (XmlRootAttribute)Attribute
-                .GetCustomAttribute(ResourceType, typeof(XmlRootAttribute));
+            var xmlRootAttribute =
+                (XmlRootAttribute)Attribute.GetCustomAttribute(
+                    ResourceType,
+                    typeof(XmlRootAttribute)
+                );
             sb.Append(xmlRootAttribute.ElementName);
 
             // Check if this can be labeled as a collection, basically only a key
@@ -62,8 +65,11 @@ namespace YahooFantasyWrapper.Query.Internal
             }
             else
             {
-                if (Modifiers.Count == 1 && Modifiers.First().Key.EndsWith("_key") && Modifiers.First().Value.Count == 1)
-                {
+                if (
+                    Modifiers.Count == 1
+                    && Modifiers.First().Key.EndsWith("_key")
+                    && Modifiers.First().Value.Count == 1
+                ) {
                     sb.Append($"/{Modifiers.First().Value.Single()}");
                 }
                 else
@@ -73,7 +79,6 @@ namespace YahooFantasyWrapper.Query.Internal
                         sb.Append($";{modifier.Key}={string.Join(",", modifier.Value)}");
                     }
                 }
-
             }
 
             return sb.ToString();

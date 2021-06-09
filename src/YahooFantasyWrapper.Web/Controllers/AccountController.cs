@@ -25,10 +25,7 @@ namespace YahooFantasyWrapper.Web.Controllers
 
         private NameValueCollection Parameters
         {
-            get
-            {
-                return HttpUtility.ParseQueryString(Request.QueryString.Value);
-            }
+            get { return HttpUtility.ParseQueryString(Request.QueryString.Value); }
         }
 
         [HttpGet("[action]")]
@@ -41,9 +38,10 @@ namespace YahooFantasyWrapper.Web.Controllers
         public async Task<UserModel> GetAuth(string code)
         {
             var authModel = new UserModel();
-            if ((this.Parameters != null & this.Parameters.Count > 0) || this._authClient.UserInfo != null)
-            {
-
+            if (
+                (this.Parameters != null & this.Parameters.Count > 0)
+                || this._authClient.UserInfo != null
+            ) {
                 if (this._authClient.UserInfo == null)
                 {
                     this._authClient.UserInfo = await this._authClient.GetUserInfo(this.Parameters);

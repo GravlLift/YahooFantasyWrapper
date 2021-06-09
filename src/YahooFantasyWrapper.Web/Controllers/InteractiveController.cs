@@ -30,13 +30,12 @@ namespace YahooFantasyWrapper.Web.Controllers
         }
 
         [HttpPost("[action]")]
-        public async Task<List<Game>> GetGames([FromBody]PostModel model)
+        public async Task<List<Game>> GetGames([FromBody] PostModel model)
         {
             var user = await this._fantasyClient.UserResourceManager.GetUser(model.AccessToken);
-            var Games = user.GameList.Games
-                 .Where(a => a.Type == "full")
-                 .OrderBy(a => a.Season)
-                 .ToList();
+            var Games = user.GameList.Games.Where(a => a.Type == "full")
+                .OrderBy(a => a.Season)
+                .ToList();
 
             return Games;
         }
@@ -44,47 +43,70 @@ namespace YahooFantasyWrapper.Web.Controllers
         [HttpPost("[action]")]
         public async Task<List<League>> GetLeagues([FromBody] PostModel model)
         {
-            var user = await this._fantasyClient.UserResourceManager.GetUserGameLeagues(model.AccessToken, new string[] { model.Key }, EndpointSubResourcesCollection.BuildResourceList(EndpointSubResources.Teams));
-            var Games = user.GameList.Games
-                    .Where(a => a.GameKey == a.GameKey)
-                    .Select(a => a.LeagueList.Leagues).FirstOrDefault();
+            var user =
+                await this._fantasyClient.UserResourceManager.GetUserGameLeagues(
+                    model.AccessToken,
+                    new string[] { model.Key },
+                    EndpointSubResourcesCollection.BuildResourceList(EndpointSubResources.Teams)
+                );
+            var Games = user.GameList.Games.Where(a => a.GameKey == a.GameKey)
+                .Select(a => a.LeagueList.Leagues)
+                .FirstOrDefault();
             return Games;
         }
 
         [HttpPost("[action]")]
         public async Task<League> GetLeagueMetadata([FromBody] PostModel model)
         {
-            return await this._fantasyClient.LeagueResourceManager.GetMeta(model.Key, model.AccessToken);
+            return await this._fantasyClient.LeagueResourceManager.GetMeta(
+                model.Key,
+                model.AccessToken
+            );
         }
 
         [HttpPost("[action]")]
         public async Task<League> GetLeagueStandings([FromBody] PostModel model)
         {
-            return await this._fantasyClient.LeagueResourceManager.GetStandings(model.Key, model.AccessToken);
+            return await this._fantasyClient.LeagueResourceManager.GetStandings(
+                model.Key,
+                model.AccessToken
+            );
         }
 
         [HttpPost("[action]")]
         public async Task<League> GetLeagueSettings([FromBody] PostModel model)
         {
-            return await this._fantasyClient.LeagueResourceManager.GetSettings(model.Key, model.AccessToken);
+            return await this._fantasyClient.LeagueResourceManager.GetSettings(
+                model.Key,
+                model.AccessToken
+            );
         }
 
         [HttpPost("[action]")]
         public async Task<League> GetLeagueTeams([FromBody] PostModel model)
         {
-            return await this._fantasyClient.LeagueResourceManager.GetTeams(model.Key, model.AccessToken);
+            return await this._fantasyClient.LeagueResourceManager.GetTeams(
+                model.Key,
+                model.AccessToken
+            );
         }
 
         [HttpPost("[action]")]
         public async Task<League> GetLeagueScoreboard([FromBody] PostModel model)
         {
-            return await this._fantasyClient.LeagueResourceManager.GetScoreboard(model.Key, model.AccessToken);
+            return await this._fantasyClient.LeagueResourceManager.GetScoreboard(
+                model.Key,
+                model.AccessToken
+            );
         }
 
         [HttpPost("[action]")]
         public async Task<League> GetDraftResults([FromBody] PostModel model)
         {
-            return await this._fantasyClient.LeagueResourceManager.GetDraftResults(model.Key, model.AccessToken);
+            return await this._fantasyClient.LeagueResourceManager.GetDraftResults(
+                model.Key,
+                model.AccessToken
+            );
         }
     }
 }

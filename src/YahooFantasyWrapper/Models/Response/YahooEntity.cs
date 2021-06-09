@@ -8,7 +8,6 @@ namespace YahooFantasyWrapper.Models.Response
 {
     public interface IYahooEntity
     {
-
     }
 
     public interface IYahooCollection : IYahooEntity
@@ -17,14 +16,13 @@ namespace YahooFantasyWrapper.Models.Response
 
     public interface IYahooResource : IYahooEntity
     {
-
     }
 
     public interface IYahooQueryable<TYahooCollection>
-        : IQueryable<TYahooCollection>, IAsyncEnumerable<TYahooCollection>
+        : IQueryable<TYahooCollection>,
+            IAsyncEnumerable<TYahooCollection>
         where TYahooCollection : IYahooEntity
     {
-
     }
 
     public interface IYahooQueryable<TYahooCollection, TYahooSubResource>
@@ -32,6 +30,5 @@ namespace YahooFantasyWrapper.Models.Response
         where TYahooCollection : IYahooEntity
         where TYahooSubResource : IYahooEntity
     {
-
     }
 }

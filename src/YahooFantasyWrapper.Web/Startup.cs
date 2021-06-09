@@ -29,7 +29,10 @@ namespace YahooFantasyWrapper.Web
             public ITelemetryProcessor Create(ITelemetryProcessor next)
             {
                 var snapshotConfigurationOptions = _serviceProvider.GetService<IOptions<SnapshotCollectorConfiguration>>();
-                return new SnapshotCollectorTelemetryProcessor(next, configuration: snapshotConfigurationOptions.Value);
+                return new SnapshotCollectorTelemetryProcessor(
+                    next,
+                    configuration: snapshotConfigurationOptions.Value
+                );
             }
         }
         public Startup(IConfiguration configuration)
@@ -42,28 +45,37 @@ namespace YahooFantasyWrapper.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.Configure<CookiePolicyOptions>(options =>
-            {
-                // This lambda determines whether user consent for non-essential cookies is needed for a given request.
-                options.CheckConsentNeeded = context => true;
-                options.MinimumSameSitePolicy = SameSiteMode.None;
-            });
+            services.Configure<CookiePolicyOptions>(
+                options =>
+                {
+                    // This lambda determines whether user consent for non-essential cookies is needed for a given request.
+                    options.CheckConsentNeeded = context => true;
+                    options.MinimumSameSitePolicy = SameSiteMode.None;
+                }
+            );
 
-            services.AddMvc()
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
-            services.Configure<SnapshotCollectorConfiguration>(Configuration.GetSection(nameof(SnapshotCollectorConfiguration)));
+            services.Configure<SnapshotCollectorConfiguration>(
+                Configuration.GetSection(nameof(SnapshotCollectorConfiguration))
+            );
 
             // Add SnapshotCollector telemetry processor.
-            services.AddSingleton<ITelemetryProcessorFactory>(sp => new SnapshotCollectorTelemetryProcessorFactory(sp));
+            services.AddSingleton<ITelemetryProcessorFactory>(
+                sp => new SnapshotCollectorTelemetryProcessorFactory(sp)
+            );
 
             // In production, the Angular files will be served from this directory
-            services.AddSpaStaticFiles(configuration =>
-            {
-                configuration.RootPath = "ClientApp/dist";
-            });
+            services.AddSpaStaticFiles(
+                configuration =>
+                {
+                    configuration.RootPath = "ClientApp/dist";
+                }
+            );
 
-            services.Configure<YahooConfiguration>((IConfiguration)this.Configuration.GetSection("YahooConfiguration"));
+            services.Configure<YahooConfiguration>(
+                (IConfiguration)this.Configuration.GetSection("YahooConfiguration")
+            );
 
             //Add Services for YahooFantasyWrapper Package
             services.AddSingleton<IRequestFactory, RequestFactory>();
@@ -72,7 +84,8 @@ namespace YahooFantasyWrapper.Web
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
-            services.AddSingleton<ITelemetryInitializer, RequestBodyInitializer>();        }
+            services.AddSingleton<ITelemetryInitializer, RequestBodyInitializer>();
+        }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
@@ -84,33 +97,35 @@ namespace YahooFantasyWrapper.Web
             else
             {
                 app.UseExceptionHandler("/Home/Error");
-                 app.UseHsts();
+                app.UseHsts();
             }
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
             app.UseCookiePolicy();
-            app.UseMvc(routes =>
-            {
-                routes.MapRoute(
-                    name: "default",
-                    template: "{controller}/{action=Index}/{id?}");
-            });
-
-            app.UseSpa(spa =>
-            {
-                // To learn more about options for serving an Angular SPA from ASP.NET Core,
-                // see https://go.microsoft.com/fwlink/?linkid=864501
-
-                spa.Options.SourcePath = "ClientApp";
-
-                if (env.IsDevelopment())
+            app.UseMvc(
+                routes =>
                 {
-                    //spa.UseAngularCliServer(npmScript: "start");
-                    spa.UseProxyToSpaDevelopmentServer("http://localhost:4200");
+                    routes.MapRoute(name: "default", template: "{controller}/{action=Index}/{id?}");
                 }
-            });
+            );
+
+            app.UseSpa(
+                spa =>
+                {
+                    // To learn more about options for serving an Angular SPA from ASP.NET Core,
+                    // see https://go.microsoft.com/fwlink/?linkid=864501
+
+                    spa.Options.SourcePath = "ClientApp";
+
+                    if (env.IsDevelopment())
+                    {
+                        //spa.UseAngularCliServer(npmScript: "start");
+                        spa.UseProxyToSpaDevelopmentServer("http://localhost:4200");
+                    }
+                }
+            );
         }
     }
 }

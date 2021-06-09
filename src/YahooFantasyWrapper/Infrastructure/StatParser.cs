@@ -8,8 +8,7 @@ namespace YahooFantasyWrapper.Infrastructure
     {
         public static float? Parse(string value)
         {
-            if (value == "-")
-                return null;
+            if (value == "-") return null;
             if (value.Contains(":"))
             {
                 //minutes:seconds will return as minutes

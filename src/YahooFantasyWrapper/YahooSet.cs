@@ -25,22 +25,23 @@ namespace YahooFantasyWrapper
             Expression = expression;
         }
 
-        public Type ElementType
-            => typeof(TYahooEntity);
+        public Type ElementType => typeof(TYahooEntity);
 
         public Expression Expression { get; private set; }
 
         public IQueryProvider Provider { get; private set; }
 
-        public IEnumerator<TYahooEntity> GetEnumerator()
-            => Provider.Execute<List<TYahooEntity>>(Expression).GetEnumerator();
+        public IEnumerator<TYahooEntity> GetEnumerator() =>
+            Provider.Execute<List<TYahooEntity>>(Expression).GetEnumerator();
 
-        IAsyncEnumerator<TYahooEntity> IAsyncEnumerable<TYahooEntity>.GetAsyncEnumerator(CancellationToken cancellationToken)
-            => ((IAsyncQueryProvider)Provider).ExecuteAsync<IAsyncEnumerable<TYahooEntity>>(Expression)
-                .GetAwaiter().GetResult()
+        IAsyncEnumerator<TYahooEntity> IAsyncEnumerable<TYahooEntity>.GetAsyncEnumerator(
+            CancellationToken cancellationToken
+        ) =>
+            ((IAsyncQueryProvider)Provider).ExecuteAsync<IAsyncEnumerable<TYahooEntity>>(Expression)
+                .GetAwaiter()
+                .GetResult()
                 .GetAsyncEnumerator(cancellationToken);
 
-        IEnumerator IEnumerable.GetEnumerator()
-            => throw new NotImplementedException();
+        IEnumerator IEnumerable.GetEnumerator() => throw new NotImplementedException();
     }
 }

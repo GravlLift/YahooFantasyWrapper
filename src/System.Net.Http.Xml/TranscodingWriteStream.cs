@@ -31,7 +31,10 @@ namespace System.Net.Http.Xml
             // Attempt to allocate a byte buffer than can tolerate the worst-case scenario for this
             // encoding. This would allow the char -> byte conversion to complete in a single call.
             // However limit the buffer size to prevent an encoding that has a very poor worst-case scenario.
-            _maxByteBufferSize = Math.Min(MaxByteBufferSize, targetEncoding.GetMaxByteCount(MaxCharBufferSize));
+            _maxByteBufferSize = Math.Min(
+                MaxByteBufferSize,
+                targetEncoding.GetMaxByteCount(MaxCharBufferSize)
+            );
 
             _decoder = Encoding.UTF8.GetDecoder();
             _encoder = targetEncoding.GetEncoder();
@@ -43,26 +46,28 @@ namespace System.Net.Http.Xml
         public override long Length => throw new NotSupportedException();
         public override long Position { get; set; }
 
-        public override void Flush()
-            => throw new NotSupportedException();
+        public override void Flush() => throw new NotSupportedException();
 
-        public override Task FlushAsync(CancellationToken cancellationToken)
-            => _stream.FlushAsync(cancellationToken);
+        public override Task FlushAsync(CancellationToken cancellationToken) =>
+            _stream.FlushAsync(cancellationToken);
 
-        public override int Read(byte[] buffer, int offset, int count)
-            => throw new NotSupportedException();
+        public override int Read(byte[] buffer, int offset, int count) =>
+            throw new NotSupportedException();
 
-        public override long Seek(long offset, SeekOrigin origin)
-            => throw new NotSupportedException();
+        public override long Seek(long offset, SeekOrigin origin) =>
+            throw new NotSupportedException();
 
-        public override void SetLength(long value)
-            => throw new NotSupportedException();
+        public override void SetLength(long value) => throw new NotSupportedException();
 
-        public override void Write(byte[] buffer, int offset, int count)
-            => throw new NotSupportedException();
+        public override void Write(byte[] buffer, int offset, int count) =>
+            throw new NotSupportedException();
 
-        public override Task WriteAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
-        {
+        public override Task WriteAsync(
+            byte[] buffer,
+            int offset,
+            int count,
+            CancellationToken cancellationToken
+        ) {
             if (buffer == null)
             {
                 throw new ArgumentNullException(nameof(buffer));
@@ -80,21 +85,35 @@ namespace System.Net.Http.Xml
 
             if (buffer.Length - offset < count)
             {
-                throw new ArgumentException("Offset and length were out of bounds for the array or count is greater than the number of elements from index to the end of the source collection.");
+                throw new ArgumentException(
+                    "Offset and length were out of bounds for the array or count is greater than the number of elements from index to the end of the source collection."
+                );
             }
 
             var bufferSegment = new ArraySegment<byte>(buffer, offset, count);
             return WriteAsyncCore(bufferSegment, cancellationToken);
         }
 
-        private async Task WriteAsyncCore(ArraySegment<byte> bufferSegment, CancellationToken cancellationToken)
-        {
+        private async Task WriteAsyncCore(
+            ArraySegment<byte> bufferSegment,
+            CancellationToken cancellationToken
+        ) {
             bool decoderCompleted = false;
 
             while (!decoderCompleted)
             {
-                _decoder.Convert(bufferSegment.Array!, bufferSegment.Offset, bufferSegment.Count, _charBuffer, _charsDecoded, _charBuffer.Length - _charsDecoded,
-                    flush: false, out int bytesDecoded, out int charsDecoded, out decoderCompleted);
+                _decoder.Convert(
+                    bufferSegment.Array!,
+                    bufferSegment.Offset,
+                    bufferSegment.Count,
+                    _charBuffer,
+                    _charsDecoded,
+                    _charBuffer.Length - _charsDecoded,
+                    flush: false,
+                    out int bytesDecoded,
+                    out int charsDecoded,
+                    out decoderCompleted
+                );
 
                 _charsDecoded += charsDecoded;
                 bufferSegment = bufferSegment.Slice(bytesDecoded);
@@ -110,10 +129,21 @@ namespace System.Net.Http.Xml
 
             while (!encoderCompleted && charsWritten < _charsDecoded)
             {
-                _encoder.Convert(_charBuffer, charsWritten, _charsDecoded - charsWritten, byteBuffer, byteIndex: 0, byteBuffer.Length,
-                    flush: false, out int charsEncoded, out int bytesUsed, out encoderCompleted);
+                _encoder.Convert(
+                    _charBuffer,
+                    charsWritten,
+                    _charsDecoded - charsWritten,
+                    byteBuffer,
+                    byteIndex: 0,
+                    byteBuffer.Length,
+                    flush: false,
+                    out int charsEncoded,
+                    out int bytesUsed,
+                    out encoderCompleted
+                );
 
-                await _stream.WriteAsync(byteBuffer, 0, bytesUsed, cancellationToken).ConfigureAwait(false);
+                await _stream.WriteAsync(byteBuffer, 0, bytesUsed, cancellationToken)
+                    .ConfigureAwait(false);
                 charsWritten += charsEncoded;
             }
 
@@ -141,10 +171,21 @@ namespace System.Net.Http.Xml
 
             while (!encoderCompleted)
             {
-                _encoder.Convert(Array.Empty<char>(), 0, 0, byteBuffer, 0, byteBuffer.Length,
-                    flush: true, out _, out int bytesUsed, out encoderCompleted);
+                _encoder.Convert(
+                    Array.Empty<char>(),
+                    0,
+                    0,
+                    byteBuffer,
+                    0,
+                    byteBuffer.Length,
+                    flush: true,
+                    out _,
+                    out int bytesUsed,
+                    out encoderCompleted
+                );
 
-                await _stream.WriteAsync(byteBuffer, 0, bytesUsed, cancellationToken).ConfigureAwait(false);
+                await _stream.WriteAsync(byteBuffer, 0, bytesUsed, cancellationToken)
+                    .ConfigureAwait(false);
             }
 
             ArrayPool<byte>.Shared.Return(byteBuffer);
